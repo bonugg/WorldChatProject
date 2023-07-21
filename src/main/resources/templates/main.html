@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<!--<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+위의 태그는 REST API 사용 시 사용 불가-->
+<html lang="en">
+<head>
+
+    <head>
+        <meta charset="UTF-8">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <title>Title</title>
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+    </head>
+
+</head>
+<body>
+<div class="container">
+    <h2>Main Page</h2>
+    <button type="button" class="btn btn-primary" onclick="login();">로그인</button>
+    <button type="button" class="btn btn-primary" onclick="join();">회원가입</button>
+    <button type="button" class="btn btn-primary" onclick="authorization();">프로필</button>
+    <button type="submit" class="btn btn-primary"  onclick="logout();">로그아웃</button>
+
+</div>
+
+</body>
+<script>
+function login(){
+    location.href = "/login_page";
+}
+function join(){
+    location.href = "/join";
+}
+function authorization(){
+    location.href = "/myprofile";
+}
+function logout(){
+    $.ajax({
+        type: 'POST',
+        url: '/api/v1/logout',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("Authorization", localStorage.getItem("Authorization"));
+        },
+    }).done(function(data,status,xhr){
+        localStorage.removeItem("Authorization");
+        localStorage.removeItem("userName");
+        location.href = "/login_page";
+    }).fail(function (error) {
+        alert("로그아웃 실패.");
+    });
+}
+
+</script>
+</html>
