@@ -1,6 +1,7 @@
 package com.example.WorldChatProject.user.controller;
 
 import com.example.WorldChatProject.user.entity.User;
+import com.example.WorldChatProject.user.repository.UserRepository;
 import com.example.WorldChatProject.user.security.auth.PrincipalDetails;
 import com.example.WorldChatProject.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ import java.util.List;
 @Slf4j
 public class UserApiController {
     private final UserService userService;
+    private final UserRepository userRepository;
 
     @GetMapping("hello")
     public List<String> hello(){
@@ -61,6 +63,11 @@ public class UserApiController {
     public ResponseEntity refreshToken(HttpServletResponse response, @RequestBody String userName) {
         log.info(userName);
         return userService.UserRefreshToken(response, userName);
+    }
+
+    @GetMapping("/userlist")
+    public ResponseEntity<List<User>> userList(){
+        return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
     }
 }
 
