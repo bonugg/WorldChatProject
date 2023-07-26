@@ -1,10 +1,8 @@
 package com.example.WorldChatProject.user.entity;
 
+import com.example.WorldChatProject.randomChat.entity.RandomRoom;
 import com.example.WorldChatProject.user.dto.UserDTO;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -22,6 +20,8 @@ public class User {
     private String userPwd;
     private String userEmail;
     private String userRoles;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<RandomRoom> randomRoom;
 
     public List<String> getRoleList(){
         if(this.userRoles.length() > 0){
