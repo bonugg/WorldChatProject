@@ -17,19 +17,16 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "t_randomRoom")
+@Table(name = "random_room")
 @Builder
 public class RandomRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "randomId")
-    private long randomId;
+    @Column(name = "random_room_id")
+    private long randomRoomId;
     @NotNull
-    @Column(name="randomName")
-    private String randomName;
-    @NotNull
-    @Column(name="randomNum")
-    private String randomNum;
+    @Column(name="random_room_name")
+    private String randomRoomName;
 
     @OneToMany(mappedBy = "randomRoom", cascade = CascadeType.ALL)
     private List<RandomChat> randomChatContent = new ArrayList<>();
@@ -37,8 +34,8 @@ public class RandomRoom {
     //랜덤채팅방 생성
     public static RandomRoom create(String roomName){
         RandomRoom room = new RandomRoom();
-        room.randomNum = UUID.randomUUID().toString();
-        room.randomName = roomName;
+        room.randomRoomId = room.getRandomRoomId();
+        room.randomRoomName = roomName;
         return room;
     }
 

@@ -11,28 +11,26 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "t_randomChat")
+@Table(name = "random_chat")
 @Builder
 public class RandomChat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "randomChatId")
+    @Column(name = "random_chat_id")
     private long randomChatId;
-    @Column(name = "randomChatContent")
+    @Column(name = "random_chat_content")
     private String randomChatContent;
-    @Column(name = "randomChatTime")
+    @Column(name = "random_chat_time")
     private String randomChatTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "randomId")
+    @JoinColumn(name = "random_room_id")
     private RandomRoom randomRoom;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="id")
+    @JoinColumn(name="user_id")
     private User sender; //발신자아이디
 
-    //또는?
-    //private String sender;
 
 }
