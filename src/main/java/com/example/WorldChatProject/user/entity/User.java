@@ -1,5 +1,6 @@
 package com.example.WorldChatProject.user.entity;
 
+import com.example.WorldChatProject.randomChat.entity.RandomChat;
 import com.example.WorldChatProject.randomChat.entity.RandomRoom;
 import com.example.WorldChatProject.user.dto.UserDTO;
 import jakarta.persistence.*;
@@ -21,7 +22,7 @@ public class User {
     private String userEmail;
     private String userRoles;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<RandomRoom> randomRoom;
+    private List<RandomChat> randomChat;
 
     public List<String> getRoleList(){
         if(this.userRoles.length() > 0){

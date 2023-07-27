@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.antlr.v4.runtime.misc.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -15,7 +17,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "t_randomroom")
+@Table(name = "t_randomRoom")
 @Builder
 public class RandomRoom {
     @Id
@@ -28,16 +30,18 @@ public class RandomRoom {
     @NotNull
     @Column(name="randomNum")
     private String randomNum;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="id")
-    private User user; //발신자아이디
 
-    //랜덤채팅방id 생성
-    public RandomRoom create(String roomName){
+    @OneToMany(mappedBy = "randomRoom", cascade = CascadeType.ALL)
+    private List<RandomChat> randomChatContent = new ArrayList<>();
+
+    //랜덤채팅방 생성
+    public static RandomRoom create(String roomName){
         RandomRoom room = new RandomRoom();
         room.randomNum = UUID.randomUUID().toString();
         room.randomName = roomName;
         return room;
     }
+
+
 
 }
