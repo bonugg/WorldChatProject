@@ -1,5 +1,7 @@
 package com.example.WorldChatProject.randomChat.entity;
 
+import com.example.WorldChatProject.randomChat.dto.RandomRoomDTO;
+import com.example.WorldChatProject.randomChat.service.RandomRoomService;
 import com.example.WorldChatProject.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -31,12 +33,39 @@ public class RandomRoom {
     @OneToMany(mappedBy = "randomRoom", cascade = CascadeType.ALL)
     private List<RandomChat> randomChatContent = new ArrayList<>();
 
-    //랜덤채팅방 생성
-    public static RandomRoom create(String roomName){
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user1_id")
+    private User user1;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user2_id")
+    private User user2;
+
+    //랜덤채팅방 이름 구성하고 랜덤채팅방 반환
+    public static RandomRoom create(User user){
         RandomRoom room = new RandomRoom();
-        room.randomRoomId = room.getRandomRoomId();
-        room.randomRoomName = roomName;
+        room.setRandomRoomName("대기 중");
+        room.setUser1(user);
         return room;
+    }
+
+    //채팅방에 상대방 참여 시 채팅방 이름 변경
+    public static RandomRoom rename(RandomRoom room, User user1, User user2){
+        String roomName = String.format("%s & %s 의 랜덤채팅", user1.getUserName(), user2.getUserName());
+        room.setRandomRoomName(roomName);
+        room.setUser1(user1);
+        room.setUser2(user2);
+        return room;
+    }
+
+
+    public RandomRoomDTO toDTO(){
+        return RandomRoomDTO.builder()
+                .randomRoomId(this.randomRoomId)
+                .randomRoomName(this.randomRoomName)
+                .user1(this.user1)
+                .user2(this.user2)
+                .build();
     }
 
 

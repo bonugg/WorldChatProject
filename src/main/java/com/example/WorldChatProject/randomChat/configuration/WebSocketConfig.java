@@ -31,7 +31,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry){
         //stomp (채팅방)접속 주소 url(=/random-chat/roomId)
-        registry.addEndpoint("/random-chat/{randomId}") //연결될 endpoint
+        registry.addEndpoint("/random/room") //연결될 endpoint
+                .setAllowedOriginPatterns("*")
                 .setHandshakeHandler(new DefaultHandshakeHandler() {
                     public PrincipalDetails user(Authentication authentication, Map<String, Object> attributes, HttpServletRequest request) {
                         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();

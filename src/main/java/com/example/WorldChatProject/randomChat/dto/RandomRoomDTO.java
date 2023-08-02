@@ -8,8 +8,9 @@ import lombok.Data;
 @Builder
 public class RandomRoomDTO {
 
-    private long randomId;
-    private String randomName;
-    private String randomNum;
+    private long randomRoomId;
+    private String randomRoomName;
+    private User user1;
+    private User user2;
 
 }

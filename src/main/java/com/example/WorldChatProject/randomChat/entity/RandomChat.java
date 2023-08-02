@@ -28,9 +28,12 @@ public class RandomChat {
     @JoinColumn(name = "random_room_id")
     private RandomRoom randomRoom;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="user_id")
-    private User sender; //발신자아이디
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name="user_id")
+//    private User sender; //발신자아이디
+
+    @Column(name = "sender")
+    private String sender;
 
 
 }
