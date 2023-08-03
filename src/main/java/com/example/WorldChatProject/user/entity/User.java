@@ -17,18 +17,29 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    //유저 primary key
     private long userId;
+    //아이디
     private String userName;
+    //패스워드
     private String userPwd;
+    //이메일
     private String userEmail;
+    //권한
     private String userRoles;
-
-    public List<String> getRoleList(){
-        if(this.userRoles.length() > 0){
-            return Arrays.asList(this.userRoles.split(","));
-        }
-        return new ArrayList<>();
-    }
+    //이름
+    private String userTrueName;
+    //닉네임
+    private String userNickName;
+    //번호
+    private String userPhone;
+    //국적
+    private String userNationality;
+    //상태메시지
+    private String userMessage = ""; // 빈 문자열로 기본값 설정
+    private String userProfileName;
+    private String userProfilePath;
+    private String userProfileOrigin;
     public UserDTO EntityToDTO() {
         UserDTO userDTO = UserDTO.builder()
                 .userId(this.userId)
@@ -36,6 +47,14 @@ public class User {
                 .userPwd(this.userPwd)
                 .userEmail(this.userEmail)
                 .userRoles(this.userRoles)
+                .userTrueName(this.userTrueName)
+                .userNickName(this.userNickName)
+                .userPhone(this.userPhone)
+                .userNationality(this.userNationality)
+                .userMessage(this.userMessage)
+                .userProfileName(this.userProfileName)
+                .userProfilePath(this.userProfilePath)
+                .userProfileOrigin(this.userProfileOrigin)
                 .build();
         return userDTO;
     }
