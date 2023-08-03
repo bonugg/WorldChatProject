@@ -24,6 +24,8 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -103,4 +105,17 @@ public class UserService {
         }
     }
 
+    public User findById(long userId) {
+        Optional<User> checkUser = userRepository.findById(userId);
+        if(checkUser.isEmpty()) {
+            return null;
+        } else {
+            return checkUser.get();
+        }
+    }
+
+
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
 }

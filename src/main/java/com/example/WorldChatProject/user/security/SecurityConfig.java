@@ -63,6 +63,7 @@ public class SecurityConfig {
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                                 .requestMatchers("/api/v1/user/**").hasRole("USER")
+                                .requestMatchers("/friends/**").hasRole("USER")
                                 .anyRequest().permitAll()
                 );
         return http.build();

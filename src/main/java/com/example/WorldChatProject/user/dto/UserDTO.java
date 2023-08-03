@@ -1,5 +1,6 @@
 package com.example.WorldChatProject.user.dto;
 
+import com.example.WorldChatProject.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,5 +25,14 @@ public class UserDTO {
             return Arrays.asList(this.userRoles.split(","));
         }
         return new ArrayList<>();
+    }
+
+    public User DTOToEntity() {
+        return User.builder()
+                .userId(this.userId)
+                .userName(this.userName)
+                .userEmail(this.userEmail)
+                .userRoles(this.userRoles)
+                .build();
     }
 }
