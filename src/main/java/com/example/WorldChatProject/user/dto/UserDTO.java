@@ -19,6 +19,16 @@ public class UserDTO {
     private String userPwd;
     private String userEmail;
     private String userRoles;
+    //이름
+    private String userTrueName;
+    //닉네임
+    private String userNickName;
+    //번호
+    private String userPhone;
+    //국적
+    private String userNationality;
+    //상태메시지
+    private String userMessage;
     public List<String> getRoleList(){
         if(this.userRoles.length() > 0){
             return Arrays.asList(this.userRoles.split(","));

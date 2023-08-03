@@ -6,8 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface RandomRoomRepository extends JpaRepository<RandomRoom, Long> {
-    RandomRoom findByRandomRoomId(long randomRoomId);
+//    @Query(value= "SELECT * FROM RandomRoom r WHERE r.id =: id", nativeQuery = true)
+//
+//    RandomRoom findByRandomRoomId(long randomRoomId);
 
-    @Query(value = "SELECT * FROM RandomRoom r WHERE r.user1 =: otherUser", nativeQuery = true)
-    RandomRoom findByUsername(User otherUser);
+    @Query(value = "SELECT * FROM random_room r WHERE r.user1_id =: userId", nativeQuery = true)
+    RandomRoom findByUserId(long userId);
 }

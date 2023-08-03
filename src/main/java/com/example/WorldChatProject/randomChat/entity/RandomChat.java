@@ -1,5 +1,7 @@
 package com.example.WorldChatProject.randomChat.entity;
 
+import com.example.WorldChatProject.randomChat.MessageType;
+import com.example.WorldChatProject.randomChat.dto.RandomChatDTO;
 import com.example.WorldChatProject.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -34,6 +36,9 @@ public class RandomChat {
 
     @Column(name = "sender")
     private String sender;
+
+    @Enumerated(EnumType.STRING)
+    private MessageType type;
 
 
 }

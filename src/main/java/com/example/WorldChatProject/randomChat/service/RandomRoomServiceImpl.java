@@ -7,6 +7,7 @@ import com.example.WorldChatProject.randomChat.repository.RandomRoomRepository;
 import com.example.WorldChatProject.user.entity.User;
 import com.example.WorldChatProject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -14,6 +15,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RandomRoomServiceImpl implements RandomRoomService{
 
     private final UserRepository userRepository;
@@ -31,13 +33,15 @@ public class RandomRoomServiceImpl implements RandomRoomService{
             waitQueue.add(user);
             //채팅방을 생성하고 채팅방에 A사용자가 들어감
             room = RandomRoom.create(user);
+            log.info("{} is create {} while matching : {} ", username, room);
             randomRoomRepository.save(room);
         }else {
             //대기큐에 사용자가 있으면 대기큐에 상대방을 제거하고 사용자 정보 가져옴
             User otherUser = waitQueue.poll();
             //상대방이 들어간 채팅방에 자신이 들어감
-            room = randomRoomRepository.findByUsername(otherUser);
+            room = randomRoomRepository.findByUserId(otherUser.getUserId());
             room = RandomRoom.rename(room, user, otherUser);
+            log.info("{} is enter {} while matching : {} ", username, room);
             randomRoomRepository.save(room);
         }
         return room;
@@ -45,8 +49,8 @@ public class RandomRoomServiceImpl implements RandomRoomService{
 
     }
 
-    @Override
-    public RandomRoom getRandomRoom(long randomRoomId) {
-        return randomRoomRepository.findByRandomRoomId(randomRoomId);
-    }
+//    @Override
+//    public RandomRoom getRandomRoom(long randomRoomId) {
+//        return randomRoomRepository.findByRandomRoomId(randomRoomId);
+//    }
 }

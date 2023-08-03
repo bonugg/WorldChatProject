@@ -12,5 +12,7 @@ public class RandomRoomDTO {
     private String randomRoomName;
     private User user1;
     private User user2;
+    private boolean isSuccess;
+    private String errorMessage;
 
 }

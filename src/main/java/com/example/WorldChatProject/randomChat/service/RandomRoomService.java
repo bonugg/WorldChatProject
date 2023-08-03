@@ -7,5 +7,5 @@ import org.springframework.web.socket.WebSocketSession;
 public interface RandomRoomService {
     RandomRoom match(String username);
 
-    RandomRoom getRandomRoom(long randomRoomId);
+//    RandomRoom getRandomRoom(long randomRoomId);
 }
