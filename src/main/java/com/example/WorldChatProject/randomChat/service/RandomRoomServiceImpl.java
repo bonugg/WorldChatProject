@@ -25,23 +25,32 @@ public class RandomRoomServiceImpl implements RandomRoomService{
 
     @Override
     public RandomRoom match(String username) {
-        User user = userRepository.findByUserName(username).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByUserName(username).get();
+        if(user == null || user.equals("")){
+            log.info("not found user");
+            return null;
+        }
         RandomRoom room;
         // 대기큐에 사용자 있는지 검사
-        if(waitQueue.isEmpty()){
+        log.info("find user for matching");
+        if(waitQueue.isEmpty() && !waitQueue.contains(user)){
+            log.info("waitQueue is Empty. {} is entering waitQueue", user.getUserName());
             // 대기큐에 아무도 없으면 랜덤 채팅을 신청한 사용자가 대기큐에 추가
-            waitQueue.add(user);
+            waitQueue.offer(user);
+            System.out.println(waitQueue.contains(user));
             //채팅방을 생성하고 채팅방에 A사용자가 들어감
             room = RandomRoom.create(user);
-            log.info("{} is create {} while matching : {} ", username, room);
+            log.info("{} is create {} while matching", username, room);
             randomRoomRepository.save(room);
         }else {
             //대기큐에 사용자가 있으면 대기큐에 상대방을 제거하고 사용자 정보 가져옴
             User otherUser = waitQueue.poll();
+            log.info("waitQueue is not Empty. {} is matched with {}", user.getUserName(), otherUser.getUserName());
             //상대방이 들어간 채팅방에 자신이 들어감
+            log.info("otherUser's Id: {}", otherUser.getUserId());
             room = randomRoomRepository.findByUserId(otherUser.getUserId());
             room = RandomRoom.rename(room, user, otherUser);
-            log.info("{} is enter {} while matching : {} ", username, room);
+            log.info("{} is enter {} while matching", username, room);
             randomRoomRepository.save(room);
         }
         return room;

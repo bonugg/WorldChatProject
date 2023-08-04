@@ -51,7 +51,7 @@ public class RandomRoom {
 
     //채팅방에 상대방 참여 시 채팅방 이름 변경
     public static RandomRoom rename(RandomRoom room, User user1, User user2){
-        String roomName = String.format("%s & %s 의 랜덤채팅", user1.getUserName(), user2.getUserName());
+        String roomName = String.format("%s & %s 의 랜덤채팅", user1.getUserNickName(), user2.getUserNickName());
         room.setRandomRoomName(roomName);
         room.setUser1(user1);
         room.setUser2(user2);

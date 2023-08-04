@@ -37,7 +37,9 @@ public class User {
     private String userNationality;
     //상태메시지
     private String userMessage = ""; // 빈 문자열로 기본값 설정
-
+    private String userProfileName;
+    private String userProfilePath;
+    private String userProfileOrigin;
     public UserDTO EntityToDTO() {
         UserDTO userDTO = UserDTO.builder()
                 .userId(this.userId)
@@ -50,6 +52,9 @@ public class User {
                 .userPhone(this.userPhone)
                 .userNationality(this.userNationality)
                 .userMessage(this.userMessage)
+                .userProfileName(this.userProfileName)
+                .userProfilePath(this.userProfilePath)
+                .userProfileOrigin(this.userProfileOrigin)
                 .build();
         return userDTO;
     }

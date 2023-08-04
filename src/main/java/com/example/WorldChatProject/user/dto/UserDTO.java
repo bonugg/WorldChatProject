@@ -29,6 +29,9 @@ public class UserDTO {
     private String userNationality;
     //상태메시지
     private String userMessage;
+    private String userProfileName;
+    private String userProfilePath;
+    private String userProfileOrigin;
     public List<String> getRoleList(){
         if(this.userRoles.length() > 0){
             return Arrays.asList(this.userRoles.split(","));

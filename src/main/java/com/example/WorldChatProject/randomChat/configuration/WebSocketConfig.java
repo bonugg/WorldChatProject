@@ -31,7 +31,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         log.info("registry: {}", registry );
         registry.addEndpoint("/random") //http://localhost:9002/random/
                 .setAllowedOrigins("http://localhost:3001") //Cors 설정
-                .setAllowedOrigins("*") //Cors 설정
+                //.setAllowedOrigins("*") //Cors 설정
+                .setAllowedOriginPatterns("http://localhost:3001")
 //                .addInterceptors(new JwtHandshakeInterceptor())
                 .withSockJS(); //SockJS 사용을 위한 설정
     }
@@ -49,16 +50,16 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     }
 
     //세션 종료 시
-    @EventListener
-    public void handleSessionDisconnect(SessionDisconnectEvent event) {
-        StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
-        String username = (String) sha.getSessionAttributes().get("username");
-        String roomId = (String) sha.getSessionAttributes().get("roomId");
-        Set<String> usersInRoom = connectedUsers.get(roomId);
-        if (usersInRoom != null) {
-            usersInRoom.remove(username);
-        }
-    }
+//    @EventListener
+//    public void handleSessionDisconnect(SessionDisconnectEvent event) {
+//        StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
+//        String username = (String) sha.getSessionAttributes().get("username");
+//        String roomId = (String) sha.getSessionAttributes().get("roomId");
+//        Set<String> usersInRoom = connectedUsers.get(roomId);
+//        if (usersInRoom != null) {
+//            usersInRoom.remove(username);
+//        }
+//    }
 
     private static class JwtHandshakeInterceptor implements HandshakeInterceptor {
         @Override
