@@ -68,7 +68,7 @@
             let userName = xhr.getResponseHeader('userName');
             localStorage.setItem("Authorization", jwtToken);
             localStorage.setItem("userName", userName);
-            location.href = "/myprofile";
+            location.href = "/cateChat";
         }).fail(function (error) {
             alert("존재하지 않는 회원입니다.");
         });

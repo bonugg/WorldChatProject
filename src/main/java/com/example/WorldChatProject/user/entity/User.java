@@ -1,10 +1,8 @@
 package com.example.WorldChatProject.user.entity;
 
+import com.example.WorldChatProject.cateChat.entity.CateRoom;
 import com.example.WorldChatProject.user.dto.UserDTO;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -23,8 +21,10 @@ public class User {
     private String userEmail;
     private String userRoles;
 
-    public List<String> getRoleList(){
-        if(this.userRoles.length() > 0){
+
+    public List<String> getRoleList() {
+
+        if (this.userRoles.length() > 0) {
             return Arrays.asList(this.userRoles.split(","));
         }
         return new ArrayList<>();

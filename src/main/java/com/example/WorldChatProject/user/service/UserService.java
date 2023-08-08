@@ -102,5 +102,4 @@ public class UserService {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("리프레쉬 토큰 만료");
         }
     }
-
 }

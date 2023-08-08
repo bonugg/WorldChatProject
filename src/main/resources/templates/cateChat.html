@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <title>cate Chat</title>
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script>
+    $(function () {
+      console.log(localStorage.getItem("Authorization"));
+      //가져온 JWT토큰을 이용하여 서버에 AJAX요청을 보냄
+      $.ajax({
+        //요청 헤더에는 "Content-type"과 "Authorization" 헤더가 추가
+        type: 'GET',
+        url: '/cateChatApi',
+        //요청의 본문이 JSON 형식임을 나타냄
+        contentType: 'application/json; charset=utf-8',
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader("Content-type", "application/json");
+          //로컬 스토리지에서 가져온 JWT 토큰이 설정
+          xhr.setRequestHeader("Authorization", localStorage.getItem("Authorization"));
+        },
+      }).done(function (data, status, xhr) {
+        console.log(localStorage.getItem('userName'));
+      }).fail(function (xhr) {
+        if (xhr.status == "403" || xhr.status == "500") { //로그인을 안했거나 토큰이 만료됐거나
+          alert("로그인이 필요한 페이지입니다.");
+          location.href = "/login";
+        }
+      });
+    });
+  </script>
+  <style>
+    .cate-rooms-container{
+      margin-top: 100px;
+      display:flex;
+      justify-content: center;
+    }
+
+    .cate-rooms-box {
+      width:400px;
+      height:100px;
+      border:3px solid black;
+      text-align:center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius:3px;
+    }
+
+    .cate-rooms-box a {
+      text-decoration: none;
+    }
+
+    .userCount {
+      color:pink;
+      margin-left:50px;
+      font-weight:bold;
+    }
+  </style>
+</head>
+<body>
+<!--th:onclick="'enterChatRoom(\'' + ${cate} + '\')'"-->
+    <div class="cate-rooms-container">
+    <div class="cate-rooms-box" th:each="cateRoomList : ${cateRoomList}">
+<!--        th:href="@{/cateChat/{cateId}(cateId=${cateRoomList.cateId})}"-->
+      <a onclick="enterChatRoom(this.getAttribute('cateroom-id'))"  th:attr="cateroom-id=${cateRoomList.cateId}"  th:text="${cateRoomList.cateName}"></a>
+      <!--  javascript 함수 호출 / 함수 이름은 enterChatRoom이며, 인수로 ${cate}를 사용-->
+      <div class="userCount" th:id="'userCount' + ${cateRoomList.cateId}"></div>
+    </div>
+    </div>
+    <div>
+    <a href="/cateChat/createRoom"><button>채팅방 생성</button></a>
+    </div>
+    <div>
+    <a href="/login"><button>로그인</button></a>
+    </div>
+
+    <script>
+
+        $(document).ready(function() {
+            //setInterval 함수는 주기적으로 함수를 반복 실행하는 JavaScript 함수
+            //여기서는 1000밀리초 = 1초마다 실
+            setInterval(function() {
+                $("a[cateroom-id]").each(function(index, element) {
+                    let catecateId = $(this).attr('cateroom-id');
+                    $.get("/api/connected-users/" + catecateId, function(data) {
+                        $("#userCount" + catecateId).text(data + "명");
+                    });
+                });
+            }, 1000);
+        });
+
+        function enterChatRoom(cateId) {
+            const userName = localStorage.getItem("userName");
+
+            $.ajax({
+                url: "/api/cateChat/" + cateId + "/enter",
+                data: {"userName": userName},
+                method: "GET",
+                success: function (data) {
+                    if (data.isFull) {
+                        alert("채팅방이 꽉 찼습니다.");
+                        window.location.href = "/cateChat";
+                    } else {
+                        window.location.href = "/cateChat/" + cateId  + "?userName=" + encodeURIComponent(userName);
+                    }
+                }
+            });
+
+        }
+    </script>
+</body>
+</html>
