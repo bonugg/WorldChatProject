@@ -1,6 +1,8 @@
 package com.example.WorldChatProject.user.service;
 
 import com.example.WorldChatProject.user.common.FileUtils;
+import com.example.WorldChatProject.user.dto.ResponseDTO;
+import com.example.WorldChatProject.user.dto.UserDTO;
 import com.example.WorldChatProject.user.entity.User;
 import com.example.WorldChatProject.user.repository.UserRepository;
 import com.example.WorldChatProject.user.security.auth.PrincipalDetails;
@@ -24,7 +26,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -126,4 +130,31 @@ public class UserService {
         }
     }
 
+    public ResponseEntity<?> UserFriendsList(String userName) {
+        ResponseDTO<UserDTO> responseDTO = new ResponseDTO<>();
+        try {
+
+            List<User> userList = userRepository.findAll();
+
+            List<UserDTO> userDTOList = new ArrayList<>();
+
+            for(User user : userList) {
+                userDTOList.add(user.EntityToDTO());
+            }
+
+            responseDTO.setItems(userDTOList);
+            responseDTO.setStatusCode(HttpStatus.OK.value());
+
+            log.info(responseDTO.getItems().get(0).getUserNickName());
+            log.info(responseDTO.getItems().get(1).getUserNickName());
+
+            return ResponseEntity.ok().body(responseDTO);
+
+        } catch(Exception e) {
+            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            responseDTO.setErrorMessage(e.getMessage());
+
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
 }
