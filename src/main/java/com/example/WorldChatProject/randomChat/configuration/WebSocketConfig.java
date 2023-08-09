@@ -43,8 +43,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         //메시지 구독 요청 url경로 등록(메시지 받을 때)
         // /randomSub으로 시작하는 메시지를 구독하는 클라이언트에게 해당 메시지 전달가능
         registry.enableSimpleBroker("/randomSub"); //topic
-        //메시지 발행 요청 url경로 등록(메시지 보낼 때)
-        //클라이언트의 메시지 요청주소(prefix)를 등록
+        //클라이언트의 메시지 발행 요청 url경로（요청주소 prefix) 등록(메시지 보낼 때)
         //클라이언트에서 서버로 메시지를 보낼 때
         registry.setApplicationDestinationPrefixes("/randomPub"); //app
     }

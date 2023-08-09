@@ -15,7 +15,7 @@ public class RandomChatDTO {
     private String content;
     private String time;
     private long randomRoomId;
-    private long sender;
+    private String sender;
 
 
 }

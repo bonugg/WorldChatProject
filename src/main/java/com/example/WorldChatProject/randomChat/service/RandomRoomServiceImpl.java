@@ -20,7 +20,6 @@ public class RandomRoomServiceImpl implements RandomRoomService{
 
     private final UserRepository userRepository;
     private final RandomRoomRepository randomRoomRepository;
-    private final RandomChatRepository randomChatRepository;
     private final Queue<User> waitQueue = new LinkedList<>();
 
     @Override
@@ -37,10 +36,9 @@ public class RandomRoomServiceImpl implements RandomRoomService{
             log.info("waitQueue is Empty. {} is entering waitQueue", user.getUserName());
             // 대기큐에 아무도 없으면 랜덤 채팅을 신청한 사용자가 대기큐에 추가
             waitQueue.offer(user);
-            System.out.println(waitQueue.contains(user));
             //채팅방을 생성하고 채팅방에 A사용자가 들어감
             room = RandomRoom.create(user);
-            log.info("{} is create {} while matching", username, room);
+            log.info("{} is create {} while matching", username, room.getRandomRoomId());
             randomRoomRepository.save(room);
         }else {
             //대기큐에 사용자가 있으면 대기큐에 상대방을 제거하고 사용자 정보 가져옴
@@ -50,7 +48,7 @@ public class RandomRoomServiceImpl implements RandomRoomService{
             log.info("otherUser's Id: {}", otherUser.getUserId());
             room = randomRoomRepository.findByUserId(otherUser.getUserId());
             room = RandomRoom.rename(room, user, otherUser);
-            log.info("{} is enter {} while matching", username, room);
+            log.info("{} is enter {} while matching", username, room.getRandomRoomId());
             randomRoomRepository.save(room);
         }
         return room;
