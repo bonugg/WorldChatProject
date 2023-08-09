@@ -1,6 +1,8 @@
 package com.example.WorldChatProject.user.service;
 
 import com.example.WorldChatProject.user.common.FileUtils;
+import com.example.WorldChatProject.user.dto.ResponseDTO;
+import com.example.WorldChatProject.user.dto.UserDTO;
 import com.example.WorldChatProject.user.entity.User;
 import com.example.WorldChatProject.user.repository.UserRepository;
 import com.example.WorldChatProject.user.security.auth.PrincipalDetails;
@@ -28,7 +30,9 @@ import java.util.List;
 import java.util.Optional;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 
 @Service
@@ -37,6 +41,7 @@ import java.util.Iterator;
 public class UserService {
     @Value("${file.path}")
     String attachPath;
+    private final FileUtils fileUtils;
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -108,7 +113,7 @@ public class UserService {
             }
 
             User userProfileSave = new User();
-            userProfileSave = FileUtils.parseFileInfo(imageFile, attachPath);
+            userProfileSave = fileUtils.parseFileInfo(imageFile, attachPath, "userProfile/");
 
             user.setUserProfileName(userProfileSave.getUserProfileName());
             user.setUserProfileOrigin(userProfileSave.getUserProfileOrigin());
@@ -131,6 +136,7 @@ public class UserService {
         }
     }
 
+
     public User findById(long userId) {
         Optional<User> checkUser = userRepository.findById(userId);
         if(checkUser.isEmpty()) {
@@ -140,5 +146,34 @@ public class UserService {
         }
     }
 
+
+
+    public ResponseEntity<?> UserFriendsList(String userName) {
+        ResponseDTO<UserDTO> responseDTO = new ResponseDTO<>();
+        try {
+
+            List<User> userList = userRepository.findAll();
+
+            List<UserDTO> userDTOList = new ArrayList<>();
+
+            for(User user : userList) {
+                userDTOList.add(user.EntityToDTO());
+            }
+
+            responseDTO.setItems(userDTOList);
+            responseDTO.setStatusCode(HttpStatus.OK.value());
+
+            log.info(responseDTO.getItems().get(0).getUserNickName());
+            log.info(responseDTO.getItems().get(1).getUserNickName());
+
+            return ResponseEntity.ok().body(responseDTO);
+
+        } catch(Exception e) {
+            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            responseDTO.setErrorMessage(e.getMessage());
+
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
 
 }
