@@ -39,19 +39,22 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		ObjectMapper om = new ObjectMapper();
 		LoginRequestDto loginRequestDto = null;
 		try {
+			//로그인 요청을 하면 request에 담은 값을 loginRequestDto에 담는다
 			loginRequestDto = om.readValue(request.getInputStream(), LoginRequestDto.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		// 유저네임패스워드 토큰 생성
+		//토큰에 리퀘스트 dto에 담긴 유저이름과 비밀번호 담는다
 		UsernamePasswordAuthenticationToken authenticationToken = 
 				new UsernamePasswordAuthenticationToken(
 						loginRequestDto.getUsername(),
 						loginRequestDto.getPassword());
+		//토큰에 인증 정보 담아서 리턴한다.
 		Authentication authentication =
 				authenticationManager.authenticate(authenticationToken);
 
-		PrincipalDetails principalDetailis = (PrincipalDetails) authentication.getPrincipal();
+		PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
 		return authentication;
 	}
 
@@ -61,6 +64,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 			Authentication authResult) throws IOException, ServletException {
 		PrincipalDetails principalDetailis = (PrincipalDetails) authResult.getPrincipal();
 
+		//access 토큰 생성
 		String jwtToken = JWT.create()
 				.withSubject(principalDetailis.getUsername())
 				.withExpiresAt(new Date(System.currentTimeMillis()+JwtProperties.EXPIRATION_TIME))

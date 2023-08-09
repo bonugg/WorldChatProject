@@ -25,10 +25,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -131,6 +136,18 @@ public class UserService {
         }
     }
 
+
+    public User findById(long userId) {
+        Optional<User> checkUser = userRepository.findById(userId);
+        if(checkUser.isEmpty()) {
+            return null;
+        } else {
+            return checkUser.get();
+        }
+    }
+
+
+
     public ResponseEntity<?> UserFriendsList(String userName) {
         ResponseDTO<UserDTO> responseDTO = new ResponseDTO<>();
         try {
@@ -158,4 +175,5 @@ public class UserService {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+
 }
