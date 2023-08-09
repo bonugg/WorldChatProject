@@ -53,6 +53,7 @@ public class CateRoomController {
         return "cateChat";
     }
 
+
     //채팅방 생성 페이지로 이동
     @GetMapping("/cateChat/createRoom")
     public String createRoom() {

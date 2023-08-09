@@ -36,7 +36,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Configuration
-//Websocket 기반의 메시지 처리와 메시지 브로커를 활성화하는 데 사용하는 어노테이
+//Websocket 기반의 메시지 처리와 메시지 브로커를 활성화하는 데 사용하는 어노테이션
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -49,7 +49,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         Set<String> usersInRoom = connectedUsers.get(roomId);
         return usersInRoom != null ? usersInRoom.size() : 0;
     }
-
 
 
     @Override
