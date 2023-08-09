@@ -1,6 +1,8 @@
 package com.example.WorldChatProject.user.entity;
 
+import com.example.WorldChatProject.cateChat.entity.CateRoom;
 import com.example.WorldChatProject.user.dto.UserDTO;
+import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -46,6 +48,15 @@ public class User {
     private String userProfileName;
     private String userProfilePath;
     private String userProfileOrigin;
+  
+    public List<String> getRoleList() {
+
+        if (this.userRoles.length() > 0) {
+            return Arrays.asList(this.userRoles.split(","));
+        }
+        return new ArrayList<>();
+    }
+  
     public UserDTO EntityToDTO() {
         UserDTO userDTO = UserDTO.builder()
                 .userId(this.userId)
