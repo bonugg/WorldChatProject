@@ -51,8 +51,7 @@ public class CateWebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        log.info("시작");
-        registry.addEndpoint("/websocket-app/{roomId}")
+        registry.addEndpoint("/websocket-app")
                 .setHandshakeHandler(new DefaultHandshakeHandler() {
 
                     @Override
