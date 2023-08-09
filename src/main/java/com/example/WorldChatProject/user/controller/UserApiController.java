@@ -9,11 +9,16 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,6 +27,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class UserApiController {
+    @Value("${file.path}")
+    String attachPath;
     private final UserService userService;
     private final UserRepository userRepository;
 
@@ -32,6 +39,7 @@ public class UserApiController {
 
     @GetMapping("/user")
     public PrincipalDetails user(Authentication authentication) {
+        System.out.println("입");
         //principal 안에는 유저의 정보가 담겨있음
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         return principal;
@@ -43,10 +51,49 @@ public class UserApiController {
         return ResponseEntity.status(HttpStatus.OK).body("logout");
     }
 
+    @PutMapping("/user/messageChange")
+    public ResponseEntity<String> messageChange(@RequestBody String userMessage, Authentication authentication) {
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        return userService.UserMessageChange(userMessage, principal.getUsername());
+    }
+
+    @PostMapping("/user/pwdCheck")
+    public ResponseEntity<String> pwdCheck(@RequestBody String userPwd, Authentication authentication) {
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        return userService.UserPwdCheck(userPwd, principal.getUsername());
+    }
+
+    @PostMapping("/user/pwdSave")
+    public ResponseEntity<String> pwdSave(@RequestBody String NewUserPwd, Authentication authentication) {
+        log.info(NewUserPwd);
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        return userService.UserPwdSave(NewUserPwd, principal.getUsername());
+    }
+
+    @PostMapping( "/user/uploadImage")
+    public ResponseEntity<String> uploadImage(@RequestParam("imageFile") MultipartFile imageFile, Authentication authentication) {
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        log.info(String.valueOf(imageFile));
+
+        return userService.UserUploadImage(imageFile, principal.getUsername());
+    }
+
+    @PostMapping("/user/friendsList")
+    private ResponseEntity<?> friendsList(Authentication authentication) {
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        return userService.UserFriendsList(principal.getUsername());
+    }
+
     @PostMapping("/idCheck")
     public ResponseEntity<String> idCheck(@RequestBody String userName) {
         return userService.UserIdCheck(userName);
     }
+
+    @PostMapping("/nickNameCheck")
+    public ResponseEntity<String> nickNameCheck(@RequestBody String userNickName) {
+        return userService.UserNickNameCheck(userNickName);
+    }
+
     @PostMapping("/join")
     public String join(@RequestBody User user) {
         log.info(String.valueOf(user));
@@ -57,12 +104,6 @@ public class UserApiController {
     @PostMapping("/accessToken")
     public ResponseEntity<String> accessToken() {
         return new ResponseEntity<>("엑세스", HttpStatus.OK);
-    }
-
-    @PostMapping("/refreshToken")
-    public ResponseEntity refreshToken(HttpServletResponse response, @RequestBody String userName) {
-        log.info(userName);
-        return userService.UserRefreshToken(response, userName);
     }
 
     @GetMapping("/userlist")

@@ -100,6 +100,15 @@
     </div>
 </div>
 
+<!--th:onclick="'enterChatRoom(\'' + ${cate} + '\')'"-->
+    <div class="cate-rooms-container">
+    <div class="cate-rooms-box" th:each="cateRoomList : ${cateRoomList}">
+<!--        th:href="@{/cateChat/{cateId}(cateId=${cateRoomList.cateId})}"-->
+      <a onclick="enterChatRoom(this.getAttribute('cateroom-id'))"  th:attr="cateroom-id=${cateRoomList.cateId}"  th:text="${cateRoomList.cateName}"></a>
+      <!--  javascript 함수 호출 / 함수 이름은 enterChatRoom이며, 인수로 ${cate}를 사용-->
+      <div class="userCount" th:id="'userCount' + ${cateRoomList.cateId}"></div>
+    </div>
+    </div>
     <div>
     <a href="/cateChat/createRoom"><button>채팅방 생성</button></a>
     </div>
@@ -154,6 +163,7 @@
                 success: function (data) {
                     if (data.isFull) {
                         alert("채팅 인원이 꽉 찼습니다.");
+                        alert("채팅방이 꽉 찼습니다.");
                         window.location.href = "/cateChat";
                     } else {
                         window.location.href = "/cateChat/" + cateId  + "?userName=" + encodeURIComponent(userName);
