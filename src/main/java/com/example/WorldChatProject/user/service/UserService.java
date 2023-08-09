@@ -1,9 +1,6 @@
 package com.example.WorldChatProject.user.service;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
+import com.example.WorldChatProject.user.common.FileUtils;
 import com.example.WorldChatProject.user.entity.User;
 import com.example.WorldChatProject.user.repository.UserRepository;
 import com.example.WorldChatProject.user.security.auth.PrincipalDetails;
@@ -15,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -22,27 +20,35 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import java.io.File;
+import java.util.Iterator;
+
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class UserService {
+    @Value("${file.path}")
+    String attachPath;
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public void UserLogout(HttpSession session, HttpServletRequest request, HttpServletResponse response){
+    public void UserLogout(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
         log.info("로그아웃 시작");
         session.invalidate();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         //principal 안에는 유저의 정보가 담겨있음
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-        
+
         if (authentication != null) {
             //리프레쉬 토큰 초기화 후 로그아웃
             RefreshToken refreshToken = refreshTokenRepository.findByKeyId(principal.getUsername()).get();
@@ -53,55 +59,75 @@ public class UserService {
         }
     }
 
-    public void UserJoin(User user){
+    public void UserJoin(User user) {
         user.setUserPwd(bCryptPasswordEncoder.encode(user.getUserPwd()));
         //user 권한 부여
         user.setUserRoles("ROLE_USER");
         userRepository.save(user);
     }
 
-    public ResponseEntity<String> UserIdCheck(String userName){
-        if(userRepository.findByUserName(userName).isPresent()){
+    public ResponseEntity<String> UserIdCheck(String userName) {
+        if (userRepository.findByUserName(userName).isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body("fail");
-        }else {
+        } else {
             return ResponseEntity.status(HttpStatus.OK).body("ok");
         }
     }
 
-    public ResponseEntity UserRefreshToken(HttpServletResponse response, String userName){
-        RefreshToken refreshTokenGet = refreshTokenRepository.findByKeyId(userName).get();
+    public ResponseEntity<String> UserMessageChange(String userMessage, String userName) {
+        User user = userRepository.findByUserName(userName).get();
+        user.setUserMessage(userMessage);
+        userRepository.save(user);
+        return ResponseEntity.status(HttpStatus.OK).body("ok");
+    }
 
-        String refreshTokenHeader = refreshTokenGet.getRefreshToken();
-        if (refreshTokenHeader == null || !refreshTokenHeader.startsWith(JwtProperties.TOKEN_PREFIX)) {
-            log.info("리프레쉬 토큰 만료");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("리프레쉬 토큰 만료");
+    public ResponseEntity<String> UserPwdCheck(String userPwd, String userName) {
+        User user = userRepository.findByUserName(userName).get();
+        if (bCryptPasswordEncoder.matches(userPwd, user.getUserPwd())) {
+            return ResponseEntity.status(HttpStatus.OK).body("ok");
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body("fail");
         }
+    }
 
+    public ResponseEntity<String> UserPwdSave(String NewUserPwd, String userName) {
+        User user = userRepository.findByUserName(userName).get();
+        user.setUserPwd(bCryptPasswordEncoder.encode(NewUserPwd));
+        userRepository.save(user);
+        return ResponseEntity.status(HttpStatus.OK).body("ok");
+    }
+
+    public ResponseEntity<String> UserUploadImage(MultipartFile imageFile, String userName) {
+        User user = userRepository.findByUserName(userName).get();
+        log.info("프로필 변경 진입");
         try {
-            String refreshToken = refreshTokenHeader.replace(JwtProperties.TOKEN_PREFIX, "");
-            DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(refreshToken);
-            Boolean isRefreshToken = decodedJWT.getClaim("refresh").asBoolean();
-            if (!isRefreshToken) {
-                log.info("존재하지 않는 리프레쉬 토큰");
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("존재하지 않는 리프레쉬 토큰");
+            File directory = new File(attachPath);
+
+            if (!directory.exists()) {
+                directory.mkdir();
             }
-            User user = userRepository.findByUserName(decodedJWT.getSubject()).get();
 
-            // 새로운 엑세스 토큰 생성
-            String newAccessToken = JWT.create()
-                    .withSubject(user.getUserName())
-                    .withExpiresAt(new Date(System.currentTimeMillis()+JwtProperties.EXPIRATION_TIME))
-                    .withClaim("id", user.getUserId())
-                    .withClaim("username", user.getUserName())
-                    .sign(Algorithm.HMAC512(JwtProperties.SECRET));
+            User userProfileSave = new User();
+            userProfileSave = FileUtils.parseFileInfo(imageFile, attachPath);
 
-            log.info("엑세스 토큰 생성 성공");
-            response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + newAccessToken);
+            user.setUserProfileName(userProfileSave.getUserProfileName());
+            user.setUserProfileOrigin(userProfileSave.getUserProfileOrigin());
+            user.setUserProfilePath(userProfileSave.getUserProfilePath());
 
-            return ResponseEntity.ok().build();
-        } catch (JWTVerificationException e) {
-            log.info("리프레쉬 토큰 만료");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("리프레쉬 토큰 만료");
+            userRepository.save(user);
+
+            return ResponseEntity.status(HttpStatus.OK).body("image upload");
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("image upload fail");
+        }
+    }
+
+
+    public ResponseEntity<String> UserNickNameCheck(String userNickName) {
+        if (userRepository.findByUserNickName(userNickName).isPresent()) {
+            return ResponseEntity.status(HttpStatus.OK).body("fail");
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body("ok");
         }
     }
 
@@ -115,7 +141,4 @@ public class UserService {
     }
 
 
-    public List<User> findAll() {
-        return userRepository.findAll();
-    }
 }

@@ -29,7 +29,7 @@ public class FriendsController {
     @PostMapping("/request")
     public ResponseEntity<?> requestFriends(@RequestBody UserDTO userDTO,
                                             Authentication authentication) {
-        ResponseDTO<Map<String, String>> responseDTO = new ResponseDTO<>();
+        ResponseDTO<Map<String, String>> response = new ResponseDTO<>();
         System.out.println("testtest");
         System.out.println(userDTO);
         System.out.println(authentication);
@@ -60,13 +60,13 @@ public class FriendsController {
             } else {
                 returnMap.put("msg", "already frds");
             }
-            responseDTO.setItem(returnMap);
-            responseDTO.setStatusCode(HttpStatus.OK.value());
-            return ResponseEntity.ok().body(responseDTO);
+            response.setItem(returnMap);
+            response.setStatusCode(HttpStatus.OK.value());
+            return ResponseEntity.ok().body(response);
         } catch (Exception e) {
-            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
-            responseDTO.setErrorMessage(e.getMessage());
-            return ResponseEntity.badRequest().body(responseDTO);
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            response.setErrorMessage(e.getMessage());
+            return ResponseEntity.badRequest().body(response);
         }
     }
 
@@ -115,25 +115,34 @@ public class FriendsController {
     }
 
     @PostMapping("/approve")
-    public ResponseEntity<?> approveRequest(@RequestBody Friends friends) {
+    public ResponseEntity<?> approveRequest(@RequestBody Friends friends, Authentication authentication) {
         ResponseDTO<Map<String, String>> response = new ResponseDTO<>();
 
         try {
+            Map<String, String> returnMap = new HashMap<>();
+
             System.out.println(friends.getId());
             System.out.println(friends);
+//            PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+//            User user = principal.getUser().DTOToEntity();
+
             Friends friends1 = friendsService.findById(friends.getId());
             System.out.println(friends1 + "이게 전체 정보!");
             friends1.setStatement(APPROVED);
             friendsService.save(friends1);
 
-            Friends friends2 = new Friends();
-            friends2.setUser(friends1.getFriends());
-            friends2.setFriends(friends1.getUser());
-            friends2.setStatement(APPROVED);
-            friendsService.save(friends2);
+            Friends checkFriends = friendsService.findByUserAndFriends(friends1.getFriends(), friends1.getUser());
 
-            Map<String, String> returnMap = new HashMap<>();
-            returnMap.put("msg", "request approved");
+            if(checkFriends == null) {
+                Friends friends2 = new Friends();
+                friends2.setUser(friends1.getFriends());
+                friends2.setFriends(friends1.getUser());
+                friends2.setStatement(APPROVED);
+                friendsService.save(friends2);
+                returnMap.put("msg", "request approved");
+            } else {
+                returnMap.put("msg", "already friends");
+            }
             response.setItem(returnMap);
             response.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok().body(response);
@@ -176,7 +185,7 @@ public class FriendsController {
             PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
             User user = principal.getUser().DTOToEntity();
             List<Friends> friendsList = friendsService.findByUserAndStatement(user, APPROVED);
-            System.out.println(friendsList);
+
             List<FriendsDTO> friendsDTOList = new ArrayList<>();
             for(Friends f : friendsList) {
                 friendsDTOList.add(f.EntityToDTO());
@@ -190,9 +199,6 @@ public class FriendsController {
             return ResponseEntity.badRequest().body(response);
         }
     }
-
-
-
 
 //    @PostMapping("request")
 //    public ResponseEntity<?> asd(@RequestBody User user,

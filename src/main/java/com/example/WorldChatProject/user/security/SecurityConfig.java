@@ -4,6 +4,7 @@ import com.example.WorldChatProject.user.repository.UserRepository;
 import com.example.WorldChatProject.user.security.jwt.JwtAuthenticationFilter;
 import com.example.WorldChatProject.user.security.jwt.JwtAuthorizationFilter;
 import com.example.WorldChatProject.user.security.repository.RefreshTokenRepository;
+import com.example.WorldChatProject.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
@@ -28,7 +29,6 @@ public class SecurityConfig {
     private CorsConfig corsConfig;
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
 
@@ -60,10 +60,11 @@ public class SecurityConfig {
                         .disable()
                 )
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(), refreshTokenRepository))
-                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository, refreshTokenRepository))
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                                 .requestMatchers("/api/v1/user/**").hasRole("USER")
                                 .requestMatchers("/friends/**").hasRole("USER")
+                                .requestMatchers("/chat/**").hasRole("USER")
                                 .anyRequest().permitAll()
                 );
         return http.build();

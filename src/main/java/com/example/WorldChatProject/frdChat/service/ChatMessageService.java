@@ -1,10 +1,12 @@
 package com.example.WorldChatProject.frdChat.service;
 
+import com.example.WorldChatProject.frdChat.repository.ChatMessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Service
 @RequiredArgsConstructor
-public class FrdChatService {
+public class ChatMessageService {
+
+    private final ChatMessageRepository chatMessageRepository;
 }

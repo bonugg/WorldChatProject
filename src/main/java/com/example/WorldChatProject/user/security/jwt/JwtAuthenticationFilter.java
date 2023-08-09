@@ -81,6 +81,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 				.withSubject(principalDetailis.getUsername())
 				.withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.REFRESH_EXPIRATION_TIME))
 				.withClaim("refresh", true)
+				.withClaim("username", principalDetailis.getUser().getUserName())
 				.sign(Algorithm.HMAC512(JwtProperties.SECRET));
 
 		// 리프레쉬 토큰 db 저장
