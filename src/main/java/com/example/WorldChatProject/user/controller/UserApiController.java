@@ -78,6 +78,12 @@ public class UserApiController {
         return userService.UserUploadImage(imageFile, principal.getUsername());
     }
 
+    @PostMapping("/user/friendsList")
+    private ResponseEntity<?> friendsList(Authentication authentication) {
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        return userService.UserFriendsList(principal.getUsername());
+    }
+
     @PostMapping("/idCheck")
     public ResponseEntity<String> idCheck(@RequestBody String userName) {
         return userService.UserIdCheck(userName);
