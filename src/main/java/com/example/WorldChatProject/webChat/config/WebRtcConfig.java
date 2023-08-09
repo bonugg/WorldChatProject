@@ -21,6 +21,7 @@ public class WebRtcConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(signalHandler, "/signal")
+                .setAllowedOrigins("https://localhost:9002")
                 .setAllowedOrigins("*");
     }
 
