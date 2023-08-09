@@ -1,15 +1,11 @@
 package com.example.WorldChatProject.cateChat.entity;
 
-import com.example.WorldChatProject.cateChat.WebSocketConfig;
 import com.example.WorldChatProject.cateChat.dto.CateRoomDTO;
-import com.example.WorldChatProject.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.*;
 
 @Entity
 @AllArgsConstructor

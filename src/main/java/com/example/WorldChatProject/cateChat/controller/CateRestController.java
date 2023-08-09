@@ -1,32 +1,25 @@
 package com.example.WorldChatProject.cateChat.controller;
 
-import com.example.WorldChatProject.cateChat.WebSocketConfig;
-import com.example.WorldChatProject.cateChat.dto.CateRoomDTO;
-import com.example.WorldChatProject.cateChat.dto.ResponseDTO;
-import com.example.WorldChatProject.cateChat.entity.CateChat;
+import com.example.WorldChatProject.cateChat.CateWebSocketConfig;
 import com.example.WorldChatProject.cateChat.entity.CateRoom;
 import com.example.WorldChatProject.cateChat.service.CateChatService;
 import com.example.WorldChatProject.cateChat.service.CateRoomService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class CateRestController {
 
-    private final WebSocketConfig webSocketConfig;
+    private final CateWebSocketConfig cateWebSocketConfig;
     private final CateRoomService cateRoomService;
     private final CateChatService cateChatService;
 

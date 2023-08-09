@@ -27,9 +27,9 @@ public class RandomChatWebSocketConfig implements WebSocketMessageBrokerConfigur
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         log.info("registry: {}", registry );
         registry.addEndpoint("/random") //http://localhost:9002/random/
-                .setAllowedOrigins("http://localhost:3001") //Cors 설정
+                .setAllowedOrigins("https://localhost:3001") //Cors 설정
                 //.setAllowedOrigins("*") //Cors 설정
-                .setAllowedOriginPatterns("http://localhost:3001")
+                .setAllowedOriginPatterns("https://localhost:3001")
 //                .addInterceptors(new JwtHandshakeInterceptor())
                 .withSockJS(); //SockJS 사용을 위한 설정
     }
