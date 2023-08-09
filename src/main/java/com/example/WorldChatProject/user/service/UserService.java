@@ -36,6 +36,7 @@ import java.util.List;
 public class UserService {
     @Value("${file.path}")
     String attachPath;
+    private final FileUtils fileUtils;
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -107,7 +108,7 @@ public class UserService {
             }
 
             User userProfileSave = new User();
-            userProfileSave = FileUtils.parseFileInfo(imageFile, attachPath);
+            userProfileSave = fileUtils.parseFileInfo(imageFile, attachPath, "userProfile/");
 
             user.setUserProfileName(userProfileSave.getUserProfileName());
             user.setUserProfileOrigin(userProfileSave.getUserProfileOrigin());

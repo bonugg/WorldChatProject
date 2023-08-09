@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Simple Chat</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"
+            integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8="
+            crossorigin="anonymous"></script>
+    <link
+            href="https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding:wght@400;700&family=Noto+Sans+KR&display=swap"
+            rel="stylesheet">
+    <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+    <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script>
+        $(function () {
+            console.log(localStorage.getItem("Authorization"));
+            //가져온 JWT토큰을 이용하여 서버에 AJAX요청을 보냄
+            $.ajax({
+                //요청 헤더에는 "Content-type"과 "Authorization" 헤더가 추가
+                type: 'GET',
+                url: '/cateChatApi',
+                //요청의 본문이 JSON 형식임을 나타냄
+                contentType: 'application/json; charset=utf-8',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("Content-type", "application/json");
+                    //로컬 스토리지에서 가져온 JWT 토큰이 설정
+                    xhr.setRequestHeader("Authorization", localStorage.getItem("Authorization"));
+                },
+            }).done(function (data, status, xhr) {
+                console.log(localStorage.getItem('userName'));
+            }).fail(function (xhr) {
+                if (xhr.status == "403" || xhr.status == "500") { //로그인을 안했거나 토큰이 만료됐거나
+                    alert("로그인이 필요한 페이지입니다.");
+                    location.href = "/login";
+                }
+            });
+        });
+    </script>
+
+    <style>
+        body {
+            font-family: 'Nanum Gothic Coding', monospace;
+        }
+
+        .chat-container {
+            width: 400px;
+            margin: auto;
+            margin-top: 100px;
+            border: 2px solid black;
+            padding: 15px;
+            border-radius: 5px;
+            background:lightgray;
+            font-size:15px;
+        }
+
+        h1, #chatForm {
+            text-align:center;
+        }
+
+        .scroll-chat {
+            height: 500px; /* 채팅방의 높이를 원하는 값으로 설정합니다. */
+            overflow-y: auto; /* 내용이 채팅방의 높이를 초과하면 스크롤이 생깁니다. */
+        }
+
+        .my-message, .other-message {
+            display: inline-block;
+            border: 1px solid #000;
+            border-radius: 10px;
+            padding: 10px;
+            margin: 5px 0;
+            max-width: 100%;
+            word-wrap: break-word;
+            box-sizing: border-box;
+        }
+
+        .my-message {
+            background-color: #f8e6e6; /* 내 메시지의 박스 배경색 */
+            text-align: right;
+            float: right;
+            clear: both; /* 이전에 플로트된 요소와 겹치지 않게 만듭니다. */
+            margin-right:10px;
+        }
+
+        .other-message {
+            background-color: #e6e6f8; /* 다른 사람의 메시지의 박스 배경색 */
+            text-align: left;
+            float: left;
+            clear: both; /* 이전에 플로트된 요소와 겹치지 않게 만듭니다. */
+        }
+
+        .my-message .userName {
+            color: red;
+        }
+
+        .other-message .userName {
+            color: blue;
+        }
+
+        .message-regdate {
+            color:gray;
+        }
+
+        .content {
+            font-weight:bold;
+        }
+
+        .room-name {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+
+        .room-name a {
+            text-decoration:none;
+            color:black;
+        }
+
+        .room-name-h1 {
+            margin-left:70px;
+        }
+
+        .room-setting {
+            display:flex;
+            align-items:center;
+        }
+
+        .room-setting svg {
+            margin-right:5px;
+        }
+
+
+    </style>
+</head>
+<body>
+<body onload="connect();">
+<div class="chat-container">
+    <div class="room-name">
+
+        <div>
+            <a href="/cateChat">
+                <button type="button" onclick="disconnect()">나가기</button>
+            </a>
+        </div>
+
+        <div class="room-name-h1">
+            <h1 th:text="${cateRoom.cateName}"></h1>
+        </div>
+
+        <div class="room-setting">
+            <input id="search-keyword">
+                <button>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512" id="searchButton"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/>
+                    </svg>
+                </button>
+            <div th:each="user : ${cateUserList}">
+                <span th:text="${user}"></span>
+            </div>
+        </div>
+
+
+
+    </div>
+    <div id="chatHistory" class="scroll-chat">
+
+        <div th:each="cateChat : ${cateChatList}">
+            <p th:if="${username == cateChat.sender}" class="my-message">
+                <span class="message-regdate" th:text="'(' + ${cateChat.cateChatRegdate} + ') '"></span>
+                <span class="content" th:text="${cateChat.cateChatContent}"></span>:
+                <span class="userName" th:text="${cateChat.sender}"></span>
+            </p>
+            <p th:unless="${username == cateChat.sender}" class="other-message">
+                <span class="userName" th:text="${cateChat.sender}"></span>:
+                <span class="content" th:text="${cateChat.cateChatContent}"></span>
+                <span class="message-regdate" th:text="'(' + ${cateChat.cateChatRegdate} + ') '"></span>
+            </p>
+        </div>
+
+    </div>
+
+    <form id="chatForm">
+        <input type="text" id="chatMessage" placeholder="Type x message..." />
+        <button type="submit">Send</button>
+    </form>
+</div>
+
+
+<script th:inline="javascript">
+    const username = localStorage.getItem('userName');
+    const roomId = [[${cateRoom.cateId}]];
+    var stompClient = null;
+    //localStorage.setItem('username', username);
+    console.log("아이디 : " + username);
+    console.log("룸번호 : " + roomId);
+
+
+        function connect() {
+            var socket = new SockJS('/websocket-app/');
+            // var username = localStorage.getItem('username');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function (frame) {
+                console.log('Connected: ' + frame);
+                stompClient.subscribe('/topic/' + roomId, function (
+                    messageOutput) {
+                    showMessageOutput(JSON.parse(messageOutput.body));
+                    console.log(messageOutput);
+                });
+                stompClient.send("/app/categoryChat/" + roomId + "/addUser", {}, JSON.stringify({
+                    type: 'JOIN',
+                    cateChatContent: username + "님이 입장하셨습니다",
+                    sender: username,
+                    cateId: roomId
+                }));
+            });
+        }
+
+
+        function disconnect() {
+            if (stompClient != null) {
+                var chatMessage = {
+                    username: username,
+                    type: 'LEAVE',
+                    cateChatContent: username + '님이 떠나셨습니다',
+                    cateId: roomId
+                };
+
+                $.get("/leave/" + roomId + "?userName=" + encodeURIComponent(username));
+                stompClient.send("/app/categoryChat/" + roomId + "/sendMessage", {},
+                    JSON.stringify(chatMessage));
+                let catecateId = $(this).attr('cateroom-id');
+
+                stompClient.disconnect();
+            }
+        }
+
+        function sendMessage() {
+            var messageContent = document.getElementById('chatMessage').value;
+            if (messageContent && stompClient) {
+                console.log(username);
+                var chatMessage = {
+                    username: username,
+                    cateChatContent: messageContent,
+                    type: 'CHAT',
+                    cateId: roomId
+                };
+                stompClient.send("/app/categoryChat/" + roomId + "/sendMessage", {},
+                    JSON.stringify(chatMessage));
+                document.getElementById('chatMessage').value = '';
+            }
+        }
+
+        function showMessageOutput(messageOutput) {
+            console.log(messageOutput);
+            var response = document.getElementById('chatHistory');
+            var p = document.createElement('p');
+            p.style.wordWrap = 'break-word';
+
+            if (messageOutput.username === username) {
+                p.className = 'my-message';
+                p.innerHTML = `<span class="message-regdate">(${messageOutput.cateChatRegdate})</span> <span class="content">${messageOutput.cateChatContent}</span> : <span class='userName'>${messageOutput.username}</span>`;
+            } else {
+                p.className = 'other-message';
+                p.innerHTML = `<span class='userName'>${messageOutput.username}</span> : <span class="content">${messageOutput.cateChatContent}</span> <span class="message-regdate">(${messageOutput.cateChatRegdate})</span>`;
+            }
+
+            response.appendChild(p);
+
+            var chatHistory = document.querySelector('#chatHistory');
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+
+        document.getElementById('chatForm').addEventListener('submit',
+            function (event) {
+                event.preventDefault();
+                sendMessage();
+            });
+
+</script>
+</body>
+</html>
