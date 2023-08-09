@@ -6,15 +6,12 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.example.WorldChatProject.user.security.jwt.JwtProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.*;
-import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 import java.util.Map;
 import java.util.Set;
@@ -23,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Configuration
 @EnableWebSocketMessageBroker
 @Slf4j
-public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+public class RandomChatWebSocketConfig implements WebSocketMessageBrokerConfigurer {
     // 채팅방에 접속한 사용자들의 정보를 저장
     private final Map<String, Set<String>> connectedUsers = new ConcurrentHashMap<>();
     @Override
