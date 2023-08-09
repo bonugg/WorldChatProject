@@ -25,7 +25,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/chat")
-public class ChatRoomController {
+public class FrdChatRoomController {
 
     private final UserService userService;
     private final FriendsService friendsService;
