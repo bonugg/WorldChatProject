@@ -25,14 +25,10 @@ public class RandomChatWebSocketConfig implements WebSocketMessageBrokerConfigur
     private final Map<String, Set<String>> connectedUsers = new ConcurrentHashMap<>();
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        log.info("registry: {}", registry );
-        registry.addEndpoint("/random") //http://localhost:9002/random/
+        registry.addEndpoint( "/random") //https://localhost:9002/random/
                 .setAllowedOrigins("https://localhost:3001") //Cors 설정
-                .setAllowedOrigins("http://localhost:3001") //Cors 설정
-                //.setAllowedOrigins("*") //Cors 설정
-                .setAllowedOriginPatterns("https://localhost:3001")
-                .setAllowedOriginPatterns("http://localhost:3001")
-                .addInterceptors(new JwtHandshakeInterceptor())
+                //.setAllowedOriginPatterns("https://localhost:3001")
+                //.addInterceptors(new JwtHandshakeInterceptor())
                 .withSockJS(); //SockJS 사용을 위한 설정
     }
 

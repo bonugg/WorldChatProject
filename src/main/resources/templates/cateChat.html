@@ -34,6 +34,14 @@
     });
   </script>
   <style>
+      .chat-list {
+          display: none;
+      }
+
+      .active {
+          display: block;
+      }
+
     .cate-rooms-container{
       margin-top: 100px;
       display:flex;
@@ -63,6 +71,35 @@
   </style>
 </head>
 <body>
+
+<div id="room-search">
+    <input type="text" id="chatRoomSearch" placeholder="방이름 검색">
+    <button>검색</button>
+</div>
+
+
+<div id="all-room">
+    <h2>전체</h2>
+    <div id="all-chat-rooms">
+        <div class="cate-rooms-container">
+            <div class="cate-rooms-box" th:each="cateRoomList : ${cateRoomList}">
+                <a onclick="enterChatRoom(this.getAttribute('cateroom-id'))" th:attr="cateroom-id=${cateRoomList.cateId}" th:text="${cateRoomList.cateName}"></a>
+                <div class="userCount" th:id="'userCount' + ${cateRoomList.cateId}"></div>
+            </div>
+        </div>
+    </div>
+
+
+<div th:each="category : ${T(com.example.WorldChatProject.cateChat.entity.Interest).values()}">
+    <h2 th:text="${category}"></h2>
+    <div class="cate-rooms-container">
+        <div class="cate-rooms-box" th:each="cateRoomList : ${cateRoomList}" th:if="${cateRoomList.interest == category}">
+            <a onclick="enterChatRoom(this.getAttribute('cateroom-id'))" th:attr="cateroom-id=${cateRoomList.cateId}" th:text="${cateRoomList.cateName}"></a>
+            <div class="userCount" th:id="'userCount' + ${cateRoomList.cateId}"></div>
+        </div>
+    </div>
+</div>
+
 <!--th:onclick="'enterChatRoom(\'' + ${cate} + '\')'"-->
     <div class="cate-rooms-container">
     <div class="cate-rooms-box" th:each="cateRoomList : ${cateRoomList}">
@@ -79,7 +116,43 @@
     <a href="/login"><button>로그인</button></a>
     </div>
 
+
     <script>
+        $(document).ready(function () {
+            const $chatRoomSearch = $("#chatRoomSearch"); //검색어 입력 필드
+            const $searchButton = $("#room-search button"); //검색 버튼
+
+            $searchButton.on("click", function () {
+                const searchText = $chatRoomSearch.val().toLowerCase().trim(); //소문자로 변환하고 앞뒤의 공백을 제거
+
+                if (searchText) {
+                    $(".cate-rooms-box").each(function () {
+                        //각 채팅방 요소 내의 <a> 태그 안에 있는 텍스트를 가져와 소문자로 변환
+                        const roomName = $(this).find("a").text().toLowerCase();
+                        if (roomName.includes(searchText)) {
+                            $(this).show();
+                        } else {
+                            $(this).hide();
+                        }
+                    });
+                } else {
+                    // 검색어가 없으면 모든 채팅방을 표시합니다.
+                    $(".cate-rooms-box").show();
+                }
+            });
+        });
+
+        $(document).ready(function() {
+            setInterval(function() {
+                $("a[cateroom-id]").each(function(index, element) {
+                    let catecateId = $(this).attr('cateroom-id');
+                    $.get("/api/connected-users/" + catecateId, function(data) {
+                        $("#userCount" + catecateId).text(data + "명");
+                    });
+                });
+            }, 1000);
+        });
+
         function enterChatRoom(cateId) {
             const userName = localStorage.getItem("userName");
 
@@ -89,6 +162,7 @@
                 method: "GET",
                 success: function (data) {
                     if (data.isFull) {
+                        alert("채팅 인원이 꽉 찼습니다.");
                         alert("채팅방이 꽉 찼습니다.");
                         window.location.href = "/cateChat";
                     } else {
