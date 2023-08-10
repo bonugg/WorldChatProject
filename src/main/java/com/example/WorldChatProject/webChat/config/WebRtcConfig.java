@@ -4,6 +4,7 @@ import com.example.WorldChatProject.webChat.rtc.SignalHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
@@ -19,9 +20,9 @@ public class WebRtcConfig implements WebSocketConfigurer {
     // signal 로 요청이 왔을 때 아래의 WebSockerHandler 가 동작하도록 registry 에 설정
     // 요청은 클라이언트 접속, close, 메시지 발송 등에 대해 특정 메서드를 호출한다
     @Override
+    @CrossOrigin
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(signalHandler, "/signal")
-                .setAllowedOrigins("https://localhost:9002")
                 .setAllowedOrigins("*");
     }
 

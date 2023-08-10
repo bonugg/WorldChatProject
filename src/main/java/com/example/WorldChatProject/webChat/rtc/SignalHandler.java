@@ -57,6 +57,7 @@ public class SignalHandler extends TextWebSocketHandler {
     // 소켓 연결되었을 때 이벤트 처리
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
+        System.out.println("웹소켓 연결 됐지롱");
         /*
         * 웹 소켓이 연결되었을 때 클라이언트 쪽으로 메시지를 발송한다
         * 이때 원본 코드에서는 rooms.isEmpty() 가 false 를 전달한다. 이 의미는 현재 room 에 아무도 없다는 것을 의미하고 따라서 추가적인 ICE 요청을 하지 않도록 한다.
