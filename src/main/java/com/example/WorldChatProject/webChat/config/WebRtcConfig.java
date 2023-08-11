@@ -22,7 +22,7 @@ public class WebRtcConfig implements WebSocketConfigurer {
     @Override
     @CrossOrigin
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(signalHandler, "/signal")
+        registry.addHandler(signalHandler, "/signal","/test")
                 .setAllowedOrigins("*");
     }
 

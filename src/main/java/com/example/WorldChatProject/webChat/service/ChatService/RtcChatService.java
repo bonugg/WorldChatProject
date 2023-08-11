@@ -2,12 +2,16 @@ package com.example.WorldChatProject.webChat.service.ChatService;
 
 import com.example.WorldChatProject.webChat.dto.ChatRoomDto;
 import com.example.WorldChatProject.webChat.dto.ChatRoomMap;
+import com.example.WorldChatProject.webChat.dto.UserSessionManager;
 import com.example.WorldChatProject.webChat.dto.WebSocketMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -16,6 +20,33 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class RtcChatService {
+    UserSessionManager manager = UserSessionManager.getInstance();
+
+    public String sendRequest(String sender, String receiver) {
+        WebSocketSession session = manager.getUserSession(receiver);
+        TextMessage message = new TextMessage(sender + "님이 영상통화 요청을 보냈습니다.");
+        if (session != null && session.isOpen()) {
+            try {
+                session.sendMessage(message);
+            } catch (IOException e) {
+                log.error("Error sending message to user: {}", sender, e);
+            }
+        }
+        return message.toString();
+    }
+
+    //로그아웃시 웹소켓 해제 및 map에서 삭제
+    public void RTCLogout(String userName) throws IOException {
+        if (userName == null || userName.trim().isEmpty()) {
+            throw new IllegalArgumentException("userName cannot be null or empty");
+        }
+        WebSocketSession userSession = manager.getUserSession(userName);
+        if (userSession != null && userSession.isOpen()) {
+            userSession.close(); // 연결 끊기
+            manager.removeUserSession(userName);
+            System.out.println("로그인중인 유저: " + manager.getAllKeys());
+        }
+    }
 
     // repository substitution since this is a very simple realization
     public ChatRoomDto createChatRoom(String roomName, String roomPwd, boolean secretChk, int maxUserCnt) {
@@ -53,7 +84,6 @@ public class RtcChatService {
 //                .orElse(Collections.emptyMap());
 
 
-
         Optional<ChatRoomDto> roomDto = Optional.ofNullable(room);
 
         return (Map<String, WebSocketSession>) roomDto.get().getUserList();
@@ -71,9 +101,9 @@ public class RtcChatService {
     }
 
     // 유저 카운터 return
-    public boolean findUserCount(WebSocketMessage webSocketMessage){
+    public boolean findUserCount(WebSocketMessage webSocketMessage) {
         ChatRoomDto room = ChatRoomMap.getInstance().getChatRooms().get(webSocketMessage.getData());
-        if(room == null) {
+        if (room == null) {
             room = createChatRoom("test", "", false, 2);
             log.info("방 생성했움");
         }
