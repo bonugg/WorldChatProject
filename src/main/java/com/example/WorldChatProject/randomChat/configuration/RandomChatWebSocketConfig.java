@@ -1,34 +1,42 @@
 package com.example.WorldChatProject.randomChat.configuration;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.example.WorldChatProject.user.security.jwt.JwtProperties;
+import com.example.WorldChatProject.randomChat.entity.RandomRoom;
+import com.example.WorldChatProject.randomChat.repository.RandomRoomRepository;
+import com.example.WorldChatProject.randomChat.service.RandomRoomService;
+import com.example.WorldChatProject.user.entity.User;
+import com.example.WorldChatProject.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.server.ServerHttpRequest;
-import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.context.event.EventListener;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.web.socket.WebSocketHandler;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.config.annotation.*;
-import org.springframework.web.socket.server.HandshakeInterceptor;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+import java.util.Optional;
 
 @Configuration
 @EnableWebSocketMessageBroker
 @Slf4j
+@RequiredArgsConstructor
 public class RandomChatWebSocketConfig implements WebSocketMessageBrokerConfigurer {
-    // 채팅방에 접속한 사용자들의 정보를 저장
-    private final Map<String, Set<String>> connectedUsers = new ConcurrentHashMap<>();
+
+    private final UserRepository userRepository;
+    private final RandomRoomRepository randomRoomRepository;
+    private final RandomRoomService randomRoomService;
+    private final ApplicationContext applicationContext;
+
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint( "/random") //https://localhost:9002/random/
                 .setAllowedOrigins("https://localhost:3001") //Cors 설정
-                //.setAllowedOriginPatterns("https://localhost:3001")
-                //.addInterceptors(new JwtHandshakeInterceptor())
                 .withSockJS(); //SockJS 사용을 위한 설정
     }
 
@@ -36,60 +44,52 @@ public class RandomChatWebSocketConfig implements WebSocketMessageBrokerConfigur
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry){
         //메시지 구독 요청 url경로 등록(메시지 받을 때)
-        // /randomSub으로 시작하는 메시지를 구독하는 클라이언트에게 해당 메시지 전달가능
         registry.enableSimpleBroker("/randomSub"); //topic
         //클라이언트의 메시지 발행 요청 url경로（요청주소 prefix) 등록(메시지 보낼 때)
-        //클라이언트에서 서버로 메시지를 보낼 때
         registry.setApplicationDestinationPrefixes("/randomPub"); //app
     }
 
     //세션 종료 시
-//    @EventListener
-//    public void handleSessionDisconnect(SessionDisconnectEvent event) {
-//        StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
-//        String username = (String) sha.getSessionAttributes().get("username");
-//        String roomId = (String) sha.getSessionAttributes().get("roomId");
-//        Set<String> usersInRoom = connectedUsers.get(roomId);
-//        if (usersInRoom != null) {
-//            usersInRoom.remove(username);
-//        }
-//    }
-
-    private static class JwtHandshakeInterceptor implements HandshakeInterceptor {
-        @Override
-        public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
-                                       WebSocketHandler wsHandler, Map<String, Object> attributes) {
-            // Extract and validate the JWT token from the request headers
-            String token = request.getHeaders().getFirst(JwtProperties.HEADER_STRING);
-            if (token != null && token.startsWith(JwtProperties.TOKEN_PREFIX)) {
-                try {
-                    String jwtToken = token.replace(JwtProperties.TOKEN_PREFIX, "");
-                    String userName = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET))
-                            .build()
-                            .verify(jwtToken)
-                            .getClaim("username")
-                            .asString();
-
-                    if (userName != null) {
-                        attributes.put("username", userName);
-                        return true;
-                    }
-                } catch (TokenExpiredException te){
-                    log.info("만료된 토큰");
-                    response.setStatusCode(HttpStatus.UNAUTHORIZED);
-                } catch (Exception e) {
-                    // Token validation failed
-                }
-            }
-            response.setStatusCode(HttpStatus.UNAUTHORIZED);
-            return false;
+    @EventListener
+    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
+        log.info("RabdomRoomWebSocket disconnection event is occured");
+        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+        log.info("userName: {}", headerAccessor.getSessionAttributes().get("userName"));
+        String userName = (String) headerAccessor.getSessionAttributes().get("userName");
+        Optional<User> userOptional = userRepository.findByUserName(userName);
+        if (!userOptional.isPresent()) {
+            log.info("User not found");
+            return;
         }
-
-        @Override
-        public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response,
-                                   WebSocketHandler wsHandler, Exception exception) {
+        User user = userOptional.get();
+        RandomRoom room = randomRoomRepository.findByUser1IdOrUser2Id(user.getUserId());
+        if (room == null) {
+            log.info("Random room not found");
+            return;
         }
+        disconnectBothUsers(room);
+        randomRoomService.delete(room.getRandomRoomId());
+    }
 
+
+    private void disconnectBothUsers(RandomRoom room) {
+        String user1_name = room.getUser1().getUserName();
+        String user2_name = room.getUser2().getUserName();
+        disconnectUser(room, user1_name);
+        disconnectUser(room, user2_name);
+    }
+
+    private void disconnectUser(RandomRoom room, String userName) {
+        ApplicationEventPublisher eventPublisher = applicationContext.getBean(ApplicationEventPublisher.class);
+        //웹소켓 연결 종료 처리를 위한 헤더 객체
+        SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.DISCONNECT);
+        headerAccessor.setSessionId(userName); //사용자 세션 id를 헤더에 설정
+        headerAccessor.setLeaveMutable(true); //헤더가 변경 가능한 상태가 설정
+
+        Message<byte[]> message = MessageBuilder.createMessage(new byte[0], headerAccessor.getMessageHeaders());
+        CloseStatus closeStatus = new CloseStatus(1000, "User disconnected");
+        eventPublisher.publishEvent(new SessionDisconnectEvent(this, message, userName, closeStatus));
+        randomRoomService.delete(room.getRandomRoomId());
     }
 
 
