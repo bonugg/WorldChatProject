@@ -35,7 +35,6 @@ public class CateRoom {
 
 
 
-
     //엔티티를 DTO로 변환하는 메소드
     public CateRoomDTO toCateRoomDTO() {
         CateRoomDTO cateRoomDTO = CateRoomDTO.builder()

@@ -1,24 +1,15 @@
 package com.example.WorldChatProject.cateChat.controller;
 
 import com.example.WorldChatProject.cateChat.dto.CateChatDTO;
-import com.example.WorldChatProject.cateChat.entity.CateChat;
-import com.example.WorldChatProject.cateChat.entity.CateRoom;
 import com.example.WorldChatProject.cateChat.service.CateChatService;
 import com.example.WorldChatProject.cateChat.service.CateRoomService;
-import com.example.WorldChatProject.user.entity.User;
-import com.example.WorldChatProject.user.security.auth.PrincipalDetails;
-import com.example.WorldChatProject.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDateTime;
@@ -32,13 +23,11 @@ public class CateChatController {
     private final CateChatService cateChatService;
     private final CateRoomService cateRoomService;
 
-
     @MessageMapping("/categoryChat/{cateId}/sendMessage")
     @SendTo("/topic/{cateId}")
     public CateChatDTO sendMessage(@Payload CateChatDTO cateChatDTO, @PathVariable String cateId) {
 
 //            PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-
 //            String username = principal.getUsername();
 //            cateChatDTO.setSender(username);
 
@@ -60,8 +49,6 @@ public class CateChatController {
         return savedMessage;
     }
 
-
-
     @MessageMapping("/categoryChat/addUser")
     @SendTo("/topic/{cateId}")
     //@Payload => 클라이언트에서 보낸 메시지 데이터가 자동으로 CateChatDTO 객체로 매핑된다
@@ -75,7 +62,6 @@ public class CateChatController {
 
         cateChatDTO.setUsername(userName);
 
-
         // 현재 시간 가져오기
         LocalDateTime now = LocalDateTime.now();
 
@@ -88,12 +74,6 @@ public class CateChatController {
         CateChatDTO savedMessage = cateChatService.saveMessage(cateChatDTO);
         savedMessage.setUsername(savedMessage.getSender());
 
-
         return savedMessage;
-
     }
-
-
-
-
 }
