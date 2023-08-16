@@ -22,7 +22,7 @@ public class CateRoom {
     private String cateName; //방 이름
 
     @Column
-    private Long cateUserCnt; //현재 인원수
+    private int cateUserCnt = 0; //현재 인원수
 
     @Column
     private Long maxUserCnt; //최대인원수

@@ -6,25 +6,24 @@ import com.example.WorldChatProject.randomChat.service.RandomRoomService;
 import com.example.WorldChatProject.user.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-//@Controller
 @RestController
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/random")
-@CrossOrigin(origins = "http://localhost:3001")
 public class RandomRoomController{
-    //채팅방을 조회, 생성, 입장을 관리하는 Controller
+    //채팅방을 생성, 입장, 퇴장, 삭제를 관리하는 Controller
     private final RandomRoomService service;
 
     // 랜덤채팅 대기 및 입장 처리
     @PostMapping("/room")
-        public RandomRoomDTO startRandomChat(@RequestBody UserDTO userDTO) {
-        System.out.println(userDTO.getUserName());
-        log.info("랜덤채팅 시작 중");
+        public RandomRoomDTO enter(@RequestBody UserDTO userDTO) {
+        log.info("Start random Chat");
         try{
-            log.info("User {} requested random chat.", userDTO.getUserName());
+            log.info("User {} requested random chat.", userDTO.getUserNickName());
             RandomRoom room = service.match(userDTO.getUserName());
             RandomRoomDTO randomRoomDTO = room.toDTO();
             randomRoomDTO.setSuccess(true);
@@ -39,7 +38,6 @@ public class RandomRoomController{
             return errorDTO;
         }
     }
-
-
+    
 
 }

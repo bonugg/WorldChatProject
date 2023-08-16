@@ -27,6 +27,14 @@ public class CateUserListService {
     }
 
     @Transactional
+    public void delete(Long cateId, String userName) {
+        CateUserList cateUserList = cateUserListRepostiory.findByCateIdAndUserName(cateId, userName);
+        if (cateUserList != null) {
+            cateUserListRepostiory.delete(cateUserList);
+        }
+    }
+
+    @Transactional
     public List<String> findAllUserNamesByCateId(Long cateId) {
         List<String> userNameList = new ArrayList<>();
         for (CateUserList user : cateUserListRepostiory.findByCateId(cateId)){

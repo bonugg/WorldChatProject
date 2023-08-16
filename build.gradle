@@ -24,6 +24,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     // WebSocket
+    implementation 'io.netty:netty-buffer:4.1.72.Final' // 적절한 버전을 사용하십시오.
 
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     // sockjs

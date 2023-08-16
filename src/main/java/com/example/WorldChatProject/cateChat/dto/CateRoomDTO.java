@@ -14,7 +14,7 @@ public class CateRoomDTO {
 
     private Long cateId;
     private String cateName;
-    private Long cateUserCnt;
+    private int cateUserCnt;
     private Long maxUserCnt;
     private Interest interest;
     private HashMap<String, String> cateUserList;
