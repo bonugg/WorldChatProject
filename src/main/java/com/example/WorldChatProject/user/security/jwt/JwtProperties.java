@@ -6,7 +6,7 @@ public interface JwtProperties {
 //	int EXPIRATION_TIME = 300000; // 10초 (1/1000초)
 //	int EXPIRATION_TIME = 300000000; // 10초 (1/1000초)
 
-	int EXPIRATION_TIME = 300000; // 10초 (1/1000초)
+	int EXPIRATION_TIME = 30000000; // 10초 (1/1000초)
 //	int EXPIRATION_TIME = 5000; // 10초 (1/1000초)
 
 	String TOKEN_PREFIX = "Bearer ";

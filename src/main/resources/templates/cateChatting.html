@@ -182,7 +182,7 @@
     </div>
 
     <form id="chatForm">
-        <input type="text" id="chatMessage" placeholder="Type x message..." />
+        <input type="text" id="frdChatMessage" placeholder="Type x message..." />
         <button type="submit">Send</button>
     </form>
 </div>
@@ -220,7 +220,7 @@
 
         function disconnect() {
             if (stompClient != null) {
-                var chatMessage = {
+                var frdChatMessage = {
                     username: username,
                     type: 'LEAVE',
                     cateChatContent: username + '님이 떠나셨습니다',
@@ -229,7 +229,7 @@
 
                 $.get("/leave/" + roomId + "?userName=" + encodeURIComponent(username));
                 stompClient.send("/app/categoryChat/" + roomId + "/sendMessage", {},
-                    JSON.stringify(chatMessage));
+                    JSON.stringify(frdChatMessage));
                 let catecateId = $(this).attr('cateroom-id');
 
                 stompClient.disconnect();
@@ -237,18 +237,18 @@
         }
 
         function sendMessage() {
-            var messageContent = document.getElementById('chatMessage').value;
+            var messageContent = document.getElementById('frdChatMessage').value;
             if (messageContent && stompClient) {
                 console.log(username);
-                var chatMessage = {
+                var frdChatMessage = {
                     username: username,
                     cateChatContent: messageContent,
                     type: 'CHAT',
                     cateId: roomId
                 };
                 stompClient.send("/app/categoryChat/" + roomId + "/sendMessage", {},
-                    JSON.stringify(chatMessage));
-                document.getElementById('chatMessage').value = '';
+                    JSON.stringify(frdChatMessage));
+                document.getElementById('frdChatMessage').value = '';
             }
         }
 

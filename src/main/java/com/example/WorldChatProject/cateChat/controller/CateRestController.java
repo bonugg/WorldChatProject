@@ -1,6 +1,6 @@
 package com.example.WorldChatProject.cateChat.controller;
 
-import com.example.WorldChatProject.cateChat.CateWebSocketConfig;
+//import com.example.WorldChatProject.cateChat.CateWebSocketConfig;
 import com.example.WorldChatProject.cateChat.entity.CateRoom;
 import com.example.WorldChatProject.cateChat.service.CateChatService;
 import com.example.WorldChatProject.cateChat.service.CateRoomService;
@@ -19,7 +19,7 @@ import java.util.Collections;
 @RequestMapping("/api")
 public class CateRestController {
 
-    private final CateWebSocketConfig cateWebSocketConfig;
+//    private final CateWebSocketConfig cateWebSocketConfig;
     private final CateRoomService cateRoomService;
     private final CateChatService cateChatService;
 
