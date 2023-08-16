@@ -2,15 +2,12 @@ package com.example.WorldChatProject.webChat.rtc;
 
 import com.example.WorldChatProject.webChat.dto.ChatRoomDto;
 import com.example.WorldChatProject.webChat.dto.ChatRoomMap;
-import com.example.WorldChatProject.webChat.dto.UserSessionManager;
 import com.example.WorldChatProject.webChat.dto.WebSocketMessage;
 import com.example.WorldChatProject.webChat.service.ChatService.ChatServiceMain;
 import com.example.WorldChatProject.webChat.service.ChatService.RtcChatService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -21,14 +18,8 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import org.thymeleaf.util.StringUtils;
 
 import java.io.IOException;
-import java.net.URI;
-import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 ;
 
@@ -56,8 +47,6 @@ public class SignalHandler extends TextWebSocketHandler {
     private static final String MSG_TYPE_JOIN = "join";
     // leave room data message
     private static final String MSG_TYPE_LEAVE = "leave";
-    //    private final Map<String, WebSocketSession> userSessionMapByUsername = new ConcurrentHashMap<>();
-    UserSessionManager manager = UserSessionManager.getInstance();
 
     // 연결 끊어졌을 때 이벤트처리
     @Override
@@ -65,32 +54,9 @@ public class SignalHandler extends TextWebSocketHandler {
         logger.info("[ws] Session has been closed with status [{} {}]", status, session);
     }
 
-
-    private String getUserNameFromSession(WebSocketSession session) {
-        // 클라이언트에서 주소에 포함된 userName을 가져오는 방법
-        String query = session.getUri().getQuery();
-
-        // 쿼리 파라미터를 분석하여 userName 값 추출 (간단한 방법을 사용, 더 정교한 처리가 필요할 수 있음)
-        Map<String, String> queryPairs = Arrays.stream(query.split("&"))
-                .map(entry -> entry.split("="))
-                .collect(Collectors.toMap(entry -> entry[0], entry -> entry[1]));
-
-        String userName = queryPairs.get("userName");
-        return userName;
-    }
-
     // 소켓 연결되었을 때 이벤트 처리
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
-        System.out.println("웹소켓 연결 됐지롱");
-        System.out.println("들어온 세션 정보"+session);
-        String userName = getUserNameFromSession(session);
-        if (userName != null && !userName.trim().isEmpty()) {
-//            userSessionMapByUsername.put(userName, session);
-            manager.addUserSession(userName, session);
-            System.out.println("저장되는 이름: " + userName);
-            System.out.println("로그인중인 유저: " + manager.getAllKeys());
-        }
         /*
          * 웹 소켓이 연결되었을 때 클라이언트 쪽으로 메시지를 발송한다
          * 이때 원본 코드에서는 rooms.isEmpty() 가 false 를 전달한다. 이 의미는 현재 room 에 아무도 없다는 것을 의미하고 따라서 추가적인 ICE 요청을 하지 않도록 한다.
@@ -102,21 +68,8 @@ public class SignalHandler extends TextWebSocketHandler {
          * 이렇게 true 상태가 되면 이후에 들어온 유저가 방안에 또 다른 유저가 있음을 확인하고,
          * P2P 연결을 시작한다.
          * */
-//        sendMessage(session, new WebSocketMessage("Server", MSG_TYPE_JOIN, Boolean.toString(!rooms.isEmpty()), null, null));
+        sendMessage(session, new WebSocketMessage("Server", MSG_TYPE_JOIN, Boolean.toString(!rooms.isEmpty()), null, null));
     }
-
-//    public void webRTCLogout(String userName)throws IOException {
-//        if (userName == null) {
-//            throw new IllegalArgumentException("userName cannot be null");
-//        }
-//
-//        WebSocketSession session = userSessionMapByUsername.get(userName);
-//        if (session != null && session.isOpen()) {
-//            session.close(); // 연결 끊기
-//        }
-//
-//        userSessionMapByUsername.remove(userName);
-//    }
 
     // 소켓 메시지 처리
     @Override
@@ -162,7 +115,7 @@ public class SignalHandler extends TextWebSocketHandler {
                          *
                          * 여기를 고치면 1:1 대신 1:N 으로 바꿀 수 있지 않을까..?
                          */
-                        for (Map.Entry<String, WebSocketSession> client : clients.entrySet()) {
+                        for(Map.Entry<String, WebSocketSession> client : clients.entrySet())  {
 
                             // send messages to all clients except current user
                             if (!client.getKey().equals(userUUID)) {
@@ -186,13 +139,15 @@ public class SignalHandler extends TextWebSocketHandler {
 
 //                    room = rtcChatService.findRoomByRoomId(roomId)
 //                            .orElseThrow(() -> new IOException("Invalid room number received!"));
-                    System.out.println("룸아이디 = " + roomId + " / uuid = " + userUUID + " / 세션? = " + session);
-                    if (ChatRoomMap.getInstance().getChatRooms().get(roomId) == null) {
+                    System.out.println("룸아이디 = "+roomId + " / uuid = " + userUUID + " / 세션? = " + session);
+                    if(ChatRoomMap.getInstance().getChatRooms().get(roomId) == null) {
                         room = rtcChatService.createChatRoom("test", "", false, 2);
+                        System.out.println(room.toString());
                         log.info("방 생성했움");
-                    } else {
+                    }else {
                         room = ChatRoomMap.getInstance().getChatRooms().get(roomId);
                     }
+                    System.out.println("여기는 왜 안 들어오지?");
                     // room 안에 있는 userList 에 유저 추가
                     rtcChatService.addClient(room, userUUID, session);
 
@@ -223,7 +178,7 @@ public class SignalHandler extends TextWebSocketHandler {
                     // 채팅방에서 떠날 시 유저 카운트 -1
                     chatServiceMain.minusUserCnt(roomId);
 
-                    logger.debug("삭제 완료 [{}] ", client);
+                    logger.debug("삭제 완료 [{}] ",client);
                     break;
 
                 // something should be wrong with the received message, since it's type is unrecognizable

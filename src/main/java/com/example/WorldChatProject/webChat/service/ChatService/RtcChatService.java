@@ -32,7 +32,7 @@ public class RtcChatService {
                 log.error("Error sending message to user: {}", sender, e);
             }
         }
-        return message.toString();
+        return message.getPayload();
     }
 
     //로그아웃시 웹소켓 해제 및 map에서 삭제
@@ -103,9 +103,10 @@ public class RtcChatService {
     // 유저 카운터 return
     public boolean findUserCount(WebSocketMessage webSocketMessage) {
         ChatRoomDto room = ChatRoomMap.getInstance().getChatRooms().get(webSocketMessage.getData());
+        log.info("클라에서 넘어오는 메세지: "+webSocketMessage.getData());
         if (room == null) {
-            room = createChatRoom("test", "", false, 2);
-            log.info("방 생성했움");
+            room = createChatRoom(webSocketMessage.getData(), "", false, 2);
+            log.info("방 생성했움2");
         }
         log.info("ROOM COUNT : [{} ::: {}]", room.toString(), room.getUserList().size());
         return room.getUserList().size() >= 1;
