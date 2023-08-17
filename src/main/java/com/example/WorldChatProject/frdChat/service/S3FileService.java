@@ -45,7 +45,7 @@ public class S3FileService implements FileService {
         try{
 
             String filename = file.getOriginalFilename(); // 파일원본 이름
-            String key = roomId + "/" + transaction+"_" + filename; // S3 파일 경로
+            String key = roomId + "/" + transaction + "_" + filename; // S3 파일 경로
 
             // 매개변수로 넘어온 multipartFile 을 File 객체로 변환 시켜서 저장하기 위한 메서드
             File convertedFile = convertMultipartFileToFile(file, transaction + filename);
@@ -53,6 +53,7 @@ public class S3FileService implements FileService {
             // 파일의 메타데이터와 ACL을 설정
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType(file.getContentType());
+
             System.out.println(metadata.getContentType() + "이건 어떤 파일 형ㄱ식인지 찍히냐??");
 
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, key, convertedFile)

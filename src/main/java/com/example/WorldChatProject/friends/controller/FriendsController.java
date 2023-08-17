@@ -200,6 +200,27 @@ public class FriendsController {
         }
     }
 
+    @DeleteMapping("delete-friends")
+    public ResponseEntity<?> deleteFriends(@RequestBody User user, Authentication authentication) {
+        ResponseDTO<Map<String, String>> response = new ResponseDTO<>();
+        try {
+            PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+            User friends1 = principal.getUser().DTOToEntity();
+            User friends2 = userService.findById(user.getUserId());
+            Friends friends = friendsService.findByUserAndFriends(friends1, friends2);
+            friendsService.delete(friends);
+            Map<String, String> returnMap = new HashMap<>();
+            returnMap.put("msg", "delete ok");
+            response.setItem(returnMap);
+            response.setStatusCode(HttpStatus.OK.value());
+            return ResponseEntity.ok().body(response);
+        } catch (Exception e) {
+            response.setErrorMessage(e.getMessage());
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
 //    @PostMapping("request")
 //    public ResponseEntity<?> asd(@RequestBody User user,
 //                                            Authentication authentication) {
