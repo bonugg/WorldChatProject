@@ -66,6 +66,7 @@ public class SecurityConfig {
                                 .requestMatchers("/friends/**").hasRole("USER")
                                 .requestMatchers("/chat/**").hasRole("USER")
                                 .requestMatchers("/api/v1/cateChat/**").hasRole("USER")
+                                .requestMatchers("/random/room").hasRole("USER")
 //                                .requestMatchers("/CateChat/**").hasRole("USER")
                                 .anyRequest().permitAll()
                 );

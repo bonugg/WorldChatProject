@@ -32,11 +32,6 @@ public class UserApiController {
     private final UserService userService;
     private final UserRepository userRepository;
 
-    @GetMapping("hello")
-    public List<String> hello(){
-        return Arrays.asList("나의앱", "MYAPP");
-    }
-
     @GetMapping("/user")
     public PrincipalDetails user(Authentication authentication) {
         //principal 안에는 유저의 정보가 담겨있음
