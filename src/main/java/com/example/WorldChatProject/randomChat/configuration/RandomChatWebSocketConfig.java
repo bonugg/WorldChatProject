@@ -19,6 +19,7 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.config.annotation.*;
+import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import java.util.Optional;
 
@@ -49,13 +50,14 @@ public class RandomChatWebSocketConfig implements WebSocketMessageBrokerConfigur
         registry.setApplicationDestinationPrefixes("/randomPub"); //app
     }
 
+
     //세션 종료 시
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         log.info("RabdomRoomWebSocket disconnection event is occured");
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        log.info("userName: {}", headerAccessor.getSessionAttributes().get("userName"));
         String userName = (String) headerAccessor.getSessionAttributes().get("userName");
+        log.info("userName: {}", userName);
         Optional<User> userOptional = userRepository.findByUserName(userName);
         if (!userOptional.isPresent()) {
             log.info("User not found");
@@ -89,7 +91,6 @@ public class RandomChatWebSocketConfig implements WebSocketMessageBrokerConfigur
         Message<byte[]> message = MessageBuilder.createMessage(new byte[0], headerAccessor.getMessageHeaders());
         CloseStatus closeStatus = new CloseStatus(1000, "User disconnected");
         eventPublisher.publishEvent(new SessionDisconnectEvent(this, message, userName, closeStatus));
-        randomRoomService.delete(room.getRandomRoomId());
     }
 
 

@@ -41,6 +41,10 @@ public class RandomRoom {
     @JoinColumn(name = "user2_id")
     private User user2;
 
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "randomRoom", cascade = CascadeType.ALL)
+    private List<RandomFile> randomFiles;
+
+
     //랜덤채팅방 이름 구성하고 랜덤채팅방 반환
     public static RandomRoom create(User user){
         RandomRoom room = new RandomRoom();

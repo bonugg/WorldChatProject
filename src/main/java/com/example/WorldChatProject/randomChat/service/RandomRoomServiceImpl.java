@@ -1,5 +1,6 @@
 package com.example.WorldChatProject.randomChat.service;
 
+import com.example.WorldChatProject.randomChat.dto.RandomFileDTO;
 import com.example.WorldChatProject.randomChat.dto.RandomRoomDTO;
 import com.example.WorldChatProject.randomChat.entity.RandomRoom;
 import com.example.WorldChatProject.randomChat.repository.RandomRoomRepository;
@@ -80,6 +81,7 @@ public class RandomRoomServiceImpl implements RandomRoomService{
     public RandomRoom find(long roomId) {
         return randomRoomRepository.findByRoomId(roomId);
     }
+
 
 
 }

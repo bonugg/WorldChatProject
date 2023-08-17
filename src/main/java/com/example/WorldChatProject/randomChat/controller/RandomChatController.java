@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,6 +24,7 @@ public class RandomChatController {
     private final RandomRoomService randomRoomService;
 
     @MessageMapping("/randomChat/{randomRoomId}")
+    @SendTo("/randomChat/{randomRoomId}")
     public void sendMessage(@Payload RandomChatDTO chatDTO, @DestinationVariable("randomRoomId") String randomRoomId) {
         log.info("CHAT : {}", chatDTO);
         chatDTO.setContent(chatDTO.getContent());
@@ -31,6 +33,7 @@ public class RandomChatController {
     }
 
     @MessageMapping("/randomChat/{randomRoomId}/enter")
+    @SendTo("/randomChat/{randomRoomId}")
     public void enter(@Payload RandomChatDTO chatDTO, @DestinationVariable("randomRoomId") String randomRoomId) {
         RandomRoom room = randomRoomService.find(chatDTO.getRandomRoomId());
         String roomName = room.getRandomRoomName();
@@ -38,14 +41,6 @@ public class RandomChatController {
         log.info("{}: {}", chatDTO.getType(), chatDTO.getContent());
         template.convertAndSend("/randomSub/randomChat/" + randomRoomId, chatDTO);
     }
-
-//    @MessageMapping("/randomChat/{randomRoomId}/leave")
-//    public void leave(@Payload RandomChatDTO chatDTO, @DestinationVariable("randomRoomId") String randomRoomId){
-//        chatDTO.setContent(chatDTO.getSender() + "님이 퇴장하셨습니다.");
-//        log.info("{}: {}", chatDTO.getType(), chatDTO.getContent());
-//        randomRoomService.delete(chatDTO.getSender(), Long.parseLong(randomRoomId));
-//        template.convertAndSend("/randomSub/randomChat/" + randomRoomId, chatDTO);
-//    }
 
 
 }
