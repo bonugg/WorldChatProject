@@ -96,13 +96,12 @@ public class RtcChatRoomController {
     }
 
     // 채팅방 삭제 -> 이거 아직 연결 안함!
-    @GetMapping("/chat/delRoom/{roomId}")
-    public String delChatRoom(@PathVariable String roomId){
-
+    @PostMapping("/chat/delRoom")
+    public String delChatRoom(@RequestBody String roomId){
         // roomId 기준으로 chatRoomMap 에서 삭제, 해당 채팅룸 안에 있는 사진 삭제
         chatServiceMain.delChatRoom(roomId);
-
-        return "redirect:/";
+        log.info("삭제test");
+        return "";
     }
 
     // 유저 카운트

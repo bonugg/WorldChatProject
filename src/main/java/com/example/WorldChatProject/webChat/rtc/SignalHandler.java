@@ -141,11 +141,12 @@ public class SignalHandler extends TextWebSocketHandler {
 //                            .orElseThrow(() -> new IOException("Invalid room number received!"));
                     System.out.println("룸아이디 = "+roomId + " / uuid = " + userUUID + " / 세션? = " + session);
                     if(ChatRoomMap.getInstance().getChatRooms().get(roomId) == null) {
-                        room = rtcChatService.createChatRoom("test", "", false, 2);
+                        room = rtcChatService.createChatRoom(message.getData(), "", false, 2);
                         System.out.println(room.toString());
                         log.info("방 생성했움");
                     }else {
                         room = ChatRoomMap.getInstance().getChatRooms().get(roomId);
+                        log.info("룸아이디 = "+room.getRoomId()+" / "+room.getRoomName());
                     }
                     System.out.println("여기는 왜 안 들어오지?");
                     // room 안에 있는 userList 에 유저 추가

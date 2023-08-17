@@ -52,6 +52,7 @@ public class ChatServiceMain {
 //            room.setRoomId("1");
         }else{
             room = rtcChatService.createChatRoom(roomName, roomPwd, secretChk, maxUserCnt);
+            log.info("방 생성했움3");
 //            room.setRoomId("1");
         }
 

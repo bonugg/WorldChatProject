@@ -28,9 +28,13 @@ public class RtcController {
         rtcChatService.RTCLogout(userName);
     }
     @PostMapping("/webrtc/request")
-    public void requestRTC(@RequestBody RequestDto request){
+    public void requestRTC(@RequestBody  RequestDto request){
         System.out.println("보낸이:" + request.getSender() + "받는이:" + request.getReceiver());
         System.out.println("요청 메시지!"+rtcChatService.sendRequest(request.getSender(), request.getReceiver()));
+    }
+    @PostMapping("/webrtc/exitrooms")
+    public void exitRooms(String roomName){
+        rtcChatService.exitRtcRoom(roomName);
     }
 
 

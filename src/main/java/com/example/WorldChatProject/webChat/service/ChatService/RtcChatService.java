@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,6 +23,9 @@ import java.util.Optional;
 public class RtcChatService {
     UserSessionManager manager = UserSessionManager.getInstance();
 
+    public void exitRtcRoom(String roomName){
+
+    }
     public String sendRequest(String sender, String receiver) {
         WebSocketSession session = manager.getUserSession(receiver);
         TextMessage message = new TextMessage(sender + "님이 영상통화 요청을 보냈습니다.");
@@ -53,7 +57,7 @@ public class RtcChatService {
         // roomName 와 roomPwd 로 chatRoom 빌드 후 return
         ChatRoomDto room = ChatRoomDto.builder()
 //                .roomId(UUID.randomUUID().toString())
-                .roomId("1")
+                .roomId(roomName)
                 .roomName(roomName)
                 .roomPwd(roomPwd) // 채팅방 패스워드
                 .secretChk(secretChk) // 채팅방 잠금 여부
@@ -91,6 +95,7 @@ public class RtcChatService {
 
     public Map<String, WebSocketSession> addClient(ChatRoomDto room, String name, WebSocketSession session) {
         Map<String, WebSocketSession> userList = (Map<String, WebSocketSession>) room.getUserList();
+        log.info(userList.toString()+" aa "+name+" bb ");
         userList.put(name, session);
         return userList;
     }
@@ -102,6 +107,10 @@ public class RtcChatService {
 
     // 유저 카운터 return
     public boolean findUserCount(WebSocketMessage webSocketMessage) {
+        Set<String> keys = ChatRoomMap.getInstance().getChatRooms().keySet();
+        log.info(keys.toString());
+        log.info(String.valueOf(ChatRoomMap.getInstance().getChatRooms().get(webSocketMessage.getData())));
+        log.info(ChatRoomMap.getInstance().toString());
         ChatRoomDto room = ChatRoomMap.getInstance().getChatRooms().get(webSocketMessage.getData());
         log.info("클라에서 넘어오는 메세지: "+webSocketMessage.getData());
         if (room == null) {
