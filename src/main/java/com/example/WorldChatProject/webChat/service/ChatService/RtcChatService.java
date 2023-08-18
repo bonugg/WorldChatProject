@@ -26,7 +26,6 @@ public class RtcChatService {
     public void exitRtcRoom(String roomName){
 
     }
-    
     public String sendRequest(String sender, String receiver,String type) {
         WebSocketSession session = manager.getUserSession(receiver);
         
@@ -45,8 +44,6 @@ public class RtcChatService {
             }
             return message.getPayload();
         }
-        
-
 
     //로그아웃시 웹소켓 해제 및 map에서 삭제
     public void RTCLogout(String userName) throws IOException {
@@ -131,19 +128,4 @@ public class RtcChatService {
         return room.getUserList().size() >= 1;
     }
 
-    //voice 채팅방 로직
-    
-
- // 사용자가 채팅방에 참여하는 메서드
- public void joinRoom(ChatRoomDto room, String userUUID, WebSocketSession session) {
-     addClient(room, userUUID, session);
-     log.info("User [{}] joined room [{}]", userUUID, room.getRoomId());
- }
-
- // 사용자가 채팅방에서 나가는 메서드
- public void leaveRoom(ChatRoomDto room, String userUUID) {
-     removeClientByName(room, userUUID);
-     log.info("User [{}] left room [{}]", userUUID, room.getRoomId());
- }
-    
 }

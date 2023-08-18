@@ -32,6 +32,7 @@ public class RtcController {
         System.out.println("보낸이:" + request.getSender() + "받는이:" + request.getReceiver());
         System.out.println("요청 메시지!"+rtcChatService.sendRequest(request.getSender(), request.getReceiver(),request.getType()));
     }
+    
     @PostMapping("/webrtc/exitrooms")
     public void exitRooms(@RequestBody String roomName){
         rtcChatService.exitRtcRoom(roomName);
