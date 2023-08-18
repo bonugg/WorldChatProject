@@ -1,28 +1,30 @@
 package com.example.WorldChatProject.frdChat.entity;
 
-import com.example.WorldChatProject.frdChat.dto.Status;
 import com.example.WorldChatProject.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatMessage {
+@Builder
+@Data
+public class FrdChatRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private long roomId;
-    private String sender;
-    private String receiver;
-    private String message;
+
+    @ManyToOne
+    private User friends1;
+
+    @ManyToOne
+    private User friends2;
 
     private LocalDateTime createdAt;
-    @Transient
-    private Status status;
+
+
 }

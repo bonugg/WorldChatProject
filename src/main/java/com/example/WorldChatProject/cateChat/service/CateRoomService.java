@@ -62,9 +62,9 @@ public class CateRoomService {
 
     public ResponseEntity createCateRoom(CateRoom cateRoom) {
         log.info("방생성시작 {}", cateRoom);
-        cateRoomRepository.save(cateRoom);
+        CateRoom rs_cateRoom = cateRoomRepository.save(cateRoom);
         log.info("방생성완료");
-        return ResponseEntity.status(HttpStatus.OK).body("roomCreate");
+        return ResponseEntity.status(HttpStatus.OK).body(rs_cateRoom);
     }
 
     public CateRoom getChatRoom(Long cateId) {
