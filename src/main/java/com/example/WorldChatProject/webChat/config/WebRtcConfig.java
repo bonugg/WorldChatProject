@@ -28,6 +28,8 @@ public class WebRtcConfig implements WebSocketConfigurer {
                 .setAllowedOrigins("*");
         registry.addHandler(loginWebsocketHandler, "/test")
                 .setAllowedOrigins("*");
+        registry.addHandler(signalHandler, "/voice")
+        		.setAllowedOrigins("*");
     }
 
     // 웹 소켓에서 rtc 통신을 위한 최대 텍스트 버퍼와 바이너리 버퍼 사이즈를 설정한다?

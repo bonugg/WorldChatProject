@@ -6,4 +6,5 @@ import lombok.Data;
 public class RequestDto {
     private String sender;
     private String receiver;
+    private String type;
 }

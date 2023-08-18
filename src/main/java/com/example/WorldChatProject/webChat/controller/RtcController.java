@@ -30,7 +30,7 @@ public class RtcController {
     @PostMapping("/webrtc/request")
     public void requestRTC(@RequestBody  RequestDto request){
         System.out.println("보낸이:" + request.getSender() + "받는이:" + request.getReceiver());
-        System.out.println("요청 메시지!"+rtcChatService.sendRequest(request.getSender(), request.getReceiver()));
+        System.out.println("요청 메시지!"+rtcChatService.sendRequest(request.getSender(), request.getReceiver(),request.getType()));
     }
     @PostMapping("/webrtc/exitrooms")
     public void exitRooms(String roomName){
