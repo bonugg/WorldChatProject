@@ -164,7 +164,7 @@ public class SignalHandler extends TextWebSocketHandler {
 
                     // roomID 기준 채팅방 찾아오기
                     room = rooms.get(message.getData());
-
+                    log.info("나가는 방: " + room.getRoomId());
                     // room clients list 에서 해당 유저 삭제
                     // 1. room 에서 client List 를 받아와서 keySet 을 이용해서 key 값만 가져온 후 stream 을 사용해서 반복문 실행
                     Optional<String> client = rtcChatService.getClients(room).keySet().stream()

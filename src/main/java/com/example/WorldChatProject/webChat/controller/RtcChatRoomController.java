@@ -98,6 +98,7 @@ public class RtcChatRoomController {
     // 채팅방 삭제 -> 이거 아직 연결 안함!
     @PostMapping("/chat/delRoom")
     public String delChatRoom(@RequestBody String roomId){
+        log.info("삭제테스트: " + roomId);
         // roomId 기준으로 chatRoomMap 에서 삭제, 해당 채팅룸 안에 있는 사진 삭제
         chatServiceMain.delChatRoom(roomId);
         log.info("삭제test");

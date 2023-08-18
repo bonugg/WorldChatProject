@@ -24,7 +24,7 @@ public class RtcController {
         return Boolean.toString(rtcChatService.findUserCount(webSocketMessage));
     }
     @PostMapping("/webrtc/logout")
-    public void webRTCLogout(String userName)throws IOException {
+    public void webRTCLogout(@RequestBody String userName)throws IOException {
         rtcChatService.RTCLogout(userName);
     }
     @PostMapping("/webrtc/request")
@@ -33,7 +33,7 @@ public class RtcController {
         System.out.println("요청 메시지!"+rtcChatService.sendRequest(request.getSender(), request.getReceiver(),request.getType()));
     }
     @PostMapping("/webrtc/exitrooms")
-    public void exitRooms(String roomName){
+    public void exitRooms(@RequestBody String roomName){
         rtcChatService.exitRtcRoom(roomName);
     }
 
