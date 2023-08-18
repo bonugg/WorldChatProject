@@ -1,5 +1,6 @@
 package com.example.WorldChatProject.frdChat.entity;
 
+import com.example.WorldChatProject.cateChat.dto.CateChatDTO;
 import com.example.WorldChatProject.frdChat.dto.FrdChatMessageDTO;
 import com.example.WorldChatProject.frdChat.dto.Status;
 import jakarta.persistence.*;
@@ -29,16 +30,20 @@ public class FrdChatMessage {
     private String fileName; // 파일이름
     private String fileDir; // s3 파일 경로
 
-    public FrdChatMessageDTO EntityToDTO() {
-        return FrdChatMessageDTO.builder()
+    public FrdChatMessageDTO toFrdChatMessageDTO() {
+        FrdChatMessageDTO frdChatMessageDTO = FrdChatMessageDTO.builder()
                 .id(this.id)
                 .roomId(this.roomId)
                 .sender(this.sender)
                 .message(this.message)
-                .createdAt(this.createdAt)
+                .sender(this.sender)
+                .createdAt(String.valueOf(this.createdAt))
                 .s3DataUrl(this.s3DataUrl)
                 .fileName(this.fileName)
                 .fileDir(this.fileDir)
+
                 .build();
+
+        return frdChatMessageDTO;
     }
 }

@@ -5,6 +5,9 @@ import com.example.WorldChatProject.frdChat.dto.ResponseDTO;
 
 import com.example.WorldChatProject.frdChat.entity.FrdChatMessage;
 import com.example.WorldChatProject.frdChat.service.FrdChatMessageService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -16,6 +19,11 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
@@ -30,18 +38,23 @@ public class FrdChatController {
     private final SimpMessagingTemplate template;
     private final FrdChatMessageService frdChatMessageService;
     private Map<String, String> sessions = new HashMap<>();
-
     @MessageMapping("/friendchat")
-    public void receivePrivateMessage (FrdChatMessage frdChatMessage, SimpMessageHeaderAccessor accessor) {
-        String sender = sessions.get(accessor.getSessionId());
-        frdChatMessage.setSender(sender);
-        System.out.println(sender + "보낸사람보낸사람보낸사람보낸사람보낸사람보낸사람보낸사람보낸사람");
+    public void receivePrivateMessage (FrdChatMessage frdChatMessage, @Header("simpSessionAttributes") Map<String, Object> sessionAttributes) {
+        String user = (String) sessionAttributes.get("user");
+        String userProfile = (String) sessionAttributes.get("userProfile");
+
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        String formattedTime = now.format(formatter);
+
+        frdChatMessage.setCreatedAt(formattedTime);
+        frdChatMessage.setSender(user);
         frdChatMessageService.save(frdChatMessage);
-
         System.out.println(frdChatMessage.getRoomId() + "채팅컨트롤러의 방아이디 찍히게");
-        log.info(String.valueOf(frdChatMessage));
+        FrdChatMessageDTO frdChatMessageDTO = frdChatMessage.toFrdChatMessageDTO();
+        frdChatMessageDTO.setUserProfile(userProfile);
 
-        template.convertAndSend("/frdSub/" + frdChatMessage.getRoomId(), frdChatMessage);
+        template.convertAndSend("/frdSub/" + frdChatMessage.getRoomId(), frdChatMessageDTO);
     }
 
     @GetMapping("/chatroom/{roomId}")
@@ -60,7 +73,6 @@ public class FrdChatController {
             return ResponseEntity.badRequest().body(response);
         }
     }
-
     @EventListener(SessionConnectEvent.class)
     public void onConnect(SessionConnectEvent event) {
         String sessionId = event.getMessage().getHeaders().get("simpSessionId").toString();

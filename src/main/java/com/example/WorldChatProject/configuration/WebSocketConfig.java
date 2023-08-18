@@ -78,22 +78,25 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             StompCommand command = accessor.getCommand();
 
             if (command != null && command.equals(StompCommand.CONNECT)) {
+
                 String token = accessor.getFirstNativeHeader("Authorization");
                 log.info("Token: " + token);
 
                 token = token.replace(JwtProperties.TOKEN_PREFIX, "");
                 String username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token)
                         .getClaim("username").asString();
-                log.info("username유저네임유저네임" + username);
 
                 if (username != null) {
                     UserDTO userDTO = userRepository.findByUserName(username).get().EntityToDTO();
                     //헤더에 유저 닉네임값을 저장 이후 각 컨트롤러에서 호출하여 어떤 사용자가 채팅을 보냈는지 구분
                     accessor.getSessionAttributes().put("user", userDTO.getUserNickName());
                     accessor.getSessionAttributes().put("userName", userDTO.getUserName());
-                    if(userDTO.getUserProfileName() != null)
-                    accessor.getSessionAttributes().put("userProfile", userDTO.getUserProfileName());
-                    log.info("if문 안에 로그그그그그");
+                    if(userDTO.getUserProfileName() != null ){
+                        accessor.getSessionAttributes().put("userProfile", userDTO.getUserProfileName());
+                    }
+                    if(userDTO.getUserProfileName() != null){
+                        accessor.getSessionAttributes().put("userProfile", userDTO.getUserProfileName());
+                    }
                 }
             }
             return message;

@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Data
 public class FrdChatRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

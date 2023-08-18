@@ -1,5 +1,9 @@
 package com.example.WorldChatProject.frdChat.dto;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import com.example.WorldChatProject.frdChat.entity.FrdChatMessage;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,11 +17,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class FrdChatMessageDTO {
+
     private Long id;
     private long roomId;
     private String sender;
     private String message;
     private String createdAt;
+    private String userProfile;
 
     /* 파일 업로드 관련 변수 */
     private String s3DataUrl; // 파일 업로드 url

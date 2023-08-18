@@ -17,9 +17,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -54,7 +54,6 @@ public class TranslationController {
         }
         System.out.println(user + "이건 좀 너무한거 아니냐고 싯팔");
         System.out.println(loginUserId + "설마 너도 안나오냐?ㅋㅋㅋㅋ");
-
 
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
