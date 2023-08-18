@@ -35,11 +35,11 @@ public class RandomChatController {
     @MessageMapping("/randomChat/{randomRoomId}/enter")
     @SendTo("/randomChat/{randomRoomId}")
     public void enter(@Payload RandomChatDTO chatDTO, @DestinationVariable("randomRoomId") String randomRoomId) {
-        RandomRoom room = randomRoomService.find(chatDTO.getRandomRoomId());
+        RandomRoom room = randomRoomService.findRoomById(chatDTO.getRandomRoomId());
         String roomName = room.getRandomRoomName();
-        chatDTO.setContent(roomName + "에 입장하셨습니다.");
+        chatDTO.setContent(roomName + " ROOM");
         log.info("{}: {}", chatDTO.getType(), chatDTO.getContent());
-        template.convertAndSend("/randomSub/randomChat/" + randomRoomId, chatDTO);
+        template.convertAndSend("/randomSub/randomChat/" + room.getRandomRoomId(), chatDTO);
     }
 
 

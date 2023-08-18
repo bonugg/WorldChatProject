@@ -33,11 +33,11 @@ public class RandomRoom {
     @OneToMany(mappedBy = "randomRoom", cascade = CascadeType.ALL)
     private List<RandomChat> randomChatContent = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user1_id")
     private User user1;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user2_id")
     private User user2;
 
@@ -48,14 +48,14 @@ public class RandomRoom {
     //랜덤채팅방 이름 구성하고 랜덤채팅방 반환
     public static RandomRoom create(User user){
         RandomRoom room = new RandomRoom();
-        room.setRandomRoomName("대기방");
+        room.setRandomRoomName("WAITING");
         room.setUser1(user);
         return room;
     }
 
     //채팅방에 상대방 참여 시 채팅방 이름 변경
     public static RandomRoom rename(RandomRoom room, User user1, User user2){
-        room.setRandomRoomName("매칭된 방");
+        room.setRandomRoomName("MATCHED");
         room.setUser1(user1);
         room.setUser2(user2);
         return room;

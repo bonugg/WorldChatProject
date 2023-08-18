@@ -26,7 +26,7 @@ public class RandomFile {
     private String randomFileName;
     @Column
     private String randomFileOrigin;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "random_room_id")
     @JsonIgnore
     private RandomRoom randomRoom;

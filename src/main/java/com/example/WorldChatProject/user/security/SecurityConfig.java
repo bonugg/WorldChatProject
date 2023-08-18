@@ -63,10 +63,11 @@ public class SecurityConfig {
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository, refreshTokenRepository))
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                                 .requestMatchers("/api/v1/user/**").hasRole("USER")
-                                .requestMatchers("/cateChatApi/**").hasRole("USER")
                                 .requestMatchers("/friends/**").hasRole("USER")
                                 .requestMatchers("/chat/**").hasRole("USER")
                                 .requestMatchers("/api/v1/cateChat/**").hasRole("USER")
+                                .requestMatchers("/random/room").hasRole("USER")
+//                                .requestMatchers("/CateChat/**").hasRole("USER")
                                 .anyRequest().permitAll()
                 );
         return http.build();

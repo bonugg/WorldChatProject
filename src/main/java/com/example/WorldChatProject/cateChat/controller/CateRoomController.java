@@ -31,38 +31,10 @@ public class CateRoomController {
     private final CateChatService cateChatService;
     private final CateUserListService cateUserListService;
 
-    @ResponseBody
-    @GetMapping("/cateChatApi")
-    public PrincipalDetails user2(Authentication authentication) {
-        //principal 안에는 유저의 정보가 담겨있음
-        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-        return principal;
-    }
-
-    //로그인하기
-    @GetMapping("/login")
-    public String login() {
-        return "login_page";
-    }
-
-    //입장 가능한 모든 채팅방 목록 가져오기
-//    @GetMapping("/cateChat/roomList")
-//    public String cateChatRoomList() {
-//        List<CateRoom> cateRoomList = cateRoomService.getAllCateChatRoom();
-//        //채팅방 생성 순서를 최근순으로 반환
-//        Collections.reverse(cateRoomList);
-//        return "cateChat";
-//    }
-
-    @GetMapping("/cateChat/roomList")
-    private ResponseEntity<?> cateChatRoomList() {
-        return cateRoomService.getAllCateChatRoom();
-    }
-
-    //채팅방 생성 페이지로 이동
-    @GetMapping("/cateChat/createRoom")
-    public String createRoom() {
-        return "cateRoomPlus";
+    @GetMapping("/cateChat/roomList/{category}")
+    private ResponseEntity<?> cateChatRoomList(@PathVariable String category) {
+        log.info(category);
+        return cateRoomService.getAllCateChatRoom(category);
     }
 
     //채팅방 만들기
@@ -97,37 +69,5 @@ public class CateRoomController {
         responseResult.put("isFull", isFull);
 
         return ResponseEntity.ok(responseResult);
-    }
-
-    //채팅방 입장
-    @GetMapping("/cateChat/{cateId}")
-    public String cateChat(@PathVariable String cateId,@RequestParam(value = "userName", required = false)String userName, Model model) {
-        Long cateRoomId = Long.parseLong(cateId);
-
-        CateRoom cateRoom = cateRoomService.getChatRoom(cateRoomId);
-
-        List<CateChat> cateChatList = cateChatService.getMessagesByCateRoom(cateRoomId);
-
-        cateUserListService.save(cateRoomId, userName);
-
-        List<String> userList = cateUserListService.findAllUserNamesByCateId(cateRoomId);
-
-//        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-//        String username = principal.getUsername();
-
-        model.addAttribute("cateUserList", userList);
-        model.addAttribute("cateRoom", cateRoom);
-        model.addAttribute("cateChatList", cateChatList);
-
-
-        return "cateChatting";
-    }
-
-    //채팅방 나가기
-    @GetMapping("/leave/{cateId}")
-    public void leaveUser(@PathVariable String cateId, @RequestParam(value = "userName", required = false)String userName) {
-        cateRoomService.minusUserCnt(Long.valueOf(cateId));
-        cateChatService.deleteCateChatByCateId(cateId);
-        cateUserListService.deleteCateUserList(userName);
     }
 }

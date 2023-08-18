@@ -14,6 +14,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
+import org.hibernate.proxy.HibernateProxy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -174,5 +176,13 @@ public class UserService {
 
             return ResponseEntity.badRequest().body(responseDTO);
         }
+    }
+
+    public User getInitializedUser(User user) {
+        if (user instanceof HibernateProxy) {
+            Hibernate.initialize(user);
+            user = (User) ((HibernateProxy) user).getHibernateLazyInitializer().getImplementation();
+        }
+        return user;
     }
 }

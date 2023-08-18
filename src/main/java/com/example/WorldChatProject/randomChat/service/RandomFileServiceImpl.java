@@ -5,12 +5,11 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.*;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
 import com.amazonaws.services.s3.transfer.Upload;
+import com.amazonaws.util.IOUtils;
 import com.example.WorldChatProject.configuration.NaverConfiguration;
 import com.example.WorldChatProject.randomChat.dto.RandomFileDTO;
 import com.example.WorldChatProject.randomChat.entity.RandomFile;
@@ -19,6 +18,10 @@ import com.example.WorldChatProject.randomChat.repository.RandomFileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -93,7 +96,6 @@ public class RandomFileServiceImpl implements RandomFileService {
             ).withCannedAcl(CannedAccessControlList.PublicRead);
 
             Upload upload = transferManager.upload(putObjectRequest);
-            //upload.waitForCompletion();
             upload.waitForUploadResult();
         } catch (Exception e) {
             log.info("object storage error : {}", e.getMessage());
@@ -101,11 +103,41 @@ public class RandomFileServiceImpl implements RandomFileService {
         return randomFile;
     }
 
+    @Override
+    public ResponseEntity<byte[]> getObject(String fileDir, String fileName) {
+        return null;
+    }
+
+//    @Override
+//    public ResponseEntity<byte[]> getObject(String fileDir, String fileName) {
+//        // bucket 와 fileDir 을 사용해서 S3 에 있는 객체 - object - 를 가져온다.
+//        S3Object object = s3.getObject(new GetObjectRequest(bucket, fileDir));
+//
+//        // object 를 S3ObjectInputStream 형태로 변환한다.
+//        S3ObjectInputStream objectInputStream = object.getObjectContent();
+//
+//        // 이후 다시 byte 배열 형태로 변환한다.
+//        // 아마도 파일 전송을 위해서는 다시 byte[] 즉, binary 로 변환해서 전달해야햐기 때문
+//        byte[] bytes = IOUtils.toByteArray(objectInputStream);
+//
+//        // 여기는 httpHeader 에 파일 다운로드 요청을 하기 위한내용
+//        HttpHeaders httpHeaders = new HttpHeaders();
+//        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+//
+//        // 지정된 fileName 으로 파일이 다운로드 된다.
+//        httpHeaders.setContentDispositionFormData("attachment", fileName);
+//
+//        log.info("HttpHeader : [{}]", httpHeaders);
+//
+//        // object가 변환된 byte 데이터, httpHeader 와 HttpStatus 가 포함된다.
+//        return new ResponseEntity<>(bytes, httpHeaders, HttpStatus.OK);
+//    }
+
 
     //db에 파일 업로드
     @Override
     public void uploadFile(RandomFile file, String roomId) {
-            RandomRoom room = roomService.find(Long.parseLong(roomId));
+            RandomRoom room = roomService.findRoomById(Long.parseLong(roomId));
             file.setRandomRoom(room);
             fileRepository.save(file);
     }

@@ -4,8 +4,12 @@ import com.example.WorldChatProject.randomChat.dto.RandomRoomDTO;
 import com.example.WorldChatProject.randomChat.entity.RandomRoom;
 import com.example.WorldChatProject.randomChat.service.RandomRoomService;
 import com.example.WorldChatProject.user.dto.UserDTO;
+import com.example.WorldChatProject.user.security.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,14 +22,15 @@ public class RandomRoomController{
 
     // 랜덤채팅 대기 및 입장 처리
     @PostMapping("/room")
-        public RandomRoomDTO enter(@RequestBody UserDTO userDTO) {
+        public RandomRoomDTO enter(Authentication authentication) {
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         log.info("Start random Chat");
         try{
-            log.info("User {} requested random chat.", userDTO.getUserNickName());
-            RandomRoom room = service.match(userDTO.getUserName());
+            log.info("User {} requested random chat.", principal.getUser().getUserNickName());
+            RandomRoom room = service.match(principal.getUsername());
             RandomRoomDTO randomRoomDTO = room.toDTO();
             randomRoomDTO.setSuccess(true);
-            log.info("created random room info : {}", randomRoomDTO.getRandomRoomName());
+            log.info("created random room info : {}", randomRoomDTO.getRandomRoomId());
             return randomRoomDTO;
         }catch (Exception e){
             log.info("not created random room: {}", e.getMessage());
