@@ -64,49 +64,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.setApplicationDestinationPrefixes("/randomPub", "/catePub","/frdPub"); //app
     }
 
-    //세션 종료 시
-    @EventListener
-    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
-        log.info("RabdomRoomWebSocket disconnection event is occured");
-        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        log.info("userName: {}", headerAccessor.getSessionAttributes().get("userName"));
-        String userName = (String) headerAccessor.getSessionAttributes().get("userName");
-        Optional<User> userOptional = userRepository.findByUserName(userName);
-        if (!userOptional.isPresent()) {
-            log.info("User not found");
-            return;
-        }
-        User user = userOptional.get();
-        RandomRoom room = randomRoomRepository.findByUser1IdOrUser2Id(user.getUserId());
-        if (room == null) {
-            log.info("Random room not found");
-            return;
-        }
-        disconnectBothUsers(room);
-        randomRoomService.delete(room.getRandomRoomId());
-    }
-
-
-    private void disconnectBothUsers(RandomRoom room) {
-        String user1_name = room.getUser1().getUserName();
-        String user2_name = room.getUser2().getUserName();
-        disconnectUser(room, user1_name);
-        disconnectUser(room, user2_name);
-    }
-
-    private void disconnectUser(RandomRoom room, String userName) {
-        ApplicationEventPublisher eventPublisher = applicationContext.getBean(ApplicationEventPublisher.class);
-        //웹소켓 연결 종료 처리를 위한 헤더 객체
-        SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.DISCONNECT);
-        headerAccessor.setSessionId(userName); //사용자 세션 id를 헤더에 설정
-        headerAccessor.setLeaveMutable(true); //헤더가 변경 가능한 상태가 설정
-
-        Message<byte[]> message = MessageBuilder.createMessage(new byte[0], headerAccessor.getMessageHeaders());
-        CloseStatus closeStatus = new CloseStatus(1000, "User disconnected");
-        eventPublisher.publishEvent(new SessionDisconnectEvent(this, message, userName, closeStatus));
-        randomRoomService.delete(room.getRandomRoomId());
-    }
-
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(new StompHeaderChannelInterceptor());
@@ -138,7 +95,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                     accessor.getSessionAttributes().put("userProfile", userDTO.getUserProfileName());
                     log.info("if문 안에 로그그그그그");
                 }
-
             }
             return message;
         }
