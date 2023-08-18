@@ -1,5 +1,6 @@
 package com.example.WorldChatProject.frdChat.service;
 
+import com.example.WorldChatProject.frdChat.dto.FrdChatMessageDTO;
 import com.example.WorldChatProject.frdChat.entity.FrdChatMessage;
 import com.example.WorldChatProject.frdChat.repository.FrdChatMessageRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ public class FrdChatMessageService {
         frdChatMessageRepository.save(frdChatMessage);
     }
 
-    public List<FrdChatMessage> findByRoomId(Long roomId) {
+    public List<FrdChatMessage> getChatMessages(Long roomId) {
         return frdChatMessageRepository.findByRoomId(roomId);
     }
 }

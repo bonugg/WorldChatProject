@@ -15,6 +15,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
@@ -67,6 +69,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registration.interceptors(new StompHeaderChannelInterceptor());
     }
 
+    @Order(Ordered.HIGHEST_PRECEDENCE + 99)
     class StompHeaderChannelInterceptor implements ChannelInterceptor {
 
         @Override
@@ -82,12 +85,16 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 token = token.replace(JwtProperties.TOKEN_PREFIX, "");
                 String username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token)
                         .getClaim("username").asString();
+
                 if (username != null) {
                     UserDTO userDTO = userRepository.findByUserName(username).get().EntityToDTO();
                     //헤더에 유저 닉네임값을 저장 이후 각 컨트롤러에서 호출하여 어떤 사용자가 채팅을 보냈는지 구분
                     accessor.getSessionAttributes().put("user", userDTO.getUserNickName());
                     accessor.getSessionAttributes().put("userName", userDTO.getUserName());
                     if(userDTO.getUserProfileName() != null ){
+                        accessor.getSessionAttributes().put("userProfile", userDTO.getUserProfileName());
+                    }
+                    if(userDTO.getUserProfileName() != null){
                         accessor.getSessionAttributes().put("userProfile", userDTO.getUserProfileName());
                     }
                 }

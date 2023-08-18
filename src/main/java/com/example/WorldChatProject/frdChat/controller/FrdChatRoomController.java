@@ -64,11 +64,13 @@ public class FrdChatRoomController {
             System.out.println(checkFrdChatRoom.getId() + "아니야 이제 불러. 그리고 이거 가져가야한다?");
             FrdChatRoom frdChatRoom = frdChatRoomService.findById(checkFrdChatRoom.getId());
             System.out.println(frdChatRoom + "본욱이형 미워... 그래도 가져간다!");
-            returnMap.put("chatroom", frdChatRoom);
+
             returnMap.put("userNickName", principal.getUser().getUserNickName());
             returnMap.put("userProfile", principal.getUser().getUserProfileName());
             returnMap.put("userProfileOther", user2.getUserProfileName());
+            returnMap.put("chatroom", frdChatRoom.entityToDTO());
             response.setItem(returnMap);
+            log.info("returnMap success");
             response.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok().body(response);
         } catch (Exception e) {
