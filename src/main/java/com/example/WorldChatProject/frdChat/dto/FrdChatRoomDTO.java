@@ -1,36 +1,28 @@
-package com.example.WorldChatProject.frdChat.entity;
+package com.example.WorldChatProject.frdChat.dto;
 
-import com.example.WorldChatProject.frdChat.dto.FrdChatRoomDTO;
+import com.example.WorldChatProject.frdChat.entity.FrdChatRoom;
 import com.example.WorldChatProject.user.entity.User;
-import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FrdChatRoom {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class FrdChatRoomDTO {
     private Long id;
-    @ManyToOne
     private User friends1;
-    @ManyToOne
     private User friends2;
     private LocalDateTime createdAt;
 
-    public FrdChatRoomDTO entityToDTO() {
-        return FrdChatRoomDTO.builder()
+    public FrdChatRoom dtoToEntity() {
+        return FrdChatRoom.builder()
                 .id(this.id)
                 .friends1(this.friends1)
                 .friends2(this.friends2)
                 .createdAt(this.createdAt)
                 .build();
     }
-
-
 }

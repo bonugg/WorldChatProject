@@ -200,7 +200,7 @@ public class FriendsController {
         }
     }
 
-    @DeleteMapping("delete-friends")
+    @DeleteMapping("/delete-friends")
     public ResponseEntity<?> deleteFriends(@RequestBody User user, Authentication authentication) {
         ResponseDTO<Map<String, String>> response = new ResponseDTO<>();
         try {

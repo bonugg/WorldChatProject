@@ -1,5 +1,6 @@
 package com.example.WorldChatProject.frdChat.repository;
 
+import com.example.WorldChatProject.frdChat.dto.FrdChatMessageDTO;
 import com.example.WorldChatProject.frdChat.entity.FrdChatMessage;
 import org.springframework.data.jpa.repository.JpaRepository;
 

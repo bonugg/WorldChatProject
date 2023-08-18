@@ -32,14 +32,8 @@ public class UserApiController {
     private final UserService userService;
     private final UserRepository userRepository;
 
-    @GetMapping("hello")
-    public List<String> hello(){
-        return Arrays.asList("나의앱", "MYAPP");
-    }
-
     @GetMapping("/user")
     public PrincipalDetails user(Authentication authentication) {
-        System.out.println("입");
         //principal 안에는 유저의 정보가 담겨있음
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         return principal;
@@ -103,6 +97,7 @@ public class UserApiController {
 
     @PostMapping("/accessToken")
     public ResponseEntity<String> accessToken() {
+        log.info("액세스토큰 요청");
         return new ResponseEntity<>("엑세스", HttpStatus.OK);
     }
 

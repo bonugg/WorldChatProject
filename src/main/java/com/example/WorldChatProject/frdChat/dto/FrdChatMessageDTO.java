@@ -1,8 +1,6 @@
-package com.example.WorldChatProject.frdChat.entity;
+package com.example.WorldChatProject.frdChat.dto;
 
-import com.example.WorldChatProject.frdChat.dto.FrdChatMessageDTO;
-import com.example.WorldChatProject.frdChat.dto.Status;
-import jakarta.persistence.*;
+import com.example.WorldChatProject.frdChat.entity.FrdChatMessage;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,14 +8,11 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FrdChatMessage {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class FrdChatMessageDTO {
     private Long id;
     private long roomId;
     private String sender;
@@ -29,8 +24,8 @@ public class FrdChatMessage {
     private String fileName; // 파일이름
     private String fileDir; // s3 파일 경로
 
-    public FrdChatMessageDTO EntityToDTO() {
-        return FrdChatMessageDTO.builder()
+    public FrdChatMessage DTOToEntity() {
+        return FrdChatMessage.builder()
                 .id(this.id)
                 .roomId(this.roomId)
                 .sender(this.sender)
