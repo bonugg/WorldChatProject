@@ -41,6 +41,7 @@ public class RtcChatService {
 
     //로그아웃시 웹소켓 해제 및 map에서 삭제
     public void RTCLogout(String userName) throws IOException {
+        log.info("로그아웃" + userName);
         if (userName == null || userName.trim().isEmpty()) {
             throw new IllegalArgumentException("userName cannot be null or empty");
         }
@@ -108,7 +109,7 @@ public class RtcChatService {
     // 유저 카운터 return
     public boolean findUserCount(WebSocketMessage webSocketMessage) {
         Set<String> keys = ChatRoomMap.getInstance().getChatRooms().keySet();
-        log.info(keys.toString());
+        log.info("현재 화상채팅방 목록: " + keys.toString());
         log.info(String.valueOf(ChatRoomMap.getInstance().getChatRooms().get(webSocketMessage.getData())));
         log.info(ChatRoomMap.getInstance().toString());
         ChatRoomDto room = ChatRoomMap.getInstance().getChatRooms().get(webSocketMessage.getData());

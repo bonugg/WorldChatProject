@@ -33,6 +33,7 @@ public class RtcChatController {
     //로그인 후 즉시 웹소켓 연결 후 유저 목록 저장 -> db 저장으로 변경 예정?
     @PostMapping("/chat/addUser")
     public void addUser(String userId){
+        log.info("실행되면 안 되는 구간");
         msgChatService.addUser(ChatRoomMap.getInstance().getChatRooms(), "1", userId);
     }
 

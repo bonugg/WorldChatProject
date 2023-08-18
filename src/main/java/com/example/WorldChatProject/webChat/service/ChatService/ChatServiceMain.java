@@ -103,7 +103,7 @@ public class ChatServiceMain {
 //                // 채팅방 안에 있는 파일 삭제
 //                fileService.deleteFileDir(roomId);
 //            }
-
+            log.info(findAllRoom().toString());
             log.info("삭제 완료 roomId : {}", roomId);
 
         } catch (Exception e) { // 만약에 예외 발생시 확인하기 위해서 try catch
