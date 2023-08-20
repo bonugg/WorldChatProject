@@ -64,6 +64,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                                 .requestMatchers("/api/v1/user/**").hasRole("USER")
                                 .requestMatchers("/friends/**").hasRole("USER")
+        //                        .requestMatchers("/friendchat/**").hasRole("USER")
                                 .requestMatchers("/chat/**").hasRole("USER")
                                 .requestMatchers("/api/v1/cateChat/**").hasRole("USER")
                                 .requestMatchers("/random/room").hasRole("USER")

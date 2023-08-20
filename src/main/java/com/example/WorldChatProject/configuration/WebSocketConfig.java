@@ -17,6 +17,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
@@ -48,11 +50,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint( "/random") //https://localhost:9002/random/
-                .setAllowedOrigins("https://localhost:3001") //Cors 설정
                 .withSockJS(); //SockJS 사용을 위한 설정
         registry.addEndpoint("/CateChat")
                 .withSockJS();
-        registry.addEndpoint("/ws")
+        registry.addEndpoint("/friendchat")
                 .setAllowedOrigins("https://localhost:3001")
                 .withSockJS();
     }
@@ -61,10 +62,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry){
         //메시지 구독 요청 url경로 등록(메시지 받을 때)
-        registry.enableSimpleBroker("/randomSub", "/cateSub","/topic","/queue"); //topic
+        registry.enableSimpleBroker("/randomSub", "/cateSub","/frdSub"); //topic
         //클라이언트의 메시지 발행 요청 url경로（요청주소 prefix) 등록(메시지 보낼 때)
-        registry.setApplicationDestinationPrefixes("/randomPub", "/catePub","/app"); //app
         registry.setUserDestinationPrefix("/user");
+        registry.setApplicationDestinationPrefixes("/randomPub", "/catePub","/frdPub"); //app
     }
 
     @Override
@@ -72,6 +73,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registration.interceptors(new StompHeaderChannelInterceptor());
     }
 
+    @Order(Ordered.HIGHEST_PRECEDENCE + 99)
     class StompHeaderChannelInterceptor implements ChannelInterceptor {
 
         @Override
@@ -80,20 +82,23 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             StompCommand command = accessor.getCommand();
 
             if (command != null && command.equals(StompCommand.CONNECT)) {
+
                 String token = accessor.getFirstNativeHeader("Authorization");
                 log.info("Token: " + token);
 
                 token = token.replace(JwtProperties.TOKEN_PREFIX, "");
                 String username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token)
                         .getClaim("username").asString();
+
                 if (username != null) {
                     UserDTO userDTO = userRepository.findByUserName(username).get().EntityToDTO();
                     //헤더에 유저 닉네임값을 저장 이후 각 컨트롤러에서 호출하여 어떤 사용자가 채팅을 보냈는지 구분
                     accessor.getSessionAttributes().put("user", userDTO.getUserNickName());
                     accessor.getSessionAttributes().put("userName", userDTO.getUserName());
-                    if(userDTO.getUserProfileName() != null) {
+                    if(userDTO.getUserProfileName() != null ){
                         accessor.getSessionAttributes().put("userProfile", userDTO.getUserProfileName());
                     }
+
                 }
             }
             return message;

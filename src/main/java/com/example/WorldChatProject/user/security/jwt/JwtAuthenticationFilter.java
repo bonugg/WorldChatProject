@@ -76,7 +76,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 		//엑세스 토큰 헤더에 저장 및 유저 아이디 저장
 		response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX+jwtToken);
-		response.addHeader("userName", principalDetailis.getUser().getUserName());
+		response.addHeader("username", principalDetailis.getUser().getUserName());
 
 		// 리프레쉬 토큰 생성
 		String refreshToken = JWT.create()
