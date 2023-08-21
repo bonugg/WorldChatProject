@@ -94,9 +94,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                     if(userDTO.getUserProfileName() != null ){
                         accessor.getSessionAttributes().put("userProfile", userDTO.getUserProfileName());
                     }
-                    if(userDTO.getUserProfileName() != null){
-                        accessor.getSessionAttributes().put("userProfile", userDTO.getUserProfileName());
-                    }
                 }
             }
             return message;
