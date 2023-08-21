@@ -15,5 +15,5 @@ public interface RandomFileService {
 
     RandomFile parseFileInfo(MultipartFile file, String directoryPath, String roomId) throws IOException;
 
-    ResponseEntity<byte[]> getObject(String fileDir, String fileName);
+    ResponseEntity<byte[]> getObject(String fileDir, String fileName) throws IOException;
 }

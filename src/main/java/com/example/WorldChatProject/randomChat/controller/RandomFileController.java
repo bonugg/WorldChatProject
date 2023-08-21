@@ -44,16 +44,14 @@ public class RandomFileController {
         }
     }
 
-
-
-//    @GetMapping("/download/{fileName}")
-//    public ResponseEntity<byte[]> download(@PathVariable String fileName, @RequestParam("fileDir") String fileDir) {
-//        log.info("fileDir : fileName [{} : {}]", fileDir, fileName);
-//        try {
-//            // 변환된 byte, httpHeader 와 HttpStatus 가 포함된 ResponseEntity 객체를 return 한다.
-//            return fileService.getObject(fileDir, fileName);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+    @GetMapping("/download/{fileName}")
+    public ResponseEntity<byte[]> download(@PathVariable String fileName, @RequestParam("fileDir") String fileDir) {
+        log.info("fileDir : fileName [{} : {}]", fileDir, fileName);
+        try {
+            // 변환된 byte, httpHeader 와 HttpStatus 가 포함된 ResponseEntity 객체를 return 한다.
+            return fileService.getObject(fileDir, fileName);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
