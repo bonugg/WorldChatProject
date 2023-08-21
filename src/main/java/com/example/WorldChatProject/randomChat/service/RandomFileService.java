@@ -16,4 +16,8 @@ public interface RandomFileService {
     RandomFile parseFileInfo(MultipartFile file, String directoryPath, String roomId) throws IOException;
 
     ResponseEntity<byte[]> getObject(String fileDir, String fileName) throws IOException;
+
+    void deleteFilesFromBucket(long path);
+
+    void deleteFilesByRoomIdFromDB(long randomRoomId);
 }

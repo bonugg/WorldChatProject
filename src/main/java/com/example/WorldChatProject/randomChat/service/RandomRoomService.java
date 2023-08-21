@@ -2,12 +2,14 @@ package com.example.WorldChatProject.randomChat.service;
 
 
 import com.example.WorldChatProject.randomChat.entity.RandomRoom;
+import com.example.WorldChatProject.randomChat.service.impl.RandomFileServiceImpl;
 import com.example.WorldChatProject.user.entity.User;
 
 import java.util.Optional;
 
 
 public interface RandomRoomService {
+
     RandomRoom match(String username);
 
     boolean deleteRoom(long roomId);

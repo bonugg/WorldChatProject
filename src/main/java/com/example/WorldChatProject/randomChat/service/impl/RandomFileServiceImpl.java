@@ -1,4 +1,4 @@
-package com.example.WorldChatProject.randomChat.service;
+package com.example.WorldChatProject.randomChat.service.impl;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -14,6 +14,9 @@ import com.example.WorldChatProject.configuration.NaverConfiguration;
 import com.example.WorldChatProject.randomChat.entity.RandomFile;
 import com.example.WorldChatProject.randomChat.entity.RandomRoom;
 import com.example.WorldChatProject.randomChat.repository.RandomFileRepository;
+import com.example.WorldChatProject.randomChat.service.RandomFileService;
+import com.example.WorldChatProject.randomChat.service.RandomRoomService;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +31,6 @@ import java.io.IOException;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class RandomFileServiceImpl implements RandomFileService {
     private final RandomFileRepository fileRepository;
@@ -38,10 +40,10 @@ public class RandomFileServiceImpl implements RandomFileService {
 
     @Autowired
     public RandomFileServiceImpl(RandomFileRepository fileRepository,
-                                 RandomRoomService roomService,
+                                 RandomRoomService randomRoomService,
                                  NaverConfiguration naverConfiguration) {
         this.fileRepository = fileRepository;
-        this.roomService = roomService;
+        this.roomService = randomRoomService;
 
         this.s3 = AmazonS3ClientBuilder.standard()
                 .withEndpointConfiguration(
@@ -57,7 +59,6 @@ public class RandomFileServiceImpl implements RandomFileService {
 
         this.bucket = naverConfiguration.getBucket();
     }
-
 
     //파일 이름, 경로 설정 & object storage 파일 업로드
     public RandomFile parseFileInfo(MultipartFile file, String directoryPath, String roomId) throws IOException {
@@ -96,10 +97,11 @@ public class RandomFileServiceImpl implements RandomFileService {
         fileRepository.save(file);
     }
 
+    //파일 조회
     @Override
     public ResponseEntity<byte[]> getObject(String fileDir, String fileName) throws IOException {
         // bucket 와 fileDir 을 사용해서 S3 에 있는 객체 - object - 를 가져온다.
-        S3Object object = s3.getObject(new GetObjectRequest(bucket, fileDir));
+        S3Object object = s3.getObject(new GetObjectRequest(this.bucket, fileDir));
 
         // object 를 S3ObjectInputStream 형태로 변환한다.
         S3ObjectInputStream objectInputStream = object.getObjectContent();
@@ -119,6 +121,21 @@ public class RandomFileServiceImpl implements RandomFileService {
 
         // object가 변환된 byte 데이터, httpHeader 와 HttpStatus 가 포함된다.
         return new ResponseEntity<>(bytes, httpHeaders, HttpStatus.OK);
+    }
+
+    @Override
+    public void deleteFilesFromBucket(long path) {
+        String strPath = Long.toString(path);
+        for(S3ObjectSummary summary : s3.listObjects(this.bucket, strPath).getObjectSummaries()) {
+            s3.deleteObject(this.bucket, summary.getKey());
+        }
+        log.info("{} directory in Object Storage is deleted", path);
+    }
+
+    @Override
+    public void deleteFilesByRoomIdFromDB(long randomRoomId) {
+        fileRepository.deleteByRoomId(randomRoomId);
+        log.info("files in room {} is deleted", randomRoomId);
     }
 
 

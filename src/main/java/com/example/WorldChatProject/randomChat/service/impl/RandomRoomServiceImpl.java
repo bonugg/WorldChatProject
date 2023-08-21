@@ -1,13 +1,16 @@
-package com.example.WorldChatProject.randomChat.service;
+package com.example.WorldChatProject.randomChat.service.impl;
 
 
 import com.example.WorldChatProject.randomChat.entity.RandomRoom;
 import com.example.WorldChatProject.randomChat.repository.RandomRoomRepository;
+import com.example.WorldChatProject.randomChat.service.RandomFileService;
+import com.example.WorldChatProject.randomChat.service.RandomRoomService;
 import com.example.WorldChatProject.user.entity.User;
 import com.example.WorldChatProject.user.repository.UserRepository;
 import com.example.WorldChatProject.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -15,7 +18,7 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class RandomRoomServiceImpl implements RandomRoomService{
+public class RandomRoomServiceImpl implements RandomRoomService {
 
     private final UserRepository userRepository;
     private final RandomRoomRepository randomRoomRepository;
@@ -105,6 +108,7 @@ public class RandomRoomServiceImpl implements RandomRoomService{
         Optional<RandomRoom> foundRoom = randomRoomRepository.findRoomWithUser(room.getRandomRoomId());
         return foundRoom.map(r -> r.getUser1() != null ? r.getUser1() : r.getUser2());
     }
+
 
 
 }

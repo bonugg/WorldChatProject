@@ -1,6 +1,7 @@
 package com.example.WorldChatProject.listener;
 
 import com.example.WorldChatProject.randomChat.entity.RandomRoom;
+import com.example.WorldChatProject.randomChat.service.RandomFileService;
 import com.example.WorldChatProject.randomChat.service.RandomRoomService;
 import com.example.WorldChatProject.user.entity.User;
 import com.example.WorldChatProject.user.repository.UserRepository;
@@ -30,6 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class WebSocketEventHandler {
     private final RandomRoomService randomRoomService;
     private final UserRepository userRepository;
+    private final RandomFileService randomFileService;
 
     @Autowired
     private ApplicationEventPublisher eventPublisher;
@@ -113,7 +115,12 @@ public class WebSocketEventHandler {
             //해제되면 자동으로 웹소켓 disconnection event발생되어 이 메소드 다시 실행됨.
             disconnectUser(other.get().getUserName());
         } else {
-            //채팅방에 아무도 없으므로 채팅방 삭제
+            //채팅방에 아무도 없음
+
+            //채팅방에 존재하는 파일들 삭제
+            randomFileService.deleteFilesFromBucket(roomId);
+            randomFileService.deleteFilesByRoomIdFromDB(roomId);
+            //채팅방 삭제
             randomRoomService.deleteRoom(roomId);
         }
 
