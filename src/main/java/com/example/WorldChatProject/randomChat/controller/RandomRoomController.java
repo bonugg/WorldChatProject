@@ -12,7 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,7 +25,7 @@ public class RandomRoomController{
 
     // 랜덤채팅 대기 및 입장 처리
     @PostMapping("/room")
-        public RandomRoomDTO enter(Authentication authentication) {
+        public Map<String, Object> enter(Authentication authentication) {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         log.info("Start random Chat");
         try{
@@ -32,17 +33,23 @@ public class RandomRoomController{
             RandomRoom room = service.match(principal.getUsername());
             RandomRoomDTO randomRoomDTO = room.toDTO();
             randomRoomDTO.setSuccess(true);
-            log.info("created random room info : {}", randomRoomDTO.getRandomRoomName());
-            return randomRoomDTO;
+            log.info("created random room info : {}", randomRoomDTO.getRandomRoomId());
+            Map<String, Object> result = new HashMap<>();
+            result.put("randomRoomDTO", randomRoomDTO);
+            result.put("userNickName", principal.getUser().getUserNickName());
+            return result;
         }catch (Exception e){
             log.info("not created random room: {}", e.getMessage());
             RandomRoomDTO errorDTO = RandomRoomDTO.builder()
                                                   .isSuccess(false)
                                                   .errorMessage(e.getMessage())
                                                   .build();
-            return errorDTO;
+            Map<String, Object> result = new HashMap<>();
+            result.put("randomRoomDTO", errorDTO);
+            result.put("userNickName", "");
+            return result;
         }
     }
-    
+
 
 }

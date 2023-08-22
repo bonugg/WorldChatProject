@@ -55,6 +55,9 @@ public class CateChatController {
         CateChatDTO savedMessage = cateChatService.saveMessage(cateChatDTO);
         savedMessage.setUserProfile(userProfile);
         savedMessage.setSender(user);
+        savedMessage.setS3DataUrl(cateChatDTO.getS3DataUrl());
+        savedMessage.setFileDir(cateChatDTO.getFileDir());
+        savedMessage.setFileName(cateChatDTO.getFileName());
 
         return savedMessage;
     }

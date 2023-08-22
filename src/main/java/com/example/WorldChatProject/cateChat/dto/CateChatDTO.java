@@ -27,6 +27,11 @@ public class CateChatDTO {
     private String newAccessToken;
     private String refresh;
 
+    /* 파일 업로드 관련 변수 */
+    private String s3DataUrl; // 파일 업로드 url
+    private String fileName; // 파일이름
+    private String fileDir; // s3 파일 경로
+
 
 
     //DTO를 엔티티로 변환하는 메소드

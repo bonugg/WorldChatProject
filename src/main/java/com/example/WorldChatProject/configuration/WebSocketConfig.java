@@ -9,8 +9,10 @@ import com.example.WorldChatProject.user.dto.UserDTO;
 import com.example.WorldChatProject.user.entity.User;
 import com.example.WorldChatProject.user.repository.UserRepository;
 import com.example.WorldChatProject.user.security.jwt.JwtProperties;
+import com.example.WorldChatProject.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Configuration;
@@ -29,8 +31,12 @@ import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.config.annotation.*;
+import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -39,14 +45,12 @@ import java.util.Optional;
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final UserRepository userRepository;
-    private final RandomRoomRepository randomRoomRepository;
-    private final RandomRoomService randomRoomService;
-    private final ApplicationContext applicationContext;
+    private final Map<String, String> userSessionMap = new ConcurrentHashMap<>();
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint( "/random") //https://localhost:9002/random/
-                .setAllowedOrigins("https://localhost:3001") //Cors 설정
+                .setAllowedOriginPatterns("https://localhost:3001")
                 .withSockJS(); //SockJS 사용을 위한 설정
         registry.addEndpoint("/CateChat")
                 .withSockJS();

@@ -1,6 +1,4 @@
 
-//package com.example.WorldChatProject.webChat.rtc;
-
 package com.example.WorldChatProject.webChat.rtc;//package com.example.WorldChatProject.webChat.rtc;
 
 //
