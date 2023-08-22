@@ -1,38 +1,43 @@
 package com.example.WorldChatProject.cateChat.controller;
 
-import com.example.WorldChatProject.cateChat.dto.ResponseDTO;
 import com.example.WorldChatProject.cateChat.dto.TranslationRequest;
-import com.example.WorldChatProject.cateChat.dto.TranslationResponseDTO;
-import com.example.WorldChatProject.cateChat.service.TranslationService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 @RestController
 public class TranslationController {
 
-    private final TranslationService translationService;
+        String apiUrl = "https://openapi.naver.com/v1/papago/n2mt";
+        String clientId = "ABIKpYQzMAvg_6hOqfOE";
+        String clientSecret = "GKwRKNLj_9";
 
-    @Autowired
-    public TranslationController(TranslationService translationService) {
-        this.translationService = translationService;
-    }
+        @PostMapping("/translate")
+        public ResponseEntity<?> translateText(@RequestBody TranslationRequest translationRequest) {
 
-    @PostMapping("/translate")
-    public ResponseEntity<?> translateText(@RequestBody TranslationRequest translationRequest) {
-        ResponseDTO responseDTO = new ResponseDTO<>();
-        try {
-            TranslationResponseDTO dto = translationService.translate(translationRequest).getBody();
-            responseDTO.setItem(dto.getMessage().getResult().getTranslatedText());
-            responseDTO.setStatusCode(HttpStatus.OK.value());
-            return ResponseEntity.ok().body(responseDTO);
-        } catch (Exception e) {
-            responseDTO.setErrorMessage(e.getMessage());
-            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
-            return ResponseEntity.badRequest().body(responseDTO);
+            RestTemplate restTemplate = new RestTemplate();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+            headers.set("X-Naver-Client-Id", clientId);
+            headers.set("X-Naver-Client-Secret", clientSecret);
+
+            MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
+            requestBody.add("source", translationRequest.getSource());
+            requestBody.add("target", translationRequest.getTarget());
+            requestBody.add("text", translationRequest.getText());
+
+            HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
+
+            ResponseEntity<?> response = restTemplate.postForEntity(apiUrl, requestEntity, String.class);
+
+            return response;
         }
-    }
+
 }
