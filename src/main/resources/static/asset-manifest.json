@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/static/css/main.194a12bc.css",
+    "main.js": "/static/js/main.229395a7.js",
+    "static/media/8k_earth_clouds.jpg": "/static/media/8k_earth_clouds.08fcd80007fae8fc7170.jpg",
+    "static/media/8k_earth_daymap.jpg": "/static/media/8k_earth_daymap.54672c1f3ba121d80470.jpg",
+    "static/media/8k_earth_nightmap.jpg": "/static/media/8k_earth_nightmap.c0e138e9bf380cafd2c2.jpg",
+    "static/media/background.jpg": "/static/media/background.d4a5a9a247e1b71107b4.jpg",
+    "static/media/mars.jpg": "/static/media/mars.377ebdbb6eb4dafc2542.jpg",
+    "static/media/8k_earth_specular_map.jpg": "/static/media/8k_earth_specular_map.7b4efa59933b470e3776.jpg",
+    "static/media/8k_earth_normal_map.jpg": "/static/media/8k_earth_normal_map.930cf2e99bc548140c29.jpg",
+    "static/media/cloud.jpg": "/static/media/cloud.72f3d2ba427870b4aa24.jpg",
+    "static/media/Pluto_Made.webp": "/static/media/Pluto_Made.94a3bff8090be76def39.webp",
+    "static/media/sun.jpg": "/static/media/sun.4ae42484b135bde6085d.jpg",
+    "static/media/profile.png": "/static/media/profile.b9724afd2a77138b2d76.png",
+    "static/media/logo.png": "/static/media/logo.a1af3c4c966de210fcec.png",
+    "static/media/logo_no_text.png": "/static/media/logo_no_text.a4b9be62380f67f27337.png",
+    "index.html": "/index.html",
+    "main.194a12bc.css.map": "/static/css/main.194a12bc.css.map",
+    "main.229395a7.js.map": "/static/js/main.229395a7.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.194a12bc.css",
+    "static/js/main.229395a7.js"
+  ]
+}

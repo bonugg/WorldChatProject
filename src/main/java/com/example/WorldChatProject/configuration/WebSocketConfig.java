@@ -85,7 +85,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 token = token.replace(JwtProperties.TOKEN_PREFIX, "");
                 String username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token)
                         .getClaim("username").asString();
-
                 if (username != null) {
                     UserDTO userDTO = userRepository.findByUserName(username).get().EntityToDTO();
                     //헤더에 유저 닉네임값을 저장 이후 각 컨트롤러에서 호출하여 어떤 사용자가 채팅을 보냈는지 구분

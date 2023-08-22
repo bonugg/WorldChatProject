@@ -38,6 +38,7 @@ public class FrdChatController {
     private final SimpMessagingTemplate template;
     private final FrdChatMessageService frdChatMessageService;
     private Map<String, String> sessions = new HashMap<>();
+
     @MessageMapping("/friendchat")
     public void receivePrivateMessage (FrdChatMessage frdChatMessage, @Header("simpSessionAttributes") Map<String, Object> sessionAttributes) {
         String user = (String) sessionAttributes.get("user");
@@ -50,7 +51,8 @@ public class FrdChatController {
         frdChatMessage.setCreatedAt(formattedTime);
         frdChatMessage.setSender(user);
         frdChatMessageService.save(frdChatMessage);
-        System.out.println(frdChatMessage.getRoomId() + "채팅컨트롤러의 방아이디 찍히게");
+
+        //System.out.println(frdChatMessage.getRoomId() + "채팅컨트롤러의 방아이디 찍히게");
         FrdChatMessageDTO frdChatMessageDTO = frdChatMessage.toFrdChatMessageDTO();
         frdChatMessageDTO.setUserProfile(userProfile);
 
@@ -73,6 +75,7 @@ public class FrdChatController {
             return ResponseEntity.badRequest().body(response);
         }
     }
+
     @EventListener(SessionConnectEvent.class)
     public void onConnect(SessionConnectEvent event) {
         String sessionId = event.getMessage().getHeaders().get("simpSessionId").toString();
