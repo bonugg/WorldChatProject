@@ -22,6 +22,7 @@ public class CateChatDTO {
     private MessageType type;
     private Long cateId;
     private String sender;
+    private String s3DataUrl;
 
     private String userProfile;
     private String newAccessToken;
@@ -39,6 +40,7 @@ public class CateChatDTO {
                                     .type(this.type)
                                     .sender(this.sender)
                                     .cateRoom(this.toCateChat().getCateRoom())
+                                    .s3DataUrl(this.s3DataUrl)
                                     .build();
 
         return cateChat;

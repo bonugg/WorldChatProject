@@ -70,4 +70,12 @@ public class CateRoomController {
 
         return ResponseEntity.ok(responseResult);
     }
+
+    //채팅방 나가기
+    @GetMapping("/leave/{cateId}")
+    public void leaveUser(@PathVariable String cateId, @RequestParam(value = "userName", required = false)String userName) {
+        cateRoomService.minusUserCnt(Long.valueOf(cateId));
+        cateChatService.deleteCateChatByCateId(cateId);
+        cateUserListService.deleteCateUserList(userName);
+    }
 }

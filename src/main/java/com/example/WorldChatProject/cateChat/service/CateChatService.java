@@ -31,6 +31,7 @@ public class CateChatService {
         cateChat.setType(cateChatDTO.getType());
         cateChat.setSender(cateChatDTO.getSender());
         cateChat.setCateRoom(cateRoomService.getChatRoom((cateChatDTO.getCateId())));
+        cateChat.setS3DataUrl(cateChatDTO.getS3DataUrl());
 
         CateChat savedCateChat = cateChatRepository.save(cateChat);
 
@@ -43,7 +44,7 @@ public class CateChatService {
         cateChatRepository.deleteAll(cateChatList);
     }
 
-    public List<CateChat> searchByContent(Long cateId, String keyword) {
-        return cateChatRepository.searchByContent(cateId, keyword);
-    }
+//    public List<CateChat> searchByContent(Long cateId, String keyword) {
+//        return cateChatRepository.searchByContent(cateId, keyword);
+//    }
 }

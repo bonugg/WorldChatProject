@@ -32,6 +32,9 @@ public class CateChat {
     @Column
     private String sender;
 
+    @Column
+    private String s3DataUrl;
+
     @Enumerated(EnumType.STRING)
     private MessageType type; //채팅 타입
 
@@ -49,6 +52,7 @@ public class CateChat {
                                              .type(this.type)
                                              .sender(this.sender)
                                              .cateId((cateRoom.getCateId()))
+                                             .s3DataUrl(this.s3DataUrl)
                                              .build();
 
         return cateChatDTO;

@@ -18,17 +18,13 @@ public class CateFile {
     private Long cateFileId;
 
     @Column
-    private String cateFilePath;
+    private String originalFileName;
 
     @Column
-    private String cateFileName;
-
-    @Column
-    private String cateFileOrigin; //파일 원본 이름
+    private String s3DataUrl;
 
     @ManyToOne
     private CateRoom cateRoom;
-
 
 
 }
