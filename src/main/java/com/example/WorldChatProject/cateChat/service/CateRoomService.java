@@ -3,6 +3,7 @@ package com.example.WorldChatProject.cateChat.service;
 import com.example.WorldChatProject.cateChat.dto.CateRoomDTO;
 import com.example.WorldChatProject.cateChat.entity.CateChat;
 import com.example.WorldChatProject.cateChat.entity.CateRoom;
+import com.example.WorldChatProject.cateChat.entity.Interest;
 import com.example.WorldChatProject.cateChat.repository.CateRoomRepository;
 import com.example.WorldChatProject.user.dto.ResponseDTO;
 import com.example.WorldChatProject.user.dto.UserDTO;
@@ -30,14 +31,18 @@ public class CateRoomService {
     private final CateRoomRepository cateRoomRepository;
     private final UserRepository userRepository;
 
-    public  ResponseEntity<?> getAllCateChatRoom() {
+    public ResponseEntity<?> getAllCateChatRoom(String category) {
         ResponseDTO<CateRoomDTO> responseDTO = new ResponseDTO<>();
         try {
-
-            List<CateRoom> cateRoomList = cateRoomRepository.findAll();
+            List<CateRoom> cateRoomList = new ArrayList<>();
+            if (category.equals("ALL")) {
+                cateRoomList = cateRoomRepository.findAll();
+            } else {
+                cateRoomList = cateRoomRepository.findByInterest(Interest.valueOf(category));
+            }
 
             List<CateRoomDTO> cateRoomDTO = new ArrayList<>();
-            for(CateRoom cateRoom : cateRoomList) {
+            for (CateRoom cateRoom : cateRoomList) {
                 cateRoomDTO.add(cateRoom.toCateRoomDTO());
             }
 
@@ -47,7 +52,7 @@ public class CateRoomService {
 
             return ResponseEntity.ok().body(responseDTO);
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
             responseDTO.setErrorMessage(e.getMessage());
 
@@ -56,9 +61,10 @@ public class CateRoomService {
     }
 
     public ResponseEntity createCateRoom(CateRoom cateRoom) {
-        cateRoom.setCateUserCnt(0L);
-        cateRoomRepository.save(cateRoom);
-        return ResponseEntity.status(HttpStatus.OK).body("roomCreate");
+        log.info("방생성시작 {}", cateRoom);
+        CateRoom rs_cateRoom = cateRoomRepository.save(cateRoom);
+        log.info("방생성완료");
+        return ResponseEntity.status(HttpStatus.OK).body(rs_cateRoom);
     }
 
     public CateRoom getChatRoom(Long cateId) {
@@ -69,10 +75,10 @@ public class CateRoomService {
 
     @Transactional
     //채팅방 인원 +1
-    public void plusUserCnt(Long cateId, String userName) {
+    public void plusUserCnt(Long cateId) {
         System.out.println("유저 들어옴");
         CateRoom cateRoom = cateRoomRepository.findById(cateId).get();
-        cateRoom.setCateUserCnt(cateRoom.getCateUserCnt()+1);
+        cateRoom.setCateUserCnt(cateRoom.getCateUserCnt() + 1);
 
         cateRoomRepository.save(cateRoom);
     }
@@ -81,7 +87,7 @@ public class CateRoomService {
     public void minusUserCnt(Long cateId) {
         System.out.println("유저 나감");
         CateRoom cateRoom = cateRoomRepository.findById(cateId).get();
-        cateRoom.setCateUserCnt(cateRoom.getCateUserCnt()-1);
+        cateRoom.setCateUserCnt(cateRoom.getCateUserCnt() - 1);
         cateRoomRepository.save(cateRoom);
     }
 
@@ -141,9 +147,6 @@ public class CateRoomService {
 //        cateroom.getCateUserList().forEach((key, value) -> list.add(value));
 //        return list;
 //    }
-
-
-
 
 
 }

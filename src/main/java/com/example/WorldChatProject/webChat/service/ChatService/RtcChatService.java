@@ -1,21 +1,22 @@
 package com.example.WorldChatProject.webChat.service.ChatService;
 
-import com.example.WorldChatProject.webChat.dto.ChatRoomDto;
-import com.example.WorldChatProject.webChat.dto.ChatRoomMap;
-import com.example.WorldChatProject.webChat.dto.UserSessionManager;
-import com.example.WorldChatProject.webChat.dto.WebSocketMessage;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketSession;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
+
+import com.example.WorldChatProject.webChat.dto.ChatRoomDto;
+import com.example.WorldChatProject.webChat.dto.ChatRoomMap;
+import com.example.WorldChatProject.webChat.dto.UserSessionManager;
+import com.example.WorldChatProject.webChat.dto.WebSocketMessage;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,6 +29,13 @@ public class RtcChatService {
     }
     public String sendRequest(String sender, String receiver,String type) {
         WebSocketSession session = manager.getUserSession(receiver);
+        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+session);
+        
+        if(session == null) {
+        	log.info("@@@@@@@@@@@@@@@@@@@@@@"+session+"이 비어있어요@@@@@@@@@@@@@@@@@@");
+        }
+        
+        log.info(session+"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         
         String requestMessage = "";
         if ("video".equals(type)) {
@@ -115,17 +123,33 @@ public class RtcChatService {
     // 유저 카운터 return
     public boolean findUserCount(WebSocketMessage webSocketMessage) {
         Set<String> keys = ChatRoomMap.getInstance().getChatRooms().keySet();
-        log.info("현재 화상채팅방 목록: " + keys.toString());
+        log.info("현재 RTC채팅방 목록: " + keys.toString());
         log.info(String.valueOf(ChatRoomMap.getInstance().getChatRooms().get(webSocketMessage.getData())));
         log.info(ChatRoomMap.getInstance().toString());
         ChatRoomDto room = ChatRoomMap.getInstance().getChatRooms().get(webSocketMessage.getData());
         log.info("클라에서 넘어오는 메세지: "+webSocketMessage.getData());
+        
+        if(webSocketMessage.getChatType().equals("video")) {
+        	
         if (room == null) {
             room = createChatRoom(webSocketMessage.getData(), "", false, 2);
             log.info("방 생성했움2");
         }
         log.info("ROOM COUNT : [{} ::: {}]", room.toString(), room.getUserList().size());
         return room.getUserList().size() >= 1;
+        
+        }
+        
+        else if (webSocketMessage.getChatType().equals("voice")) {
+            if (room == null) {
+                room = createChatRoom(webSocketMessage.getData(), "", false, 2); // 음성채팅방 생성
+                log.info("음성채팅방 생성했움");
+            }
+            log.info("음성채팅방 ROOM COUNT : [{} ::: {}]", room.toString(), room.getUserList().size());
+            return room.getUserList().size() >= 1;
+        }
+        
+        return false;
     }
 
 }

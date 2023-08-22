@@ -1,22 +1,30 @@
-package com.example.WorldChatProject.webChat.controller;
 
-import com.example.WorldChatProject.webChat.dto.ChatDTO;
-import com.example.WorldChatProject.webChat.dto.ChatRoomMap;
-import com.example.WorldChatProject.webChat.service.ChatService.ChatServiceMain;
-import com.example.WorldChatProject.webChat.service.ChatService.MsgChatService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+//package com.example.WorldChatProject.webChat.controller;
+
+package com.example.WorldChatProject.webChat.controller;//package com.example.WorldChatProject.webChat.controller;
+
+import java.util.ArrayList;
+
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
-import java.util.ArrayList;
+import com.example.WorldChatProject.webChat.dto.ChatDTO;
+import com.example.WorldChatProject.webChat.dto.ChatRoomMap;
+import com.example.WorldChatProject.webChat.service.ChatService.ChatServiceMain;
+import com.example.WorldChatProject.webChat.service.ChatService.MsgChatService;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -118,3 +126,4 @@ public class RtcChatController {
         return userName;
     }
 }
+

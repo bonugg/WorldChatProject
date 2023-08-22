@@ -1,16 +1,19 @@
+
 package com.example.WorldChatProject.webChat.controller;
 
+import java.io.IOException;
+
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.WorldChatProject.webChat.dto.RequestDto;
-import com.example.WorldChatProject.webChat.dto.UserSessionManager;
 import com.example.WorldChatProject.webChat.dto.WebSocketMessage;
 import com.example.WorldChatProject.webChat.service.ChatService.RtcChatService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.protocol.RequestDate;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.socket.WebSocketSession;
-
-import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,6 +26,7 @@ public class RtcController {
         log.info("MESSAGE : {}", webSocketMessage.toString());
         return Boolean.toString(rtcChatService.findUserCount(webSocketMessage));
     }
+    
     @PostMapping("/webrtc/logout")
     public void webRTCLogout(@RequestBody String userName)throws IOException {
         rtcChatService.RTCLogout(userName);

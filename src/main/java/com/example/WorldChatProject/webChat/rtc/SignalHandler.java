@@ -1,13 +1,12 @@
-package com.example.WorldChatProject.webChat.rtc;
 
-import com.example.WorldChatProject.webChat.dto.ChatRoomDto;
-import com.example.WorldChatProject.webChat.dto.ChatRoomMap;
-import com.example.WorldChatProject.webChat.dto.WebSocketMessage;
-import com.example.WorldChatProject.webChat.service.ChatService.ChatServiceMain;
-import com.example.WorldChatProject.webChat.service.ChatService.RtcChatService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+//package com.example.WorldChatProject.webChat.rtc;
+
+package com.example.WorldChatProject.webChat.rtc;//package com.example.WorldChatProject.webChat.rtc;
+
+import java.io.IOException;
+import java.util.Map;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -17,11 +16,19 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 import org.thymeleaf.util.StringUtils;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.Optional;
+import com.example.WorldChatProject.webChat.dto.ChatRoomDto;
+import com.example.WorldChatProject.webChat.dto.ChatRoomMap;
+import com.example.WorldChatProject.webChat.dto.WebSocketMessage;
+import com.example.WorldChatProject.webChat.dto.ChatRoomDto.ChatType;
+import com.example.WorldChatProject.webChat.service.ChatService.ChatServiceMain;
+import com.example.WorldChatProject.webChat.service.ChatService.RtcChatService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+
+
 
 @Component
 @Slf4j
@@ -68,7 +75,7 @@ public class SignalHandler extends TextWebSocketHandler {
          * 이렇게 true 상태가 되면 이후에 들어온 유저가 방안에 또 다른 유저가 있음을 확인하고,
          * P2P 연결을 시작한다.
          * */
-        sendMessage(session, new WebSocketMessage("Server", MSG_TYPE_JOIN, Boolean.toString(!rooms.isEmpty()), null, null));
+        sendMessage(session, new WebSocketMessage("Server", MSG_TYPE_JOIN, Boolean.toString(!rooms.isEmpty()), null, null,null));
     }
 
     // 소켓 메시지 처리
@@ -83,6 +90,7 @@ public class SignalHandler extends TextWebSocketHandler {
             // 유저 uuid 와 roomID 를 저장
             String userUUID = message.getFrom(); // 유저 uuid
             String roomId = message.getData(); // roomId
+            String chatType = message.getChatType();
 
 //            logger.info("Message {}", message.toString());
 
@@ -126,7 +134,9 @@ public class SignalHandler extends TextWebSocketHandler {
                                                 message.getType(),
                                                 roomId,
                                                 candidate,
-                                                sdp));
+                                                sdp,
+                                                chatType
+                                                ));
                             }
                         }
                     }
@@ -148,6 +158,7 @@ public class SignalHandler extends TextWebSocketHandler {
                         room = ChatRoomMap.getInstance().getChatRooms().get(roomId);
                         log.info("룸아이디 = "+room.getRoomId()+" / "+room.getRoomName());
                     }
+                    
                     System.out.println("여기는 왜 안 들어오지?");
                     // room 안에 있는 userList 에 유저 추가
                     rtcChatService.addClient(room, userUUID, session);
@@ -202,3 +213,4 @@ public class SignalHandler extends TextWebSocketHandler {
         }
     }
 }
+

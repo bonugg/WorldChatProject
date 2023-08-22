@@ -24,14 +24,21 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     // WebSocket
+    implementation 'io.netty:netty-buffer:4.1.72.Final' // 적절한 버전을 사용하십시오.
 
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     // sockjs
     implementation 'org.webjars:sockjs-client:1.5.1'
     // stomp
     implementation 'org.webjars:stomp-websocket:2.3.4'
+
+    // aws s3
+    // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-aws
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
     // gson
     implementation 'com.google.code.gson:gson:2.9.0'
+
 
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
@@ -39,8 +46,6 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
-
-
     //webRtc
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
     // WebSocket
@@ -64,7 +69,6 @@ dependencies {
     implementation 'org.webjars:sockjs-client:1.5.1'
     implementation 'org.webjars:stomp-websocket:2.3.4'
     implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
-
 }
 
 tasks.named('test') {
