@@ -50,7 +50,6 @@ public class CateFileService implements FileService {
             // 파일의 메타데이터와 ACL을 설정
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType(file.getContentType());
-            System.out.println(metadata.getContentType() + "이건 어떤 파일 형ㄱ식인지 찍히냐??");
 
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, transaction, convertedFile)
                     .withCannedAcl(CannedAccessControlList.PublicRead) // 공개 읽기 권한 설정
@@ -83,7 +82,6 @@ public class CateFileService implements FileService {
             return uploadReq;
 
         } catch (Exception e) {
-            log.error("fileUploadException {}", e.getMessage());
             return null;
         }
     }

@@ -43,8 +43,4 @@ public class CateChatService {
         List<CateChat> cateChatList = cateChatRepository.findByCateRoomCateId(Long.valueOf(cateId));
         cateChatRepository.deleteAll(cateChatList);
     }
-
-//    public List<CateChat> searchByContent(Long cateId, String keyword) {
-//        return cateChatRepository.searchByContent(cateId, keyword);
-//    }
 }
