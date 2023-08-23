@@ -2,6 +2,7 @@ package com.example.WorldChatProject.webChat.config;
 
 import com.example.WorldChatProject.webChat.rtc.LoginWebsocketHandler;
 import com.example.WorldChatProject.webChat.rtc.SignalHandler;
+import com.example.WorldChatProject.webChat.rtc.SignalHandler2;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

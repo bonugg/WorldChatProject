@@ -24,34 +24,35 @@ import lombok.extern.slf4j.Slf4j;
 public class RtcChatService {
     UserSessionManager manager = UserSessionManager.getInstance();
 
-    public void exitRtcRoom(String roomName){
+    public void exitRtcRoom(String roomName) {
 
     }
-    public String sendRequest(String sender, String receiver,String type) {
+
+    public String sendRequest(String sender, String receiver, String type) {
         WebSocketSession session = manager.getUserSession(receiver);
-        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+session);
-        
-        if(session == null) {
-        	log.info("@@@@@@@@@@@@@@@@@@@@@@"+session+"이 비어있어요@@@@@@@@@@@@@@@@@@");
+        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + session);
+
+        if (session == null) {
+            log.info("@@@@@@@@@@@@@@@@@@@@@@" + session + "이 비어있어요@@@@@@@@@@@@@@@@@@");
         }
-        
-        log.info(session+"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-        
+
+        log.info(session + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+
         String requestMessage = "";
         if ("video".equals(type)) {
             requestMessage = sender + "님이 영상통화 요청을 보냈습니다.";
         } else if ("voice".equals(type)) {
             requestMessage = sender + "님이 음성통화 요청을 보냈습니다.";
         }
-        
+
         TextMessage message = new TextMessage(requestMessage);
-            try {
-                session.sendMessage(message);
-            } catch (IOException e) {
-                log.error("Error sending message to user: {}", sender, e);
-            }
-            return message.getPayload();
+        try {
+            session.sendMessage(message);
+        } catch (IOException e) {
+            log.error("Error sending message to user: {}", sender, e);
         }
+        return message.getPayload();
+    }
 
     //로그아웃시 웹소켓 해제 및 map에서 삭제
     public void RTCLogout(String userName) throws IOException {
@@ -91,6 +92,34 @@ public class RtcChatService {
         return room;
     }
 
+    public ChatRoomDto createVoiceChatRoom(String roomName, String roomPwd, boolean secretChk, int maxUserCnt) {
+        // roomName 와 roomPwd 로 chatRoom 빌드 후 return
+        ChatRoomDto room = ChatRoomDto.builder()
+//                .roomId(UUID.randomUUID().toString())
+                .roomId(roomName)
+                .roomName(roomName)
+                .roomPwd(roomPwd) // 채팅방 패스워드
+                .secretChk(secretChk) // 채팅방 잠금 여부
+                .userCount(0) // 채팅방 참여 인원수
+                .maxUserCnt(maxUserCnt) // 최대 인원수 제한
+                .build();
+
+        room.setUserList(new HashMap<String, WebSocketSession>());
+
+        // msg 타입이면 ChatType.MSG
+        room.setChatType(ChatRoomDto.ChatType.VOI);
+
+        // map 에 채팅룸 아이디와 만들어진 채팅룸을 저장
+        ChatRoomMap.getInstance().getChatRooms().put(room.getRoomId(), room);
+//        StringBuffer a1 = new StringBuffer("test");
+//        System.out.println(a1);
+//        StringBuilder a2 = new StringBuilder("test");
+//        System.out.println(a2);
+//        String a3 = "test";
+//        System.out.println(a3);
+        return room;
+    }
+
     public Map<String, WebSocketSession> getClients(ChatRoomDto room) {
         // 공부하기 좋은 기존 코드
         // unmodifiableMap : read-only 객체를 만들고 싶을 때 사용
@@ -110,7 +139,7 @@ public class RtcChatService {
 
     public Map<String, WebSocketSession> addClient(ChatRoomDto room, String name, WebSocketSession session) {
         Map<String, WebSocketSession> userList = (Map<String, WebSocketSession>) room.getUserList();
-        log.info(userList.toString()+" aa "+name+" bb ");
+        log.info(userList.toString() + " aa " + name + " bb ");
         userList.put(name, session);
         return userList;
     }
@@ -127,28 +156,26 @@ public class RtcChatService {
         log.info(String.valueOf(ChatRoomMap.getInstance().getChatRooms().get(webSocketMessage.getData())));
         log.info(ChatRoomMap.getInstance().toString());
         ChatRoomDto room = ChatRoomMap.getInstance().getChatRooms().get(webSocketMessage.getData());
-        log.info("클라에서 넘어오는 메세지: "+webSocketMessage.getData());
-        
-        if(webSocketMessage.getChatType().equals("video")) {
-        	
-        if (room == null) {
-            room = createChatRoom(webSocketMessage.getData(), "", false, 2);
-            log.info("방 생성했움2");
-        }
-        log.info("ROOM COUNT : [{} ::: {}]", room.toString(), room.getUserList().size());
-        return room.getUserList().size() >= 1;
-        
-        }
-        
-        else if (webSocketMessage.getChatType().equals("voice")) {
+        log.info("클라에서 넘어오는 메세지: " + webSocketMessage.getData());
+
+        if (webSocketMessage.getChatType().equals("video")) {
+
             if (room == null) {
-                room = createChatRoom(webSocketMessage.getData(), "", false, 2); // 음성채팅방 생성
-                log.info("음성채팅방 생성했움");
+                room = createChatRoom(webSocketMessage.getData(), "", false, 2);
+                log.info("방 생성했움2");
+            }
+            log.info("ROOM COUNT : [{} ::: {}]", room.toString(), room.getUserList().size());
+            return room.getUserList().size() >= 1;
+
+        } else if (webSocketMessage.getChatType().equals("voice")) {
+            if (room == null) {
+                room = createVoiceChatRoom(webSocketMessage.getData(), "", false, 2); // 음성채팅방 생성
+                log.info("음성채팅방 생성했움" + webSocketMessage.getData());
             }
             log.info("음성채팅방 ROOM COUNT : [{} ::: {}]", room.toString(), room.getUserList().size());
             return room.getUserList().size() >= 1;
         }
-        
+
         return false;
     }
 
