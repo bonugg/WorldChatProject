@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/random")
+@RequestMapping("/randomRoom")
 public class RandomRoomController{
     //채팅방을 생성, 입장, 퇴장, 삭제를 관리하는 Controller
     private final RandomRoomService service;
 
     // 랜덤채팅 대기 및 입장 처리
-    @PostMapping("/room")
+    @PostMapping("/enter")
         public RandomRoomDTO enter(Authentication authentication) {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         log.info("Start random Chat");
@@ -29,13 +29,11 @@ public class RandomRoomController{
             log.info("User {} requested random chat.", principal.getUser().getUserNickName());
             RandomRoom room = service.match(principal.getUsername());
             RandomRoomDTO randomRoomDTO = room.toDTO();
-            randomRoomDTO.setSuccess(true);
             log.info("created random room info : {}", randomRoomDTO.getRandomRoomId());
             return randomRoomDTO;
         }catch (Exception e){
             log.info("not created random room: {}", e.getMessage());
             RandomRoomDTO errorDTO = RandomRoomDTO.builder()
-                                                  .isSuccess(false)
                                                   .errorMessage(e.getMessage())
                                                   .build();
             return errorDTO;
