@@ -10,13 +10,13 @@ import java.util.Optional;
 
 public interface RandomRoomService {
 
-    RandomRoom match(String username);
+    RandomRoom matchStart(String username);
 
     boolean deleteRoom(long roomId);
 
     RandomRoom createRoom(User user);
 
-    RandomRoom addUserToRoom(User user);
+    RandomRoom matchAwithB(User user1, User user2);
 
     RandomRoom findRoomById(long roomId);
 
@@ -24,6 +24,7 @@ public interface RandomRoomService {
 
     RandomRoom removeUserFromRoom(long userId, long roomId);
 
-
     Optional<User> findUserFromRoom(RandomRoom room);
+
+    boolean canMatch(User user1, User user2);
 }

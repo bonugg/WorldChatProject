@@ -1,6 +1,9 @@
 package com.example.WorldChatProject.randomChat.service.impl;
 
 
+import com.example.WorldChatProject.friends.entity.BlackList;
+import com.example.WorldChatProject.friends.repository.BlackListRepository;
+import com.example.WorldChatProject.friends.repository.FriendsRepository;
 import com.example.WorldChatProject.randomChat.entity.RandomRoom;
 import com.example.WorldChatProject.randomChat.repository.RandomRoomRepository;
 import com.example.WorldChatProject.randomChat.service.RandomFileService;
@@ -21,23 +24,42 @@ import java.util.*;
 public class RandomRoomServiceImpl implements RandomRoomService {
 
     private final UserRepository userRepository;
+    private final BlackListRepository blackListRepository;
     private final RandomRoomRepository randomRoomRepository;
     private final UserService userService;
     private final Queue<User> waitQueue = new LinkedList<>();
+    private final Queue<User> blackListQueue = new LinkedList<>();
 
     @Override
-    public RandomRoom match(String username) {
+    public RandomRoom matchStart(String username) {
         User user = userRepository.findByUserName(username).get();
         if(user == null || user.equals("")){
             log.info("not found user");
             return null;
         }
-        // 대기큐에 사용자 있는지 검사
-        if(waitQueue.isEmpty() && !waitQueue.contains(user)){
-            return createRoom(user);
-        }else {
-            return addUserToRoom(user);
+
+        //대기큐 순회 조회
+        while (!waitQueue.isEmpty()) {
+            System.out.println("waitQueue 비어져있음?: " + waitQueue.isEmpty());
+            User otherUser = waitQueue.poll();
+
+            //블랙리스트 필터링
+            if(canMatch(user, otherUser) == true) {
+                log.info("blocked from blacklist");
+                log.info("{} can Match : {} ", user.getUserNickName(), otherUser.getUserNickName());
+                return matchAwithB(user, otherUser);
+            }else {
+                log.info("{} and {} cannot Match by Blacklist");
+                blackListQueue.add(otherUser);
+            }
+
         }
+        // 대기큐에 사용자 없으면 방 만들기
+        for(User blockedUser : blackListQueue) {
+            waitQueue.add(blockedUser);
+        }
+        return createRoom(user);
+
     }
 
     //채팅방 생성 , 대기
@@ -54,12 +76,11 @@ public class RandomRoomServiceImpl implements RandomRoomService {
 
     //채팅방 입장, 대기자 삭제
     @Override
-    public RandomRoom addUserToRoom(User user) {
-
+    public RandomRoom matchAwithB(User user, User otherUser) {
+        //otherUser: 방을 만들어놓고 대기큐에서 기다리고 있는 유저
         String userNickName = user.getUserNickName();
-        User otherUser = waitQueue.poll();
         String otherNickName = otherUser.getUserNickName();
-        log.info("waitQueue is not Empty. {} is matched with {}", userNickName, otherNickName);
+        log.info("{} is matched with {}", userNickName, otherNickName);
         RandomRoom room = randomRoomRepository.findByUserId(otherUser.getUserId());
         room = room.rename(room, user, otherUser);
         log.info("{} is enter in {}", userNickName, room.getRandomRoomId());
@@ -109,6 +130,20 @@ public class RandomRoomServiceImpl implements RandomRoomService {
         return foundRoom.map(r -> r.getUser1() != null ? r.getUser1() : r.getUser2());
     }
 
+    //블랙리스트 필터링
+    @Override
+    public boolean canMatch(User user1, User user2) {
+        Optional<BlackList> blackList1 = blackListRepository.findByHaterAndHated(user1, user2);
+        Optional<BlackList> blackList2 = blackListRepository.findByHaterAndHated(user2, user1);
+
+        if(blackList1.isEmpty() == true && blackList2.isEmpty() == true) {
+            //블랙리스트 조회 시 없음
+            return true;
+        }else {
+            return false;
+        }
+    }
 
 
 }
+

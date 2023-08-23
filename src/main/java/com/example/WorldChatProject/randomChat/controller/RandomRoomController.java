@@ -27,7 +27,7 @@ public class RandomRoomController{
         log.info("Start random Chat");
         try{
             log.info("User {} requested random chat.", principal.getUser().getUserNickName());
-            RandomRoom room = service.match(principal.getUsername());
+            RandomRoom room = service.matchStart(principal.getUsername());
             RandomRoomDTO randomRoomDTO = room.toDTO();
             log.info("created random room info : {}", randomRoomDTO.getRandomRoomId());
             return randomRoomDTO;
