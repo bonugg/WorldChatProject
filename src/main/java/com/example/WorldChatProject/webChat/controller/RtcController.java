@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RtcController {
 
     private final RtcChatService rtcChatService;
+    
     @PostMapping("/webrtc/usercount")
     public String webRTC(@ModelAttribute WebSocketMessage webSocketMessage) {
         log.info("MESSAGE : {}", webSocketMessage.toString());
