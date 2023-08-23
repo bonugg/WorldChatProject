@@ -24,9 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 public class RtcChatService {
 	UserSessionManager manager = UserSessionManager.getInstance();
 
-	public void exitRtcRoom(String roomName) {
+    public void exitRtcRoom(String roomName) {
 
-	}
+    }
 
 	public String sendRequest(String sender, String receiver, String type) {
 		WebSocketSession session = manager.getUserSession(receiver);
@@ -90,15 +90,42 @@ public class RtcChatService {
 		return room;
 	}
 
-	public Map<String, WebSocketSession> getClients(ChatRoomDto room) {
-		// 공부하기 좋은 기존 코드
-		// unmodifiableMap : read-only 객체를 만들고 싶을 때 사용
-		// Collections emptyMap() : 결과를 반환할 시 반환할 데이터가 없거나 내부조직에 의해 빈 데이터가 반환되어야 하는 경우
-		// NullPointException 을 방지하기 위하여 반환 형태에 따라 List 나 Map 의 인스턴스를 생성하여 반환하여 처리해야하는
-		// 경우
-		// size 메서드 등을 체크하고 추가적인 값을 변경하지 않는 경우 Collections.emptyMap() 를 사용하면 매번 동일한 정적
-		// 인스턴스가
-		// 변환되므라 각 호출에 대한 불필요한 인스턴스 생성하지 않게 되어 메모리 사용량을 줄일 수 있다
+    public ChatRoomDto createVoiceChatRoom(String roomName, String roomPwd, boolean secretChk, int maxUserCnt) {
+        // roomName 와 roomPwd 로 chatRoom 빌드 후 return
+        ChatRoomDto room = ChatRoomDto.builder()
+//                .roomId(UUID.randomUUID().toString())
+                .roomId(roomName)
+                .roomName(roomName)
+                .roomPwd(roomPwd) // 채팅방 패스워드
+                .secretChk(secretChk) // 채팅방 잠금 여부
+                .userCount(0) // 채팅방 참여 인원수
+                .maxUserCnt(maxUserCnt) // 최대 인원수 제한
+                .build();
+
+        room.setUserList(new HashMap<String, WebSocketSession>());
+
+        // msg 타입이면 ChatType.MSG
+        room.setChatType(ChatRoomDto.ChatType.VOI);
+
+        // map 에 채팅룸 아이디와 만들어진 채팅룸을 저장
+        ChatRoomMap.getInstance().getChatRooms().put(room.getRoomId(), room);
+//        StringBuffer a1 = new StringBuffer("test");
+//        System.out.println(a1);
+//        StringBuilder a2 = new StringBuilder("test");
+//        System.out.println(a2);
+//        String a3 = "test";
+//        System.out.println(a3);
+        return room;
+    }
+
+    public Map<String, WebSocketSession> getClients(ChatRoomDto room) {
+        // 공부하기 좋은 기존 코드
+        // unmodifiableMap : read-only 객체를 만들고 싶을 때 사용
+        // Collections emptyMap() : 결과를 반환할 시 반환할 데이터가 없거나 내부조직에 의해 빈 데이터가 반환되어야 하는 경우
+        // NullPointException 을 방지하기 위하여 반환 형태에 따라 List 나 Map 의 인스턴스를 생성하여 반환하여 처리해야하는 경우
+        // size 메서드 등을 체크하고 추가적인 값을 변경하지 않는 경우 Collections.emptyMap() 를 사용하면 매번 동일한 정적 인스턴스가
+        // 변환되므라 각 호출에 대한 불필요한 인스턴스 생성하지 않게 되어 메모리 사용량을 줄일 수 있다
+
 //        return (Map<String, WebSocketSession>) Optional.ofNullable(room)
 //                .map(r -> Collections.unmodifiableMap(r.getUserList()))
 //                .orElse(Collections.emptyMap());
@@ -108,55 +135,47 @@ public class RtcChatService {
 		return (Map<String, WebSocketSession>) roomDto.get().getUserList();
 	}
 
-	public Map<String, WebSocketSession> addClient(ChatRoomDto room, String name, WebSocketSession session) {
-		Map<String, WebSocketSession> userList = (Map<String, WebSocketSession>) room.getUserList();
-		log.info(userList.toString() + " aaaaaaaaaaaaaaaaa " + name + " bbbbbbbbbbbbbbb ");
-		userList.put(name, session);
-		return userList;
-	}
-
 	// userList 에서 클라이언트 삭제
 	public void removeClientByName(ChatRoomDto room, String userUUID) {
 		room.getUserList().remove(userUUID);
 	}
+	
 
-	// 유저 카운터 return
-	public boolean findUserCount(WebSocketMessage webSocketMessage) {
-		Set<String> keys = ChatRoomMap.getInstance().getChatRooms().keySet();
-		log.info("현재 RTC채팅방 목록: " + keys.toString());
-		log.info("1 : " + String.valueOf(ChatRoomMap.getInstance().getChatRooms().get(webSocketMessage.getData())));
-		log.info("2 : " + ChatRoomMap.getInstance().toString());
-		ChatRoomDto room = ChatRoomMap.getInstance().getChatRooms().get(webSocketMessage.getData());
-		log.info("클라에서 넘어오는 메세지: " + webSocketMessage.getData());
+    public Map<String, WebSocketSession> addClient(ChatRoomDto room, String name, WebSocketSession session) {
+        Map<String, WebSocketSession> userList = (Map<String, WebSocketSession>) room.getUserList();
+        log.info(userList.toString() + " aa " + name + " bb ");
+        userList.put(name, session);
+        return userList;
+    }
 
-        if(webSocketMessage.getChatType().equals("video")) {
-        	
-        if (room == null) {
-            room = createChatRoom(webSocketMessage.getData(), "", false, 2);
-            log.info("화상채팅방 생성했움2");
+    // 유저 카운터 return
+    public boolean findUserCount(WebSocketMessage webSocketMessage) {
+        Set<String> keys = ChatRoomMap.getInstance().getChatRooms().keySet();
+        log.info("현재 RTC채팅방 목록: " + keys.toString());
+        log.info(String.valueOf(ChatRoomMap.getInstance().getChatRooms().get(webSocketMessage.getData())));
+        log.info(ChatRoomMap.getInstance().toString());
+        ChatRoomDto room = ChatRoomMap.getInstance().getChatRooms().get(webSocketMessage.getData());
+        log.info("클라에서 넘어오는 메세지: " + webSocketMessage.getData());
+
+        if (webSocketMessage.getChatType().equals("video")) {
+
+            if (room == null) {
+                room = createChatRoom(webSocketMessage.getData(), "", false, 2);
+                log.info("방 생성했움2");
+            }
+            log.info("ROOM COUNT : [{} ::: {}]", room.toString(), room.getUserList().size());
+            return room.getUserList().size() >= 1;
+
+        } else if (webSocketMessage.getChatType().equals("voice")) {
+            if (room == null) {
+                room = createVoiceChatRoom(webSocketMessage.getData(), "", false, 2); // 음성채팅방 생성
+                log.info("음성채팅방 생성했움" + webSocketMessage.getData());
+            }
+            log.info("음성채팅방 ROOM COUNT : [{} ::: {}]", room.toString(), room.getUserList().size());
+            return room.getUserList().size() >= 1;
         }
-        log.info("ROOM COUNT : [{} ::: {}]", room.toString(), room.getUserList().size());
-        return room.getUserList().size() >= 1;
-        
-        }
 
-        
-		if (webSocketMessage.getChatType().equals("voice")) {
-			
-			if(room == null) {
-			room = createChatRoom(webSocketMessage.getData(), "", false, 2); // 음성채팅방 생성
-//			log.info("음성채팅방 생성했움");
-			}
-			
-			log.info("음성채팅방 ROOM COUNT : [{} ::: {}]", room.toString(), room.getUserList().size());
-			log.info("userListttttttttttttttttt"+room.toString());
-			log.info("userSize"+room.getUserList().size());
-			
-			
-			return room.getUserList().size() >= 1;
-		}
-
-		return false;
-	}
+        return false;
+    }
 
 }

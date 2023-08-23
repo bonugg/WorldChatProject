@@ -66,6 +66,10 @@ public class LoginWebsocketHandler extends TextWebSocketHandler {
         String userName = getUserNameFromSession(session);
         if (userName != null && !userName.trim().isEmpty()) {
 //            userSessionMapByUsername.put(userName, session);
+            if(manager.getUserSession(userName)!=null){
+                manager.removeUserSession(userName);
+                log.info("삭제됨");
+            }
             manager.addUserSession(userName, session);
             System.out.println("저장되는 이름: " + userName);
             System.out.println("로그인중인 유저: " + manager.getAllKeys());

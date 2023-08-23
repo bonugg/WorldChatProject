@@ -1,6 +1,4 @@
 
-//package com.example.WorldChatProject.webChat.rtc;
-
 package com.example.WorldChatProject.webChat.rtc;//package com.example.WorldChatProject.webChat.rtc;
 
 import java.io.IOException;
@@ -19,7 +17,6 @@ import org.thymeleaf.util.StringUtils;
 import com.example.WorldChatProject.webChat.dto.ChatRoomDto;
 import com.example.WorldChatProject.webChat.dto.ChatRoomMap;
 import com.example.WorldChatProject.webChat.dto.WebSocketMessage;
-import com.example.WorldChatProject.webChat.dto.ChatRoomDto.ChatType;
 import com.example.WorldChatProject.webChat.service.ChatService.ChatServiceMain;
 import com.example.WorldChatProject.webChat.service.ChatService.RtcChatService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -75,12 +72,14 @@ public class SignalHandler extends TextWebSocketHandler {
          * 이렇게 true 상태가 되면 이후에 들어온 유저가 방안에 또 다른 유저가 있음을 확인하고,
          * P2P 연결을 시작한다.
          * */
+        log.info("처음 웹소켓 연결!!");
         sendMessage(session, new WebSocketMessage("Server", MSG_TYPE_JOIN, Boolean.toString(!rooms.isEmpty()), null, null,null));
     }
 
     // 소켓 메시지 처리
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage textMessage) {
+//        log.info("들어온 메세지: " + textMessage.getPayload());
         // a message has been received
         try {
             // 웹 소켓으로부터 전달받은 메시지
@@ -91,7 +90,7 @@ public class SignalHandler extends TextWebSocketHandler {
             String userUUID = message.getFrom(); // 유저 uuid
             String roomId = message.getData(); // roomId
             String chatType = message.getChatType();
-
+            log.info("받은 메세지의 타입: " + message.getChatType());
 //            logger.info("Message {}", message.toString());
 
             ChatRoomDto room;

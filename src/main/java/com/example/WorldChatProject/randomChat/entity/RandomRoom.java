@@ -33,13 +33,17 @@ public class RandomRoom {
     @OneToMany(mappedBy = "randomRoom", cascade = CascadeType.ALL)
     private List<RandomChat> randomChatContent = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user1_id")
     private User user1;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user2_id")
     private User user2;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "randomRoom", cascade = CascadeType.ALL)
+    private List<RandomFile> randomFiles;
+
 
     //랜덤채팅방 이름 구성하고 랜덤채팅방 반환
     public static RandomRoom create(User user){
