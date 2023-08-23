@@ -1,7 +1,7 @@
 
 //package com.example.WorldChatProject.webChat.config;
 
-package com.example.WorldChatProject.webChat.config;//package com.example.WorldChatProject.webChat.config;
+//package com.example.WorldChatProject.webChat.config;//package com.example.WorldChatProject.webChat.config;
 
 //
 //

@@ -12,31 +12,24 @@ import com.example.WorldChatProject.user.security.jwt.JwtProperties;
 import com.example.WorldChatProject.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.event.EventListener;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
-import org.springframework.messaging.support.MessageBuilder;
-import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.config.annotation.*;
-import org.springframework.web.socket.messaging.SessionConnectEvent;
-import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
+import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
+import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -47,17 +40,20 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private final UserRepository userRepository;
     private final Map<String, String> userSessionMap = new ConcurrentHashMap<>();
 
+    private final RandomRoomRepository randomRoomRepository;
+    private final RandomRoomService randomRoomService;
+    private final ApplicationContext applicationContext;
+
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint( "/random") //https://localhost:9002/random/
-                .setAllowedOriginPatterns("https://localhost:3001")
                 .withSockJS(); //SockJS 사용을 위한 설정
         registry.addEndpoint("/CateChat")
                 .withSockJS();
         registry.addEndpoint("/friendchat")
-                .setAllowedOrigins("https://localhost:3001")
                 .withSockJS();
     }
+
 
     //클라이언트와 서버 사이의 메시지 전송을 처리
     @Override

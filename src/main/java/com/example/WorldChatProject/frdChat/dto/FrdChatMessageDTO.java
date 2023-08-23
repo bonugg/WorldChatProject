@@ -24,6 +24,7 @@ public class FrdChatMessageDTO {
     private String message;
     private String createdAt;
     private String userProfile;
+    private boolean checkRead;
 
     /* 파일 업로드 관련 변수 */
     private String s3DataUrl; // 파일 업로드 url
