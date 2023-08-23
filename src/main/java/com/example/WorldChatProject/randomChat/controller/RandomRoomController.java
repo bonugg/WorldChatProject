@@ -18,13 +18,13 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/random")
+@RequestMapping("/randomRoom")
 public class RandomRoomController{
     //채팅방을 생성, 입장, 퇴장, 삭제를 관리하는 Controller
     private final RandomRoomService service;
 
     // 랜덤채팅 대기 및 입장 처리
-    @PostMapping("/room")
+    @PostMapping("/enter")
         public Map<String, Object> enter(Authentication authentication) {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         log.info("Start random Chat");
