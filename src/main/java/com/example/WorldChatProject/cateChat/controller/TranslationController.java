@@ -19,6 +19,7 @@ public class TranslationController {
         String clientSecret = "GKwRKNLj_9";
 
         @PostMapping("/translate")
+                                            //@RequestBody = HTTP 요청의 본문을 TranslationRequest 객체로 변환
         public ResponseEntity<?> translateText(@RequestBody TranslationRequest translationRequest) {
 
             RestTemplate restTemplate = new RestTemplate();

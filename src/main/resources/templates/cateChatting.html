@@ -152,10 +152,10 @@
 
         <div class="room-setting">
             <input id="search-keyword">
-                <button>
-                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512" id="searchButton"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/>
-                    </svg>
-                </button>
+            <button>
+                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512" id="searchButton"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/>
+                </svg>
+            </button>
             <div th:each="user : ${cateUserList}">
                 <span th:text="${user}"></span>
             </div>
@@ -182,102 +182,272 @@
     </div>
 
     <form id="chatForm">
-        <input type="text" id="frdChatMessage" placeholder="Type x message..." />
+        <input type="text" id="chatMessage" placeholder="Type x message..." />
         <button type="submit">Send</button>
     </form>
 </div>
+
+<div class="btn-group dropend">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="showMenu" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+        파일 업로드
+    </button>
+    <div id="menu" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <input type="file" id="file">
+        <button type="button" class="btn btn-primary" id="uploadFile" onclick="uploadFile()">저장</button>
+
+    </div>
+</div>
+
 
 
 <script th:inline="javascript">
     const username = localStorage.getItem('userName');
     const roomId = [[${cateRoom.cateId}]];
+    let sender = '';
     var stompClient = null;
-    //localStorage.setItem('username', username);
-    console.log("아이디 : " + username);
-    console.log("룸번호 : " + roomId);
 
-
-        function connect() {
-            var socket = new SockJS('/websocket-app/');
-            // var username = localStorage.getItem('username');
-            stompClient = Stomp.over(socket);
-            stompClient.connect({}, function (frame) {
-                console.log('Connected: ' + frame);
-                stompClient.subscribe('/topic/' + roomId, function (
-                    messageOutput) {
-                    showMessageOutput(JSON.parse(messageOutput.body));
-                    console.log(messageOutput);
-                });
-                stompClient.send("/app/categoryChat/" + roomId + "/addUser", {}, JSON.stringify({
-                    type: 'JOIN',
-                    cateChatContent: username + "님이 입장하셨습니다",
-                    sender: username,
-                    cateId: roomId
-                }));
+    //웹소켓 연결하기
+    function connect() {
+        var socket = new SockJS('/websocket-app/');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('/topic/' + roomId, function (messageOutput) {
+                showMessageOutput(JSON.parse(messageOutput.body));
             });
+            stompClient.send("/app/categoryChat/" + roomId + "/addUser", {}, JSON.stringify({
+                type: 'JOIN',
+                cateChatContent: username + "님이 입장하셨습니다",
+                sender: username,
+                cateId: roomId
+            }));
+        });
+    }
+
+    //웹소켓 연결 끊기
+    function disconnect() {
+        if (stompClient != null) {
+            var chatMessage = {
+                username: username,
+                type: 'LEAVE',
+                cateChatContent: username + '님이 떠나셨습니다',
+                cateId: roomId
+            };
+
+            $.get("/leave/" + roomId + "?userName=" + encodeURIComponent(username));
+            stompClient.send("/app/categoryChat/" + roomId + "/sendMessage", {},
+                JSON.stringify(chatMessage));
+            let catecateId = $(this).attr('cateroom-id');
+
+            stompClient.disconnect();
         }
+    }
 
+    //메시지 보내기
+    function sendMessage() {
+        var messageContent = document.getElementById('chatMessage').value;
+        if (messageContent && stompClient) {
+            var chatMessage = {
+                username: username,
+                cateChatContent: messageContent,
+                type: 'CHAT',
+                cateId: roomId
+            };
+            stompClient.send("/app/categoryChat/" + roomId + "/sendMessage", {},
+                JSON.stringify(chatMessage));
+            //채팅 메시지 입력란을 비워줌.
+            document.getElementById('chatMessage').value = '';
+        }
+    }
 
-        function disconnect() {
-            if (stompClient != null) {
-                var frdChatMessage = {
-                    username: username,
-                    type: 'LEAVE',
-                    cateChatContent: username + '님이 떠나셨습니다',
-                    cateId: roomId
-                };
+    var isTyping = false; // 입력 중 메시지 전송 여부를 추적하는 변수
 
-                $.get("/leave/" + roomId + "?userName=" + encodeURIComponent(username));
-                stompClient.send("/app/categoryChat/" + roomId + "/sendMessage", {},
-                    JSON.stringify(frdChatMessage));
-                let catecateId = $(this).attr('cateroom-id');
+    // 입력창 이벤트 리스너
+    var chatMessageInput = document.getElementById('chatMessage');
 
-                stompClient.disconnect();
+    chatMessageInput.addEventListener('input', function() {
+        var messageContent = chatMessageInput.value;
+        if (messageContent.trim() !== '') {
+            // 입력 중 메시지를 웹 소켓을 통해 보내기 (한 번만 전송)
+            if (!isTyping) {
+                sendTypingMessage();
+                isTyping = true;
             }
+        } else {
+            //입력값이 없을 때
+            removeTypingMessage();
+            isTyping = false;
         }
+    });
 
-        function sendMessage() {
-            var messageContent = document.getElementById('frdChatMessage').value;
-            if (messageContent && stompClient) {
-                console.log(username);
-                var frdChatMessage = {
-                    username: username,
-                    cateChatContent: messageContent,
-                    type: 'CHAT',
-                    cateId: roomId
-                };
-                stompClient.send("/app/categoryChat/" + roomId + "/sendMessage", {},
-                    JSON.stringify(frdChatMessage));
-                document.getElementById('frdChatMessage').value = '';
-            }
+    //입력중...메시지 띄우기
+    function sendTypingMessage() {
+        if (stompClient) {
+            var typingMessage = {
+                username: username,
+                cateChatContent: "typing...",
+                type: 'CHAT',
+                cateId: roomId
+            };
+            stompClient.send("/app/categoryChat/" + roomId + "/sendMessage", {},
+                JSON.stringify(typingMessage));
         }
+    }
 
-        function showMessageOutput(messageOutput) {
-            console.log(messageOutput);
-            var response = document.getElementById('chatHistory');
-            var p = document.createElement('p');
-            p.style.wordWrap = 'break-word';
+    // "Send" 버튼 클릭 이벤트 리스너
+    document.getElementById('chatForm').addEventListener('submit', function(event) {
+        sendMessage();
+        // 입력창 내용 지우기
+        document.getElementById('chatMessage').value = '';
+        // isTyping 변수를 false로 설정하여 입력 중 메시지가 사라지도록 함
+        isTyping = false;
+        let myTyping = document.getElementById(`myTyping${username}`);
+        myTyping.parentNode.remove();
+    });
 
-            if (messageOutput.username === username) {
+    //백스페이스로 입력값을 지웠을 때 입력중...없애기
+    function removeTypingMessage() {
+
+        if (stompClient) {
+            var typingMessage = {
+                username: username,
+                cateChatContent: "removeTyping",
+                type: 'CHAT',
+                cateId: roomId
+            };
+            stompClient.send("/app/categoryChat/" + roomId + "/sendMessage", {},
+                JSON.stringify(typingMessage));
+        }
+    }
+
+    //메시지 표출하기
+    function showMessageOutput(messageOutput) {
+        var response = document.getElementById('chatHistory');
+        var p = document.createElement('p');
+
+        //내가 치는 채팅일 때
+        if (messageOutput.username === username) {
+            //채팅을 보낼 때
+            if(messageOutput.s3DataUrl == null) {
                 p.className = 'my-message';
-                p.innerHTML = `<span class="message-regdate">(${messageOutput.cateChatRegdate})</span> <span class="content">${messageOutput.cateChatContent}</span> : <span class='userName'>${messageOutput.username}</span>`;
+                //타이핑중일 때는 타이핑중이라고 표출
+                if(`${messageOutput.cateChatContent}` === 'typing...') {
+                    p.innerHTML = `<span class="message-regdate">(${messageOutput.cateChatRegdate})</span> <span class="content" id="myTyping${messageOutput.username}">${messageOutput.cateChatContent}</span> : <span class='userName'>${messageOutput.username}</span>`;
+                }
+                //백스페이스로 내용을 지웠을 때는 해당 채팅 삭제하기
+                else if(`${messageOutput.cateChatContent}` === 'removeTyping') {
+                    const myTypingMessage = document.getElementById(`myTyping${username}`);
+                    myTypingMessage.parentNode.remove();
+                    //정상적인 채팅일 때는 그대로 표출
+                } else {
+                    p.innerHTML = `<span class="message-regdate">(${messageOutput.cateChatRegdate})</span> <span class="content">${messageOutput.cateChatContent}</span> : <span class='userName'>${messageOutput.username}</span>`;
+                }
+                //파일을 보낼 때
+            } else {
+                p.className = 'my-message';
+                p.innerHTML = `<span class="message-regdate">(${messageOutput.cateChatRegdate})</span> <span class="content"><img src="${messageOutput.s3DataUrl}" width="200" height="200"><img src="/images/upload-2935442_128.png" width="50" height="50" onclick="downloadFile('${messageOutput.s3DataUrl}')"></span> : <span class='userName'>${messageOutput.username}</span>`;
+            }
+
+            //상대방이 치는 채팅일 때
+        } else {
+            //채팅을 칠 때
+            if(messageOutput.s3DataUrl == null) {
+                p.className = 'other-message';
+                sender = `${messageOutput.sender}`;
+                if(`${messageOutput.cateChatContent}` === 'typing...') {
+                    p.innerHTML = `<span class="message-regdate">(${messageOutput.cateChatRegdate})</span> <span class="content" id="senderTyping${messageOutput.sender}">${messageOutput.cateChatContent}</span> : <span class='userName'>${messageOutput.username}</span>`;
+                } else if(`${messageOutput.cateChatContent}` === 'removeTyping') {
+                    const senderTyping = document.getElementById(`senderTyping${sender}`);
+                    senderTyping.parentNode.remove();
+                } else {
+                    //지금은 null값
+                    const senderTyping = document.getElementById(`senderTyping${sender}`);
+                    //senderTyping값이 있을 때만 그걸 지워준다.
+                    if(senderTyping)
+                        senderTyping.parentNode.remove();
+                    p.innerHTML = `<span class="message-regdate">(${messageOutput.cateChatRegdate})</span> <span class="content">${messageOutput.cateChatContent}</span> : <span class='userName'>${messageOutput.username}</span>`;
+                }
             } else {
                 p.className = 'other-message';
-                p.innerHTML = `<span class='userName'>${messageOutput.username}</span> : <span class="content">${messageOutput.cateChatContent}</span> <span class="message-regdate">(${messageOutput.cateChatRegdate})</span>`;
+                p.innerHTML = `<span class="message-regdate">(${messageOutput.cateChatRegdate})</span> <span class="content"><img src="${messageOutput.s3DataUrl}" width="200" height="200"><img src="/images/upload-2935442_128.png" width="50" height="50" onclick="downloadFile('${messageOutput.s3DataUrl}')"></span> : <span class='userName'>${messageOutput.username}</span>`;
             }
-
-            response.appendChild(p);
-
-            var chatHistory = document.querySelector('#chatHistory');
-            chatHistory.scrollTop = chatHistory.scrollHeight;
         }
 
+        if(`${messageOutput.cateChatContent}` !== 'removeTyping') {
+            response.appendChild(p);
+        }
 
-        document.getElementById('chatForm').addEventListener('submit',
-            function (event) {
-                event.preventDefault();
-                sendMessage();
-            });
+        var chatHistory = document.querySelector('#chatHistory');
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
+
+    document.getElementById('chatForm').addEventListener('submit',
+        function (event) {
+            event.preventDefault();
+            sendMessage();
+        });
+
+    /// 파일 업로드 부분 ////
+    function uploadFile(){
+        var file = $("#file")[0].files[0];
+        var formData = new FormData();
+        formData.append("file",file);
+        formData.append("roomId", roomId);
+
+        $.ajax({
+            type : 'POST',
+            url : '/cateChat/upload/',
+            data : formData,
+            processData: false,
+            contentType: false
+        }).done(function (data){
+            // console.log("업로드 성공")
+            console.log(data);
+
+            var chatMessage = {
+                cateId: roomId,
+                username: username,
+                cateChatContent: username+"님의 파일 업로드",
+                type: 'CHAT',
+                s3DataUrl : data.s3DataUrl, // Dataurl
+                "fileName": file.name, // 원본 파일 이름
+            };
+
+            // 해당 내용을 발신한다.
+            stompClient.send("/app/categoryChat/" + roomId + "/sendMessage", {},
+                JSON.stringify(chatMessage));
+        }).fail(function (error){
+            alert(error);
+        })
+    }
+
+    function downloadFile(s3DataUrl) {
+        // 파일 이름을 추출합니다.
+        var fileName = s3DataUrl.substring(s3DataUrl.lastIndexOf("/") + 1);
+        console.log("가나다라마바사");
+        console.log(fileName);
+        // 다운로드 요청을 보냅니다.
+        $.ajax({
+            type: "GET",
+            url: "/download/" + encodeURIComponent(fileName), // 컨트롤러 엔드포인트
+            xhrFields: {
+                responseType: "blob" // binary 데이터를 받도록 설정
+            },
+            success: function(data) {
+                var a = document.createElement("a");
+                var url = window.URL.createObjectURL(data);
+                a.href = url;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            },
+            error: function(xhr, status, error) {
+                console.error("파일 다운로드 실패: " + error);
+            }
+        });
+    }
 
 </script>
 </body>
