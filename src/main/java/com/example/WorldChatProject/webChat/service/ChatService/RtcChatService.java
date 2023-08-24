@@ -25,7 +25,10 @@ public class RtcChatService {
 	UserSessionManager manager = UserSessionManager.getInstance();
 
     public void exitRtcRoom(String roomName) {
+        Map<String, ChatRoomDto> chatRooms = ChatRoomMap.getInstance().getChatRooms();
 
+        // 해당 목록에서 roomName을 키로 사용하여 채팅방 제거
+        chatRooms.remove(roomName);
     }
 
 	public String sendRequest(String sender, String receiver, String type) {
@@ -53,6 +56,24 @@ public class RtcChatService {
 		}
 		return message.getPayload();
 	}
+	
+	public void sendDisconnectMessage(String receiver) {
+	    WebSocketSession session = manager.getUserSession(receiver);
+	    if (session == null) {
+	        log.info("Session for {} is empty", receiver);
+	        return;
+	    }
+
+	    String disconnectMessage = "상대방과의 연결이 끊어졌습니다.";
+	    TextMessage message = new TextMessage(disconnectMessage);
+	    log.info("끊김요청@@@@@@@@@@" + disconnectMessage);
+	    try {
+	        session.sendMessage(message);
+	    } catch (IOException e) {
+	        log.error("Error sending disconnect message to user: {}", receiver, e);
+	    }
+	}
+
 
 	// 로그아웃시 웹소켓 해제 및 map에서 삭제
 	public void RTCLogout(String userName) throws IOException {

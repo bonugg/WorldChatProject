@@ -32,6 +32,7 @@ public class RtcController {
     public void webRTCLogout(@RequestBody String userName)throws IOException {
         rtcChatService.RTCLogout(userName);
     }
+    
     @PostMapping("/webrtc/request")
     public void requestRTC(@RequestBody  RequestDto request){
         System.out.println("보낸이:" + request.getSender() + "받는이:" + request.getReceiver());
