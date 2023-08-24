@@ -10,6 +10,8 @@ import com.example.WorldChatProject.cateChat.dto.CateFileDTO;
 import com.example.WorldChatProject.cateChat.repository.CateFileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -28,7 +30,9 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 public class CateFileService implements FileService {
     // AmazonS3 주입받기
-    private final AmazonS3 s3;
+    private final @Qualifier("amazonS3ClientNew") AmazonS3 s3;
+
+
 
     @Value("bitcamp-bucket-23")
     private String bucket;

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
-public class TranslationController {
+public class CateChatTranslationController {
 
         String apiUrl = "https://openapi.naver.com/v1/papago/n2mt";
         String clientId = "ABIKpYQzMAvg_6hOqfOE";

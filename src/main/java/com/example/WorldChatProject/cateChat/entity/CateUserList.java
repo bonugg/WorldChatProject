@@ -1,5 +1,6 @@
 package com.example.WorldChatProject.cateChat.entity;
 
+import com.example.WorldChatProject.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,9 +17,11 @@ public class CateUserList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private Long cateId;
+    @OneToOne
+    @JoinColumn(name = "cateId")
+    private CateRoom cateId;
 
-    @Column
-    private String userName;
+    @OneToOne
+    @JoinColumn(name = "userName")
+    private User userName;
 }

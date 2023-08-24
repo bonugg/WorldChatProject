@@ -26,7 +26,7 @@ public class S3config {
     @Value("${cloud.aws.s3.endpoint}")
     private String endPoint;
 
-    @Value("${cloud.aws.s3.bucket}")
+    @Value("${cloud.aws.s3.bucket2}")
     private String bucket;
 
     @Bean

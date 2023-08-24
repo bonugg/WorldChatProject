@@ -9,6 +9,7 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 
 @Configuration
@@ -27,7 +28,8 @@ public class NcloudConfiguration {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
     @Bean
-    public AmazonS3Client amazonS3Client() {
+    @Primary
+    public AmazonS3Client amazonS3ClientNew() {
         BasicAWSCredentials awsCreds = new BasicAWSCredentials(accessKey, secretKey);
         return (AmazonS3Client) AmazonS3ClientBuilder.standard()
                 .withCredentials(new AWSStaticCredentialsProvider(awsCreds))
