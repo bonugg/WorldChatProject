@@ -9,7 +9,7 @@
  <br/>
 | front | front | back | back | back | back | back |
 |-----|-----|-----|-----|-----|-----|-----|
-| d | d |  | 셀4 | 셀5 | 셀6 | 셀7 |
+| d | d |  | 셀4 | 셀5 | ![김용순](https://cdn.pixabay.com/photo/2016/04/01/10/52/blonde-1300066_1280.png) | ![황보석](https://cdn.pixabay.com/photo/2016/10/27/09/26/fox-1773727_1280.png) |
 | front | front | randomChat | CateChat | FrdChat | RtcChat | RtcChat |
 | 구본욱 | 이경일 | 윤혜빈 | 김대현 | 윤이슬 | 김용순 | 황보석 |
 
