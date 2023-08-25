@@ -10,9 +10,9 @@ import org.springframework.context.annotation.PropertySource;
 @Getter
 public class FrdChatNaverConfig {
 
-    @Value("${cloud.aws.credentials.accessKey}")
+    @Value("${ncp.accessKey}")
     private String accessKey;
-    @Value("${cloud.aws.credentials.secretKey}")
+    @Value("${ncp.secretKey}")
     private String secretKey;
     @Value("${cloud.aws.region.static}")
     private String regionName;

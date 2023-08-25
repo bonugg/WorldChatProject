@@ -50,25 +50,31 @@ public class CateRoomController {
     @GetMapping("/cateChat/enter")
     public ResponseEntity<?> checkIfCateChatIsFull(@RequestParam String cateId, Authentication authentication) {
         log.info(cateId);
+        Map<String, Object> responseResult = new HashMap<>();
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         CateRoom cateRoom = cateRoomService.getChatRoom(Long.parseLong(cateId));
-
-        List<CateChat> cateChatList = cateChatService.getMessagesByCateRoom(Long.parseLong(cateId));
-
-        cateUserListService.save(Long.parseLong(cateId), principal.getUsername());
-
-        List<String> userList = cateUserListService.findAllUserNamesByCateId(Long.parseLong(cateId));
+        if(cateRoom == null){
+            responseResult.put("noRoom", true);
+            return ResponseEntity.ok(responseResult);
+        }
 
         boolean isFull = cateRoom.getMaxUserCnt() <= cateRoom.getCateUserCnt();
+        // 채팅방 유저+1
+        if(isFull){
+            responseResult.put("isFull", isFull);
+            return ResponseEntity.ok(responseResult);
+        }else {
+            cateRoomService.plusUserCnt(Long.parseLong(cateId));
+            cateUserListService.save(Long.parseLong(cateId), principal.getUsername());
 
-        // 값들을 담을 Map 객체 생성
-        Map<String, Object> responseResult = new HashMap<>();
-        responseResult.put("cateChatList", cateChatList);
-        responseResult.put("userList", userList);
-        responseResult.put("cateRoom", cateRoom);
-        responseResult.put("isFull", isFull);
+            List<String> userList = cateUserListService.findAllUserNamesByCateId(Long.parseLong(cateId));
 
-        return ResponseEntity.ok(responseResult);
+            responseResult.put("userList", userList);
+            responseResult.put("cateRoom", cateRoom);
+            responseResult.put("isFull", isFull);
+
+            return ResponseEntity.ok(responseResult);
+        }
     }
 
     //채팅방 나가기

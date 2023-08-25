@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TranslationRequest {
     private String text;
-    private long frdChatRoomId;
+    private String sourceLanguage;
+    private String targetLanguage;
 }

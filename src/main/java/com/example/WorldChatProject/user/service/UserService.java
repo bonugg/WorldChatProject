@@ -14,6 +14,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
+import org.hibernate.proxy.HibernateProxy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,8 +41,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class UserService {
-    @Value("${file.path}")
-    String attachPath;
     private final FileUtils fileUtils;
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -106,18 +106,12 @@ public class UserService {
         User user = userRepository.findByUserName(userName).get();
         log.info("프로필 변경 진입");
         try {
-            File directory = new File(attachPath);
-
-            if (!directory.exists()) {
-                directory.mkdir();
-            }
 
             User userProfileSave = new User();
-            userProfileSave = fileUtils.parseFileInfo(imageFile, attachPath, "userProfile/");
+            userProfileSave = fileUtils.parseFileInfo(imageFile, "userProfile/");
 
             user.setUserProfileName(userProfileSave.getUserProfileName());
             user.setUserProfileOrigin(userProfileSave.getUserProfileOrigin());
-            user.setUserProfilePath(userProfileSave.getUserProfilePath());
 
             userRepository.save(user);
 
@@ -174,5 +168,13 @@ public class UserService {
 
             return ResponseEntity.badRequest().body(responseDTO);
         }
+    }
+
+    public User getInitializedUser(User user) {
+        if (user instanceof HibernateProxy) {
+            Hibernate.initialize(user);
+            user = (User) ((HibernateProxy) user).getHibernateLazyInitializer().getImplementation();
+        }
+        return user;
     }
 }
