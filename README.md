@@ -7,12 +7,18 @@
 프로젝트명 : WWC (WorldWide Chat) <br/>
 팀원 : 구본욱, 김대현, 김용순, 김이슬, 윤혜빈, 이경일, 황보석 <br/>
  <br/>
-| front | front | back | back | back | back | back |
-|-----|-----|-----|-----|-----|-----|-----|
-| d | d |  | 셀4 | 셀5 | ![김용순](https://cdn.pixabay.com/photo/2016/04/01/10/52/blonde-1300066_1280.png){: width="100px" height="100px"} | ![황보석](https://cdn.pixabay.com/photo/2016/10/27/09/26/fox-1773727_1280.png){: width="100px" height="100px"} |
-| front | front | randomChat | CateChat | FrdChat | RtcChat | RtcChat |
-| 구본욱 | 이경일 | 윤혜빈 | 김대현 | 윤이슬 | 김용순 | 황보석 |
+| front | front |
+|-----|-----|
+| d | d |
+| front | front |
+| 구본욱 | 이경일 |
 
+
+| back | back | back | back | back |
+|-----|-----|-----|-----|-----|
+|  | 셀4 | 셀5 | ![김용순](https://cdn.pixabay.com/photo/2016/04/01/10/52/blonde-1300066_1280.png) | ![황보석](https://cdn.pixabay.com/photo/2016/10/27/09/26/fox-1773727_1280.png) |
+| randomChat | CateChat | FrdChat | RtcChat | RtcChat |
+| 윤혜빈 | 김대현 | 윤이슬 | 김용순 | 황보석 |
 
  
 
