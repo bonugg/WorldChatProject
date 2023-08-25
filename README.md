@@ -31,7 +31,7 @@
 <div>
     <h3>Framework / Library</h3>
     <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
-    <img src="https://img.shields.io/badge/vue.js-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white"> 
+    <img src="https://shields.io/badge/react-black?logo=react&style=for-the-badge"> 
     <img src="https://img.shields.io/badge/jsp-007396?style=for-the-badge&logo=java&logoColor=white">
 </div>
 <br>
