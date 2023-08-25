@@ -19,13 +19,11 @@
 | 윤혜빈 | 김대현 | 김이슬 | 김용순 | 황보석 |
 <br>
 <h1>📚 STACKS</h1>
-
 <div>
     <h3>Languages</h3>
     <img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"> 
     <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white"> 
 </div>
-<br>
 <div>
     <h3>Framework / Library</h3>
     <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
@@ -33,19 +31,15 @@
     <img src="https://img.shields.io/badge/threeJs-blue">
     <img src="https://img.shields.io/badge/sockJs-yellow">
     <img src="https://img.shields.io/badge/stompJs-red">
-
 </div>
-<br>
 <div>
     <h3>Server</h3> 
     <img src="https://img.shields.io/badge/ncloud%20-%20yellowgreen">
 </div>
-<br>
 <div>
     <h3>DataBase</h3>
     <img src="https://shields.io/badge/MySQL-lightgrey?logo=mysql&style=plastic&logoColor=white&labelColor=blue">
 </div>
-<br>
 <div>
     <h3>Tooling / DevOps</h3>
     <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
@@ -54,11 +48,10 @@
     <img src="https://img.shields.io/badge/VS%20code-aqua">
     <img src="https://img.shields.io/badge/intelliJ-black">
 </div>
-<br>
 <div>
     <h3>Open Source</h3>
     <img src="https://img.shields.io/badge/Papago%20-%20Green">
     <img src="https://img.shields.io/badge/CLOVA%20-%20green">
-<br>
+</div>
  
 
