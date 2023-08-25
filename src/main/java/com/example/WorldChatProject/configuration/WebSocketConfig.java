@@ -2,34 +2,33 @@ package com.example.WorldChatProject.configuration;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.example.WorldChatProject.randomChat.entity.RandomRoom;
-import com.example.WorldChatProject.randomChat.repository.RandomRoomRepository;
-import com.example.WorldChatProject.randomChat.service.RandomRoomService;
+import com.example.WorldChatProject.frdChat.entity.FrdChatMessage;
+import com.example.WorldChatProject.frdChat.entity.FrdChatRoomHistory;
+import com.example.WorldChatProject.frdChat.entity.FrdChatUpdateMessage;
+import com.example.WorldChatProject.frdChat.service.FrdChatMessageService;
+import com.example.WorldChatProject.frdChat.service.FrdChatRoomHistoryService;
+import com.example.WorldChatProject.frdChat.service.FrdChatRoomService;
 import com.example.WorldChatProject.user.dto.UserDTO;
 import com.example.WorldChatProject.user.entity.User;
 import com.example.WorldChatProject.user.repository.UserRepository;
 import com.example.WorldChatProject.user.security.jwt.JwtProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.event.EventListener;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
-import org.springframework.messaging.support.MessageBuilder;
-import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.config.annotation.*;
-import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+
+
+import java.util.List;
 import java.util.Optional;
 
 @Configuration
@@ -39,9 +38,10 @@ import java.util.Optional;
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final UserRepository userRepository;
-    private final RandomRoomRepository randomRoomRepository;
-    private final RandomRoomService randomRoomService;
-    private final ApplicationContext applicationContext;
+    private final FrdChatRoomHistoryService frdChatRoomHistoryService;
+    private final FrdChatRoomService frdChatRoomService;
+    private final FrdChatMessageService frdChatMessageService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
@@ -74,7 +74,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
         @Override
         public Message<?> preSend(Message<?> message, MessageChannel channel) {
+
             StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
+
             StompCommand command = accessor.getCommand();
 
             if (command != null && command.equals(StompCommand.CONNECT)) {
@@ -90,13 +92,26 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                     //헤더에 유저 닉네임값을 저장 이후 각 컨트롤러에서 호출하여 어떤 사용자가 채팅을 보냈는지 구분
                     accessor.getSessionAttributes().put("user", userDTO.getUserNickName());
                     accessor.getSessionAttributes().put("userName", userDTO.getUserName());
-                    if(userDTO.getUserProfileName() != null ){
-                        accessor.getSessionAttributes().put("userProfile", userDTO.getUserProfileName());
-                    }
-                    if(userDTO.getUserProfileName() != null){
+                    accessor.getSessionAttributes().put("userId", userDTO.getUserId());
+                    if(userDTO.getUserProfileName() != null ) {
                         accessor.getSessionAttributes().put("userProfile", userDTO.getUserProfileName());
                     }
                 }
+                //1. 채팅방에 접속한 사람 넣기
+                String userNickName = (String) accessor.getSessionAttributes().get("user");
+                Long roomId = Long.parseLong(accessor.getFirstNativeHeader("roomId"));
+                String sessionId = accessor.getSessionId();
+                frdChatRoomHistoryService.enteredRoom(userNickName, roomId, sessionId);
+
+                //2. 온.오프라인 상태 감지하기
+                Long userId = (Long) accessor.getSessionAttributes().get("userId");
+                frdChatRoomHistoryService.detectOtherUser(roomId, userId);
+
+            } else if (command !=null && command.equals(StompCommand.DISCONNECT)) {
+                String userNickName = (String) accessor.getSessionAttributes().get("user");
+                System.out.println("닉네임안들어오나? : " + userNickName);
+                String sessionId = accessor.getSessionId();
+                frdChatRoomHistoryService.leaveRoom(userNickName, sessionId);
             }
             return message;
         }

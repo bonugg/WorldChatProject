@@ -81,43 +81,4 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-task appNpmInstall(type: NpmTask) {
-    dependsOn "npmSetup"
-    description = "Installs dependencies from package.json"
-    workingDir = file("${projectDir}/src/frontEnd/WorldChatProjectReact/srcapp")
-    args = ["install"]
-}
-//reactjs 경로 변수로 지정
-def reactAppDir = "$projectDir/src/frontEnd/WorldChatProjectReact/srcapp"
-processResources {
-    dependsOn "copyReactFile"
-}
-task copyReactFile(type: Copy) {
-    dependsOn "buildReact"
-    from "$reactAppDir/build"
-    into "$projectDir/src/main/resources/static/"
-}
-task buildReact(type: Exec) {
-    dependsOn "installReact"
-    workingDir "$reactAppDir"
-    inputs.dir "$reactAppDir"
-    group = BasePlugin.BUILD_GROUP
-    if(System.getProperty('os.name').toLowerCase().contains('windows')) {
-        commandLine "npm.cmd", "run-script", "build"
-    } else {
-        commandLine "npm", "run-script", "build"
-    }
-}
 
-task installReact(type: Exec) {
-    workingDir "$reactAppDir"
-    inputs.dir "$reactAppDir"
-    group = BasePlugin.BUILD_GROUP
-    if(System.getProperty('os.name').toLowerCase().contains('windows')) {
-        commandLine "npm.cmd", "audit", "fix"
-        commandLine "npm.cmd", "install"
-    } else {
-        commandLine "npm", "audit", "fix"
-        commandLine "npm", "install"
-    }
-}

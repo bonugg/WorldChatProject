@@ -21,4 +21,6 @@ public interface FrdChatRoomRepository extends JpaRepository<FrdChatRoom, Long> 
     @Query(value = "SELECT * FROM frd_chat_room f WHERE f.friends1_user_id = :userId OR f.friends2_user_id = :userId", nativeQuery = true)
     List<FrdChatRoom> findChatRoomByUser(@Param("userId") long userId);
 
+    @Query(value = "SELECT (CASE WHEN f.friends1_user_id = :userId THEN f.friends2_user_id ELSE f.friends1_user_id END) FROM frd_chat_room f WHERE f.id = :id AND (f.friends1_user_id = :userId OR f.friends2_user_id = :userId)", nativeQuery = true)
+    Long findFriendIdByRoomIdAndUser(@Param("id") long roomId, @Param("userId") long userId);
 }

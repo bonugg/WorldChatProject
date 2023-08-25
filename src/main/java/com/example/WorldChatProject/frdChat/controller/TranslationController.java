@@ -83,11 +83,6 @@ public class TranslationController {
         headers.add("X-NCP-APIGW-API-KEY-ID", CLIENT_ID);
         headers.add("X-NCP-APIGW-API-KEY", CLIENT_SECRET);
 
-
-//        map.add("source", request.getSourceLanguage());
-//        map.add("target", "ko");
-//        map.add("text", request.getText());
-
         //번역기능 제공하는 언어가 별로 없어서 상대방 말 -> 한국어, 한국어 -> 원하는 말 이런식으로 번역하기로 함
         //근데 api에서 같은 나라 언어 번역은 에러로 잡음. 그래서 경우의 수를 나눔
         //1. 상대방이 친 언어가 한국어일때
@@ -135,7 +130,6 @@ public class TranslationController {
             System.out.println("파싱파싱파싱싱카");
             System.out.println(translatedKoreanText);
 
-            //String translatedKoreanText = firstTranslation.getBody();
             MultiValueMap<String, String> map2 = new LinkedMultiValueMap<>();
             map2.add("source", "ko");
             map2.add("target", request.getTargetLanguage());

@@ -1,8 +1,12 @@
 package com.example.WorldChatProject.friends.controller;
 
+import com.example.WorldChatProject.frdChat.entity.FrdChatRoom;
+import com.example.WorldChatProject.frdChat.service.FrdChatRoomService;
 import com.example.WorldChatProject.friends.dto.FriendsDTO;
 import com.example.WorldChatProject.frdChat.dto.ResponseDTO;
+import com.example.WorldChatProject.friends.entity.BlackList;
 import com.example.WorldChatProject.friends.entity.Friends;
+import com.example.WorldChatProject.friends.service.BlackListService;
 import com.example.WorldChatProject.friends.service.FriendsService;
 import com.example.WorldChatProject.user.dto.UserDTO;
 import com.example.WorldChatProject.user.entity.User;
@@ -25,6 +29,8 @@ public class FriendsController {
 
     private final FriendsService friendsService;
     private final UserService userService;
+    private final BlackListService blackListService;
+    private final FrdChatRoomService frdChatRoomService;
 
     @PostMapping("/request")
     public ResponseEntity<?> requestFriends(@RequestBody UserDTO userDTO,
@@ -200,16 +206,33 @@ public class FriendsController {
         }
     }
 
-    @DeleteMapping("/delete-friends")
+    @PostMapping("/delete-friends")
     public ResponseEntity<?> deleteFriends(@RequestBody User user, Authentication authentication) {
+
         ResponseDTO<Map<String, String>> response = new ResponseDTO<>();
+        Map<String, String> returnMap = new HashMap<>();
+        System.out.println("유저아이디 넘어오는지 확인 : " + user.getUserId());
         try {
             PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-            User friends1 = principal.getUser().DTOToEntity();
-            User friends2 = userService.findById(user.getUserId());
-            Friends friends = friendsService.findByUserAndFriends(friends1, friends2);
+            User frds1 = principal.getUser().DTOToEntity();
+            User frds2 = userService.findById(user.getUserId());
+            Friends friends = friendsService.findByUserAndFriends(frds1, frds2);
+            Friends friends2 = friendsService.findByUserAndFriends(frds2, frds1);
             friendsService.delete(friends);
-            Map<String, String> returnMap = new HashMap<>();
+            friendsService.delete(friends2);
+            BlackList checkBlackList = blackListService.checkBlackList(frds1, frds2);
+            if(checkBlackList == null) {
+                BlackList blackList = new BlackList();
+                blackList.setHater(frds1);
+                blackList.setHated(frds2);
+                blackListService.save(blackList);
+            } else {
+                returnMap.put("msg", "already bl");
+            }
+            FrdChatRoom checkRoom = frdChatRoomService.findRoomByFriends1OrFriends2(frds1, frds2);
+            if(checkRoom != null) {
+                frdChatRoomService.deleteRoom(checkRoom);
+            }
             returnMap.put("msg", "delete ok");
             response.setItem(returnMap);
             response.setStatusCode(HttpStatus.OK.value());
