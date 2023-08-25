@@ -30,7 +30,10 @@
     <h3>Framework / Library</h3>
     <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
     <img src="https://shields.io/badge/react-black?logo=react&style=for-the-badge"> 
-    <img src="https://img.shields.io/badge/jsp-007396?style=for-the-badge&logo=java&logoColor=white">
+    <img src="https://img.shields.io/badge/threeJs-blue">
+    <img src="https://img.shields.io/badge/sockJs-yellow">
+    <img src="https://img.shields.io/badge/stompJs-red">
+
 </div>
 <br>
 <div>
@@ -42,7 +45,7 @@
 <br>
 <div>
     <h3>DataBase</h3>
-    <img src="https://img.shields.io/badge/oracle-F80000?style=for-the-badge&logo=oracle&logoColor=white">
+    <img src="https://shields.io/badge/MySQL-lightgrey?logo=mysql&style=plastic&logoColor=white&labelColor=blue">
 </div>
 <br>
 <div>
