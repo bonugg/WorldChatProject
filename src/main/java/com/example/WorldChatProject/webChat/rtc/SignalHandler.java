@@ -52,7 +52,7 @@ public class SignalHandler extends TextWebSocketHandler {
     // leave room data message
     private static final String MSG_TYPE_LEAVE = "leave";
     // peerDisconnected data message
-    private static final String MSG_TYPE_PEERDISCONNECTED = "peerDisConnected";
+    private static final String MSG_TYPE_REJECT = "rejective";
 
     // 연결 끊어졌을 때 이벤트처리
     @Override
@@ -219,6 +219,30 @@ public class SignalHandler extends TextWebSocketHandler {
                     
                     logger.debug("삭제 완료 [{}] ",client);
                     break;
+                    
+                case MSG_TYPE_REJECT :
+                	room = rooms.get(message.getData());
+                    // TODO: 상대방에게 알림 전송 및 화상 채팅 종료 로직 구현
+                    logger.debug("[ws] {} has rejected the chat request from Room: #{}", userUUID, message.getData());
+                    log.info("거절요청 메세지타입 들어옴@@@@@");
+
+                    // 거절 메시지를 보낸 유저를 제외한 다른 유저의 세션을 찾습니다.
+                    WebSocketSession rejectedSession = room.getUserList().entrySet().stream()
+                        .filter(entry -> !entry.getKey().equals(userUUID))
+                        .map(Map.Entry::getValue)
+                        .filter(WebSocketSession.class::isInstance)
+                        .map(WebSocketSession.class::cast)
+                        .findFirst()
+                        .orElse(null);
+
+                    // 상대방 세션에 메시지를 전송합니다.
+                    if (rejectedSession != null && rejectedSession.isOpen()) {
+                        TextMessage rejectMessage = new TextMessage("{\"type\": \"reject\", \"message\": \"상대방이 요청을 거절하였습니다\"}");
+                        rejectedSession.sendMessage(rejectMessage);
+                    }
+
+                    break;
+
                    
 
                 // something should be wrong with the received message, since it's type is unrecognizable
