@@ -9,7 +9,7 @@
  <br/>
 | front | front |
 |-----|-----|
-| ![구본욱](https://cdn.pixabay.com/photo/2017/08/15/11/10/dwarf-2643545_1280.png) | ![이경일](https://cdn.pixabay.com/photo/2013/07/13/13/14/tiger-160601_1280.png) |
+| ![구본욱](https://cdn.pixabay.com/photo/2017/11/19/13/28/snow-man-2962777_1280.png) | ![이경일](https://cdn.pixabay.com/photo/2013/07/13/13/14/tiger-160601_1280.png) |
 | 프론트 | 프론트 |
 | 구본욱 | 이경일 |
 
