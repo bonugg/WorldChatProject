@@ -50,7 +50,7 @@
     <img src="https://img.shields.io/badge/intelliJ-black">
 </div>
 <div>
-    <h3>Open Source</h3>
+    <h3>API</h3>
     <img src="https://img.shields.io/badge/Papago%20-%20Green">
     <img src="https://img.shields.io/badge/CLOVA%20-%20green">
 </div>
