@@ -9,8 +9,6 @@
  <br/>
 | front | front |
 |-----|-----|
-| 구본욱 | 이경일 |
-|-----|-----|
 | ![구본욱](https://cdn.pixabay.com/photo/2018/01/01/16/43/sketch-3054501_1280.png) | ![이경일](https://cdn.pixabay.com/photo/2013/07/13/13/14/tiger-160601_1280.png) |
 | 프론트 | 프론트 |
 | 구본욱 | 이경일 |
