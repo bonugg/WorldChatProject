@@ -38,9 +38,7 @@
 <br>
 <div>
     <h3>Server</h3> 
-    <img src="https://img.shields.io/badge/amazonaws-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white">
-    <img src="https://img.shields.io/badge/apache-D22128?style=for-the-badge&logo=apache&logoColor=white">
-    <img src="https://img.shields.io/badge/tomcat-F8DC75?style=for-the-badge&logo=apache&logoColor=black"> 
+    <img src="https://img.shields.io/badge/ncloud%20-%20yellowgreen">
 </div>
 <br>
 <div>
@@ -51,25 +49,16 @@
 <div>
     <h3>Tooling / DevOps</h3>
     <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
-    <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">
-    <img src="https://img.shields.io/badge/filezilla-BF0000?style=for-the-badge&logo=filezilla&logoColor=white">
-    <img src="https://img.shields.io/badge/dbeaver-005C9D?style=for-the-badge&logo=dbeaver&logoColor=white">
-    <img src="https://img.shields.io/badge/kakaoo oven-FFCD00?style=for-the-badge&logo=kakao&logoColor=black">
-</div>
-<br>
-<div>
-    <h3>Environment</h3>
-    <img src="https://img.shields.io/badge/windows10-0078D6?style=for-the-badge&logo=windows&logoColor=white">
-    <img src="https://img.shields.io/badge/ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white">
+    <img src="https://img.shields.io/badge/Eclipes%20-%20purple">
+    <img src="https://img.shields.io/badge/Mysql%20Workbench%20-%20gray">
+    <img src="https://img.shields.io/badge/VS%20code-aqua">
+    <img src="https://img.shields.io/badge/intelliJ-black">
 </div>
 <br>
 <div>
     <h3>Open Source</h3>
-    <img src="https://img.shields.io/badge/bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white">
-    <img src="https://img.shields.io/badge/kakaomap-FBE00A?style=for-the-badge&logo=kakao&logoColor=black">
-    <img src="https://img.shields.io/badge/kakaologin-FFCD00?style=for-the-badge&logo=kakao&logoColor=black">
-    <img src="https://img.shields.io/badge/axios-5A3EED?style=for-the-badge&logo=axios&logoColor=white">
-</div>
+    <img src="https://img.shields.io/badge/Papago%20-%20Green">
+    <img src="https://img.shields.io/badge/CLOVA%20-%20green">
 <br>
  
 
