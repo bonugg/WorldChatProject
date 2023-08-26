@@ -38,6 +38,7 @@ public class FrdChatMessageDTO {
                 .sender(this.sender)
                 .message(this.message)
                 .createdAt(this.createdAt)
+                .checkRead(this.checkRead)
                 .s3DataUrl(this.s3DataUrl)
                 .fileName(this.fileName)
                 .fileDir(this.fileDir)

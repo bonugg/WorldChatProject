@@ -39,6 +39,7 @@ public class FrdChatMessage {
                 .message(this.message)
                 .sender(this.sender)
                 .createdAt(String.valueOf(this.createdAt))
+                .checkRead(this.checkRead)
                 .s3DataUrl(this.s3DataUrl)
                 .fileName(this.fileName)
                 .fileDir(this.fileDir)

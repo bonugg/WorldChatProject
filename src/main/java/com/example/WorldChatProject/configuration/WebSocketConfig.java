@@ -2,6 +2,8 @@ package com.example.WorldChatProject.configuration;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.example.WorldChatProject.frdChat.service.FrdChatRoomHistoryService;
+import com.example.WorldChatProject.frdChat.service.FrdChatRoomService;
 import com.example.WorldChatProject.randomChat.entity.RandomRoom;
 import com.example.WorldChatProject.randomChat.repository.RandomRoomRepository;
 import com.example.WorldChatProject.randomChat.service.RandomRoomService;
@@ -38,12 +40,8 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final UserRepository userRepository;
-    private final Map<String, String> userSessionMap = new ConcurrentHashMap<>();
-
-    private final RandomRoomRepository randomRoomRepository;
-    private final RandomRoomService randomRoomService;
-    private final ApplicationContext applicationContext;
-
+    private final FrdChatRoomService frdChatRoomService;
+    private final FrdChatRoomHistoryService frdChatRoomHistoryService;
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint( "/random") //https://localhost:9002/random/
@@ -78,8 +76,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             StompCommand command = accessor.getCommand();
 
             if (command != null && command.equals(StompCommand.CONNECT)) {
-
                 String token = accessor.getFirstNativeHeader("Authorization");
+
                 log.info("Token: " + token);
 
                 token = token.replace(JwtProperties.TOKEN_PREFIX, "");
@@ -96,7 +94,26 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                         accessor.getSessionAttributes().put("userProfile", userDTO.getUserProfileName());
                     }
                 }
+                String friendChat = accessor.getFirstNativeHeader("friendChat");
+                //1. 채팅방에 접속한 사람 넣기
+                if(friendChat.equals("on")){
+                    String userNickName = (String) accessor.getSessionAttributes().get("user");
+                    Long roomId = Long.parseLong(accessor.getFirstNativeHeader("roomId"));
+                    String sessionId = accessor.getSessionId();
+                    frdChatRoomHistoryService.enteredRoom(userNickName, roomId, sessionId);
+
+                    //2. 온.오프라인 상태 감지하기
+                    Long userId = (Long) accessor.getSessionAttributes().get("userId");
+                    frdChatRoomHistoryService.detectOtherUser(roomId, userId);
+                }
             }
+            else if (command !=null && command.equals(StompCommand.DISCONNECT)) {
+                String userNickName = (String) accessor.getSessionAttributes().get("user");
+                System.out.println("닉네임안들어오나? : " + userNickName);
+                String sessionId = accessor.getSessionId();
+                frdChatRoomHistoryService.leaveRoom(userNickName, sessionId);
+            }
+
             return message;
         }
     }
