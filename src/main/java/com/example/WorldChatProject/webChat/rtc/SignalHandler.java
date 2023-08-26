@@ -17,7 +17,6 @@ import org.thymeleaf.util.StringUtils;
 import com.example.WorldChatProject.webChat.dto.ChatRoomDto;
 import com.example.WorldChatProject.webChat.dto.ChatRoomMap;
 import com.example.WorldChatProject.webChat.dto.WebSocketMessage;
-import com.example.WorldChatProject.webChat.dto.ChatRoomDto.ChatType;
 import com.example.WorldChatProject.webChat.service.ChatService.ChatServiceMain;
 import com.example.WorldChatProject.webChat.service.ChatService.RtcChatService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -160,8 +159,10 @@ public class SignalHandler extends TextWebSocketHandler {
                     }
                     
                     System.out.println("여기는 왜 안 들어오지?");
+                    
                     // room 안에 있는 userList 에 유저 추가
                     rtcChatService.addClient(room, userUUID, session);
+                    log.info("음성@@@@@@@@@@@@@@ : " + room + userUUID + session + "@@@@@@@@@@@@@@@@@@@");
 
                     // 채팅방 입장 후 유저 카운트+1
                     chatServiceMain.plusUserCnt(roomId);
