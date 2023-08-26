@@ -63,6 +63,10 @@ public class FriendsService {
         friendsRepository.delete(friends1);
     }
 
+    public User getFriend(User user) {
+        return friendsRepository.findByUser(user);
+    }
+
 
 //    public void addFriends(Friends friends1) {
 //        friendsRepository.save(friends1);

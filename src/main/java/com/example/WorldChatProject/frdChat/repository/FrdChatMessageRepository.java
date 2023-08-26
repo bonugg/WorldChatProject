@@ -11,4 +11,6 @@ public interface FrdChatMessageRepository extends JpaRepository<FrdChatMessage, 
     List<FrdChatMessage> findByRoomIdAndSender(long roomId, String userNickName);
 
     List<FrdChatMessage> findByRoomIdAndSenderAndCheckRead(long roomId, String userNickName, boolean statement);
+
+    long countByRoomIdAndSenderAndCheckRead(Long roomId, String userNickName, boolean statement);
 }

@@ -105,6 +105,7 @@ public class FrdChatController {
         }
     }
 
+    //안읽음 -> 읽음으로 표시한후 리스트 반환하는 api
     @PutMapping("/chatroom/{roomId}")
     @ResponseBody
     public ResponseEntity<?> updateRead(@PathVariable Long roomId, Authentication authentication) {

@@ -27,6 +27,8 @@ public interface FriendsRepository extends JpaRepository<Friends, Long> {
 
     List<Friends> findByUserAndStatement(User user, FriendsStatement friendsStatement);
 
+    User findByUser(User user);
+
 //    List<Friends> findByRequester(User requester);
 //
 //    Friends findRequestByRequesterAndReceiver(User receiver, User requester);

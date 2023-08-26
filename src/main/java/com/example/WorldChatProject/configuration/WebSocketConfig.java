@@ -28,7 +28,9 @@ import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.web.socket.config.annotation.*;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Configuration
@@ -97,21 +99,27 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                         accessor.getSessionAttributes().put("userProfile", userDTO.getUserProfileName());
                     }
                 }
-                //1. 채팅방에 접속한 사람 넣기
-                String userNickName = (String) accessor.getSessionAttributes().get("user");
-                Long roomId = Long.parseLong(accessor.getFirstNativeHeader("roomId"));
-                String sessionId = accessor.getSessionId();
-                frdChatRoomHistoryService.enteredRoom(userNickName, roomId, sessionId);
+                //이건 여러사람이 쓰는 config라서 예외처리를 잘 안해주면 에러가 난다. 첨엔 destination(endpoint)로 구분하려했는데
+                //CONNECT상태에서 어느 엔드포인트인지 구분못함. 헤더로 보낼수밖에.
+                String chatType = accessor.getFirstNativeHeader("chatType");
+                System.out.println("채팅타입" + chatType);
+                //equals메소드에서 chatType을 앞에두면 nullpointException 발생할수도 있어서 스트링값을 앞에 두는게 좋다. ㄷㄷ
+                if("friendsChat".equals(chatType)) {
+                    //1. 채팅방에 접속한 사람 넣기
+                    String userNickName = (String) accessor.getSessionAttributes().get("user");
+                    Long roomId = Long.parseLong(accessor.getFirstNativeHeader("roomId"));
+                    String sessionId = accessor.getSessionId();
+                    frdChatRoomHistoryService.enteredRoom(userNickName, roomId, sessionId);
 
-                //2. 온.오프라인 상태 감지하기
-                Long userId = (Long) accessor.getSessionAttributes().get("userId");
-                frdChatRoomHistoryService.detectOtherUser(roomId, userId);
+                    //2. 온.오프라인 상태 감지하기
+                    Long userId = (Long) accessor.getSessionAttributes().get("userId");
+                    frdChatRoomHistoryService.detectOtherUser(roomId, userId);
 
+                }
             } else if (command !=null && command.equals(StompCommand.DISCONNECT)) {
-                String userNickName = (String) accessor.getSessionAttributes().get("user");
-                System.out.println("닉네임안들어오나? : " + userNickName);
-                String sessionId = accessor.getSessionId();
-                frdChatRoomHistoryService.leaveRoom(userNickName, sessionId);
+                    String userNickName = (String) accessor.getSessionAttributes().get("user");
+                    String sessionId = accessor.getSessionId();
+                    frdChatRoomHistoryService.leaveRoom(userNickName, sessionId);
             }
             return message;
         }

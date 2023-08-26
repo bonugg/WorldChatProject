@@ -68,7 +68,13 @@ public class FrdChatMessageService {
             String userNickName = user.getUserNickName();
             //false인것만 true로 바꾸기 위해서 임의로 줬다
             boolean statement = false;
+            long unreadListNum = frdChatMessageRepository.countByRoomIdAndSenderAndCheckRead(roomId, userNickName, statement);
+            System.out.println("안읽은 메시지 개수 jpa" + unreadListNum);
+
             List<FrdChatMessage> updatedList = updateCheckRead(roomId, userNickName, statement);
+            long unreadNum = updatedList.size();
+            System.out.println("안읽은 메시지 개수 size()" + unreadNum);
+
             responseDTO.setItems(updatedList);
             responseDTO.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok().body(responseDTO);
