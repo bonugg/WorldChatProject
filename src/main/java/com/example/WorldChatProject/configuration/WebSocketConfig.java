@@ -96,7 +96,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 }
                 String friendChat = accessor.getFirstNativeHeader("friendChat");
                 //1. 채팅방에 접속한 사람 넣기
-                if(friendChat.equals("on")){
+                if(friendChat != null){
                     String userNickName = (String) accessor.getSessionAttributes().get("user");
                     Long roomId = Long.parseLong(accessor.getFirstNativeHeader("roomId"));
                     String sessionId = accessor.getSessionId();
