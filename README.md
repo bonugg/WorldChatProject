@@ -58,11 +58,9 @@
 </div>
 <br/>
 <div>
- <h1>📚 STACKS</h1>
+ <h1>🌠 UI</h1>
 </div>
-- UI 구경하기
 
-
-[Figma](https://www.figma.com/file/xWTkNiCUlaYkRHwx3F33AQ/tutorial?type=design&node-id=133-6&mode=design&t=KHdisPulhsecCIXf-0)
+[Figma로 UI 구경하기](https://www.figma.com/file/xWTkNiCUlaYkRHwx3F33AQ/tutorial?type=design&node-id=133-6&mode=design&t=KHdisPulhsecCIXf-0)
 
 
