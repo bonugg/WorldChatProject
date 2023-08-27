@@ -58,8 +58,10 @@
 </div>
 <br/>
 <div>
-     <h3>API</h3>
+     <h3>UI</h3>
 </div>
+- UI 구경하기
+
 
 [Figma](https://www.figma.com/file/xWTkNiCUlaYkRHwx3F33AQ/tutorial?type=design&node-id=133-6&mode=design&t=KHdisPulhsecCIXf-0)
 
