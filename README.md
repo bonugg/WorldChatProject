@@ -52,7 +52,14 @@
 <div>
     <h3>API</h3>
     <img src="https://img.shields.io/badge/Papago%20-%20Green">
-    <img src="https://img.shields.io/badge/CLOVA%20-%20green">
+    <img src="https://img.shields.io/badge/naver%20login-green">
+    <img src="https://img.shields.io/badge/google%20login-blue">
+    <img src="https://img.shields.io/badge/Import%20API%20-%20orange">
+</div>
+<br/>
+<div>
+     <h3>API</h3>
+    [Figma](https://www.figma.com/file/xWTkNiCUlaYkRHwx3F33AQ/tutorial?type=design&node-id=133-6&mode=design&t=KHdisPulhsecCIXf-0)
 </div>
  
 
