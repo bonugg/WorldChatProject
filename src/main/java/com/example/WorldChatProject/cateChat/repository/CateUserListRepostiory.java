@@ -12,6 +12,7 @@ import java.util.Optional;
 
 public interface CateUserListRepostiory extends JpaRepository<CateUserList, Long> {
     CateUserList findByCateIdAndUserName(Long cateId, String userName);
+    Long countByCateId(Long cateId);
     List<CateUserList> findByCateId(Long cateId);
 
     @Transactional
