@@ -91,8 +91,6 @@ public class CateRoomService {
         cateRoomRepository.save(cateRoom);
     }
 
-<<<<<<< HEAD
-=======
     public void deleteRoom(Long cateId) {
         CateRoom cateRoom = cateRoomRepository.findById(cateId).get();
         cateRoomRepository.delete(cateRoom);
@@ -154,7 +152,7 @@ public class CateRoomService {
 //        cateroom.getCateUserList().forEach((key, value) -> list.add(value));
 //        return list;
 //    }
->>>>>>> e0b0c9a326f26755be7b534888a4d15229cf2bff
+
 
 
 }

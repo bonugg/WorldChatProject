@@ -10,11 +10,6 @@ import com.example.WorldChatProject.cateChat.dto.CateFileDTO;
 import com.example.WorldChatProject.cateChat.repository.CateFileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-<<<<<<< HEAD
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-=======
->>>>>>> e0b0c9a326f26755be7b534888a4d15229cf2bff
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,10 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
-<<<<<<< HEAD
-=======
 import java.net.URLEncoder;
->>>>>>> e0b0c9a326f26755be7b534888a4d15229cf2bff
 import java.nio.charset.StandardCharsets;
 
 @Service
@@ -37,17 +29,9 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 public class CateFileService implements FileService {
     // AmazonS3 주입받기
-<<<<<<< HEAD
-    private final @Qualifier("amazonS3ClientNew") AmazonS3 s3;
-
-
-
-    @Value("bitcamp-bucket-23")
-=======
     private final AmazonS3 s3;
 
     @Value("${ncp.bucket}")
->>>>>>> e0b0c9a326f26755be7b534888a4d15229cf2bff
     private String bucket;
 
     @Value("${ncp.endPoint}")
@@ -58,48 +42,27 @@ public class CateFileService implements FileService {
     @Override
     public CateFileDTO uploadFile(MultipartFile file, String transaction, String roomId) {
         try{
-<<<<<<< HEAD
-
-            String filename = file.getOriginalFilename(); // 파일원본 이름
-
-            // 매개변수로 넘어온 multipartFile 을 File 객체로 변환 시켜서 저장하기 위한 메서드
-            File convertedFile = convertMultipartFileToFile(file, transaction);
-=======
             String filename = file.getOriginalFilename(); // 파일원본 이름
             String key = "cate" + "/" + roomId + "/" + transaction + "_" + filename; // S3 파일 경로
             // 매개변수로 넘어온 multipartFile 을 File 객체로 변환 시켜서 저장하기 위한 메서드
             File convertedFile = convertMultipartFileToFile(file, transaction + filename);
->>>>>>> e0b0c9a326f26755be7b534888a4d15229cf2bff
 
             // 파일의 메타데이터와 ACL을 설정
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType(file.getContentType());
 
-<<<<<<< HEAD
-            PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, transaction, convertedFile)
-                    .withCannedAcl(CannedAccessControlList.PublicRead) // 공개 읽기 권한 설정
-                    .withMetadata(metadata);
-
-=======
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, key, convertedFile)
                     .withCannedAcl(CannedAccessControlList.PublicRead) // 공개 읽기 권한 설정
                     .withMetadata(metadata);
->>>>>>> e0b0c9a326f26755be7b534888a4d15229cf2bff
             // 아마존 S3 에 파일 업로드를 위해 사용하는 TransferManagerBuilder
             TransferManager transferManager = TransferManagerBuilder
                     .standard()
                     .withS3Client(s3)
                     .build();
-<<<<<<< HEAD
-
-            // bucket 에 key 와 convertedFile 을 이용해서 파일 업로드
-            Upload upload = transferManager.upload(putObjectRequest);
-=======
             // bucket 에 key 와 convertedFile 을 이용해서 파일 업로드
 
             Upload upload = transferManager.upload(putObjectRequest);
 
->>>>>>> e0b0c9a326f26755be7b534888a4d15229cf2bff
             upload.waitForUploadResult();
 
             // 변환된 File 객체 삭제
@@ -110,17 +73,9 @@ public class CateFileService implements FileService {
                     .transaction(transaction)
                     .chatRoom(roomId)
                     .originalFileName(filename)
-<<<<<<< HEAD
-                    .s3DataUrl(endPoint + "/" + bucket + "/" + transaction)
-                    .build();
-
-            cateFileRepository.save(uploadReq.DTOTOEntity());
-
-=======
                     .fileDir(key)
                     .s3DataUrl(endPoint + "/" + bucket + "/" + key)
                     .build();
->>>>>>> e0b0c9a326f26755be7b534888a4d15229cf2bff
             // uploadDTO 객체 리턴
             return uploadReq;
 
@@ -130,15 +85,9 @@ public class CateFileService implements FileService {
     }
 
     @Override
-<<<<<<< HEAD
-    public ResponseEntity<byte[]> getObject(String s3DataUrl) throws IOException {
-        // bucket 와 fileDir 을 사용해서 S3 에 있는 객체 - object - 를 가져온다.
-        S3Object object = s3.getObject(new GetObjectRequest(bucket, s3DataUrl));
-=======
     public ResponseEntity<byte[]> getObject(String fileDir, String fileName) throws IOException {
         // bucket 와 fileDir 을 사용해서 S3 에 있는 객체 - object - 를 가져온다.
         S3Object object = s3.getObject(new GetObjectRequest(bucket, fileDir));
->>>>>>> e0b0c9a326f26755be7b534888a4d15229cf2bff
 
         // object 를 S3ObjectInputStream 형태로 변환한다.
         S3ObjectInputStream objectInputStream = object.getObjectContent();
@@ -151,18 +100,9 @@ public class CateFileService implements FileService {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 
-<<<<<<< HEAD
-        String decodedFileName = URLDecoder.decode(s3DataUrl, StandardCharsets.UTF_8.toString());
-        httpHeaders.setContentDispositionFormData("attachment", decodedFileName);
-
-        return new ResponseEntity<>(bytes, httpHeaders, HttpStatus.OK);
-    }
-}
-=======
         String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8.toString());
         httpHeaders.setContentDispositionFormData("attachment", encodedFileName);
 
         return new ResponseEntity<>(bytes, httpHeaders, HttpStatus.OK);
     }
 }
->>>>>>> e0b0c9a326f26755be7b534888a4d15229cf2bff

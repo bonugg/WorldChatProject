@@ -29,10 +29,6 @@ public interface FileService {
         file.delete();
     }
 
-<<<<<<< HEAD
-    ResponseEntity<byte[]> getObject(String s3DataUrl) throws IOException;
-}
-=======
     ResponseEntity<byte[]> getObject(String fileDir, String fileName) throws IOException;
 }
->>>>>>> e0b0c9a326f26755be7b534888a4d15229cf2bff
+

@@ -26,11 +26,7 @@ public class S3config {
     @Value("${ncp.endPoint}")
     private String endPoint;
 
-<<<<<<< HEAD:src/main/java/com/example/WorldChatProject/frdChat/config/S3config.java
-    @Value("${cloud.aws.s3.bucket2}")
-=======
     @Value("${ncp.bucket}")
->>>>>>> e0b0c9a326f26755be7b534888a4d15229cf2bff:src/main/java/com/example/WorldChatProject/configuration/S3config.java
     private String bucket;
 
     @Bean

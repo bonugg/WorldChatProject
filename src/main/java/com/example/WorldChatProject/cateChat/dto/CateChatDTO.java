@@ -22,7 +22,6 @@ public class CateChatDTO {
     private MessageType type;
     private Long cateId;
     private String sender;
-    private String s3DataUrl;
 
     private String userProfile;
     private String newAccessToken;
@@ -38,15 +37,14 @@ public class CateChatDTO {
     //DTO를 엔티티로 변환하는 메소드
     public CateChat toCateChat() {
         CateChat cateChat = CateChat.builder()
-                                    .cateChatId(this.cateChatId)
-                                    .cateChatContent(this.cateChatContent)
-                                     //null값이므로 엔티티로 전달하면 안된다
+                .cateChatId(this.cateChatId)
+                .cateChatContent(this.cateChatContent)
+                //null값이므로 엔티티로 전달하면 안된다
 //                                  .cateChatRegdate(this.cateChatRegdate)
-                                    .type(this.type)
-                                    .sender(this.sender)
-                                    .cateRoom(this.toCateChat().getCateRoom())
-                                    .s3DataUrl(this.s3DataUrl)
-                                    .build();
+                .type(this.type)
+                .sender(this.sender)
+                .cateRoom(this.toCateChat().getCateRoom())
+                .build();
 
         return cateChat;
     }

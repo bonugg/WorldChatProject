@@ -34,16 +34,18 @@ public class CateRoom {
     private Interest interest; //카테고리
 
 
+
+
     //엔티티를 DTO로 변환하는 메소드
     public CateRoomDTO toCateRoomDTO() {
         CateRoomDTO cateRoomDTO = CateRoomDTO.builder()
-                                //DTO필드명에(this.엔티티명) -> 둘은 형태가 같아야 한다.
-                                             .cateId(this.cateId)
-                                             .cateName(this.cateName)
-                                             .cateUserCnt(this.cateUserCnt)
-                                             .maxUserCnt(this.maxUserCnt)
-                                             .interest(this.interest)
-                                             .build();
+                //DTO필드명에(this.엔티티명) -> 둘은 형태가 같아야 한다.
+                .cateId(this.cateId)
+                .cateName(this.cateName)
+                .cateUserCnt(this.cateUserCnt)
+                .maxUserCnt(this.maxUserCnt)
+                .interest(this.interest)
+                .build();
 
         return cateRoomDTO;
     }

@@ -18,26 +18,17 @@ public class CateFileDTO {
     private String transaction;
     private String chatRoom;
     private String s3DataUrl;
-<<<<<<< HEAD
-=======
     private String fileDir;
->>>>>>> e0b0c9a326f26755be7b534888a4d15229cf2bff
+
 
     public CateFile DTOTOEntity() {
         CateFile cateFile = CateFile.builder()
                 .originalFileName(this.originalFileName)
                 .s3DataUrl(this.s3DataUrl)
-<<<<<<< HEAD
-                .build();
-        return cateFile;
-    }
-
-}
-=======
                 .fileDir(this.fileDir)
                 .build();
         return cateFile;
     }
->>>>>>> e0b0c9a326f26755be7b534888a4d15229cf2bff
+
 
 }
