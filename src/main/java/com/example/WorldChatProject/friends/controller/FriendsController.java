@@ -1,14 +1,19 @@
 package com.example.WorldChatProject.friends.controller;
 
+import com.example.WorldChatProject.frdChat.entity.FrdChatRoom;
+import com.example.WorldChatProject.frdChat.service.FrdChatRoomService;
 import com.example.WorldChatProject.friends.dto.FriendsDTO;
 import com.example.WorldChatProject.frdChat.dto.ResponseDTO;
+import com.example.WorldChatProject.friends.entity.BlackList;
 import com.example.WorldChatProject.friends.entity.Friends;
+import com.example.WorldChatProject.friends.service.BlackListService;
 import com.example.WorldChatProject.friends.service.FriendsService;
 import com.example.WorldChatProject.user.dto.UserDTO;
 import com.example.WorldChatProject.user.entity.User;
 import com.example.WorldChatProject.user.security.auth.PrincipalDetails;
 import com.example.WorldChatProject.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -20,11 +25,14 @@ import static com.example.WorldChatProject.friends.dto.FriendsStatement.WAITING;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/friends")
 public class FriendsController {
 
     private final FriendsService friendsService;
     private final UserService userService;
+    private final BlackListService blackListService;
+    private final FrdChatRoomService frdChatRoomService;
 
     @PostMapping("/request")
     public ResponseEntity<?> requestFriends(@RequestBody UserDTO userDTO,
@@ -200,18 +208,80 @@ public class FriendsController {
         }
     }
 
-    
 
-    @DeleteMapping("/delete-friends")
-    public ResponseEntity<?> deleteFriends(@RequestBody User user, Authentication authentication) {
-        ResponseDTO<Map<String, String>> response = new ResponseDTO<>();
+    @GetMapping("/friends-list/{nationally}")
+    public ResponseEntity<?> getFriendsList(@PathVariable String nationally, Authentication authentication) {
+        ResponseDTO<FriendsDTO> response = new ResponseDTO<>();
         try {
             PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-            User friends1 = principal.getUser().DTOToEntity();
-            User friends2 = userService.findById(user.getUserId());
-            Friends friends = friendsService.findByUserAndFriends(friends1, friends2);
+            User user = principal.getUser().DTOToEntity();
+            List<Friends> friendsList = friendsService.findByUserAndStatementAndNationally(user, APPROVED, nationally);
+            log.info(friendsList.get(0).toString());
+            List<FriendsDTO> friendsDTOList = new ArrayList<>();
+            for(Friends f : friendsList) {
+                friendsDTOList.add(f.EntityToDTO());
+            }
+            response.setItems(friendsDTOList);
+            log.info(friendsDTOList.get(0).toString());
+            response.setStatusCode(HttpStatus.OK.value());
+            return ResponseEntity.ok().body(response);
+        } catch (Exception e) {
+            response.setErrorMessage(e.getMessage());
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @GetMapping("/nationally-list")
+    public ResponseEntity<?> getNationally(Authentication authentication) {
+        ResponseDTO<String> response = new ResponseDTO<>();
+        try {
+            PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+            User user = principal.getUser().DTOToEntity();
+            List<String> nationallyList = friendsService.findByNationally(user, APPROVED);
+            log.info(nationallyList.get(0).toString());
+
+            // 중복을 제거한 나라 목록 생성
+            Set<String> uniqueNationallySet = new HashSet<>(nationallyList);
+            List<String> uniqueNationallyList = new ArrayList<>(uniqueNationallySet);
+
+            response.setItems(uniqueNationallyList);
+            response.setStatusCode(HttpStatus.OK.value());
+            return ResponseEntity.ok().body(response);
+        } catch (Exception e) {
+            response.setErrorMessage(e.getMessage());
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @PostMapping("/delete-friends")
+    public ResponseEntity<?> deleteFriends(@RequestBody User user, Authentication authentication) {
+
+        ResponseDTO<Map<String, String>> response = new ResponseDTO<>();
+        Map<String, String> returnMap = new HashMap<>();
+        System.out.println("유저아이디 넘어오는지 확인 : " + user.getUserId());
+        try {
+            PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+            User frds1 = principal.getUser().DTOToEntity();
+            User frds2 = userService.findById(user.getUserId());
+            Friends friends = friendsService.findByUserAndFriends(frds1, frds2);
+            Friends friends2 = friendsService.findByUserAndFriends(frds2, frds1);
             friendsService.delete(friends);
-            Map<String, String> returnMap = new HashMap<>();
+            friendsService.delete(friends2);
+            BlackList checkBlackList = blackListService.checkBlackList(frds1, frds2);
+            if(checkBlackList == null) {
+                BlackList blackList = new BlackList();
+                blackList.setHater(frds1);
+                blackList.setHated(frds2);
+                blackListService.save(blackList);
+            } else {
+                returnMap.put("msg", "already bl");
+            }
+            FrdChatRoom checkRoom = frdChatRoomService.findRoomByFriends1OrFriends2(frds1, frds2);
+            if(checkRoom != null) {
+                frdChatRoomService.deleteRoom(checkRoom);
+            }
             returnMap.put("msg", "delete ok");
             response.setItem(returnMap);
             response.setStatusCode(HttpStatus.OK.value());
