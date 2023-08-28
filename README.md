@@ -8,16 +8,11 @@
 <br/>
 `팀원 & 역할 소개`
  <br/>
-| 프론트 | 프론트 |
-|-----|-----|
-| ![구본욱](https://cdn.pixabay.com/photo/2017/11/19/13/28/snow-man-2962777_1280.png) | ![이경일](https://cdn.pixabay.com/photo/2017/02/01/11/32/characters-2029814_1280.png) |
-| 구본욱 | 이경일 |
+| 프론트 | 프론트 | 랜덤 채팅 | 친구 채팅 | 관심사 채팅 | 화상/음성 채팅 | 화상/음성 채팅 |
+|-----|-----|-----|-----|-----|-----|-----|
+| ![구본욱](https://cdn.pixabay.com/photo/2017/11/19/13/28/snow-man-2962777_1280.png) | ![이경일](https://cdn.pixabay.com/photo/2017/02/01/11/32/characters-2029814_1280.png) | ![윤혜빈](https://cdn.pixabay.com/photo/2016/10/27/09/24/fox-1773722_1280.png) | ![김대현](https://cdn.pixabay.com/photo/2020/12/10/05/11/spider-man-5819366_1280.png) | ![김이슬](https://img.etnews.com/photonews/2005/1298822_20200507160440_294_0001.jpg) | ![김용순](https://cdn.pixabay.com/photo/2017/11/06/18/30/eggplant-2924511_1280.png) | ![황보석](https://cdn.pixabay.com/photo/2016/11/11/17/42/jade-1817312_1280.png) |
+| 구본욱 | 이경일 | 윤혜빈 | 김대현 | 김이슬 | 김용순 | 황보석 |
 
-
-| 랜덤 채팅 | 친구 채팅 | 관심사 채팅 | 화상/음성 채팅 | 화상/음성 채팅 |
-|-----|-----|-----|-----|-----|
-| ![윤혜빈](https://cdn.pixabay.com/photo/2016/10/27/09/24/fox-1773722_1280.png) | ![김대현](https://cdn.pixabay.com/photo/2020/12/10/05/11/spider-man-5819366_1280.png) | ![김이슬](https://icons.iconarchive.com/icons/large-icons/large-weather/512/dew-icon.png) | ![김용순](https://cdn.pixabay.com/photo/2017/11/06/18/30/eggplant-2924511_1280.png) | ![황보석](https://cdn.pixabay.com/photo/2016/11/11/17/42/jade-1817312_1280.png) |
-| 윤혜빈 | 김대현 | 김이슬 | 김용순 | 황보석 |
 <br>
 <h1>📚 STACKS</h1>
 <div>
@@ -52,7 +47,15 @@
 <div>
     <h3>API</h3>
     <img src="https://img.shields.io/badge/Papago%20-%20Green">
-    <img src="https://img.shields.io/badge/CLOVA%20-%20green">
+    <img src="https://img.shields.io/badge/naver%20login-green">
+    <img src="https://img.shields.io/badge/google%20login-blue">
+    <img src="https://img.shields.io/badge/Import%20API%20-%20orange">
 </div>
- 
+<br/>
+<div>
+ <h1>🌠 UI</h1>
+</div>
+
+[Figma로 UI 구경하기](https://www.figma.com/file/xWTkNiCUlaYkRHwx3F33AQ/tutorial?type=design&node-id=133-6&mode=design&t=KHdisPulhsecCIXf-0)
+
 
