@@ -27,6 +27,10 @@ public class CateUserListService {
     }
 
     @Transactional
+    public Long UserCnt(Long cateId) {
+        return cateUserListRepostiory.countByCateId(cateId);
+    }
+    @Transactional
     public void delete(Long cateId, String userName) {
         CateUserList cateUserList = cateUserListRepostiory.findByCateIdAndUserName(cateId, userName);
         if (cateUserList != null) {

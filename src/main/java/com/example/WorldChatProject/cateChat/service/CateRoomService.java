@@ -5,6 +5,7 @@ import com.example.WorldChatProject.cateChat.entity.CateChat;
 import com.example.WorldChatProject.cateChat.entity.CateRoom;
 import com.example.WorldChatProject.cateChat.entity.Interest;
 import com.example.WorldChatProject.cateChat.repository.CateRoomRepository;
+import com.example.WorldChatProject.cateChat.repository.CateUserListRepostiory;
 import com.example.WorldChatProject.user.dto.ResponseDTO;
 import com.example.WorldChatProject.user.dto.UserDTO;
 import com.example.WorldChatProject.user.entity.User;
@@ -29,6 +30,7 @@ import java.util.*;
 public class CateRoomService {
 
     private final CateRoomRepository cateRoomRepository;
+    private final CateUserListRepostiory cateUserListRepostiory;
     private final UserRepository userRepository;
 
     public ResponseEntity<?> getAllCateChatRoom(String category) {
@@ -78,7 +80,7 @@ public class CateRoomService {
     public void plusUserCnt(Long cateId) {
         System.out.println("유저 들어옴");
         CateRoom cateRoom = cateRoomRepository.findById(cateId).get();
-        cateRoom.setCateUserCnt(cateRoom.getCateUserCnt() + 1);
+        cateRoom.setCateUserCnt(Math.toIntExact(cateUserListRepostiory.countByCateId(cateId)));
 
         cateRoomRepository.save(cateRoom);
     }

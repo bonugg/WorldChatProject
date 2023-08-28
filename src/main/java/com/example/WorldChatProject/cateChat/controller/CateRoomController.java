@@ -64,8 +64,8 @@ public class CateRoomController {
             responseResult.put("isFull", isFull);
             return ResponseEntity.ok(responseResult);
         }else {
-            cateRoomService.plusUserCnt(Long.parseLong(cateId));
             cateUserListService.save(Long.parseLong(cateId), principal.getUsername());
+            cateRoomService.plusUserCnt(Long.parseLong(cateId));
 
             List<String> userList = cateUserListService.findAllUserNamesByCateId(Long.parseLong(cateId));
 
