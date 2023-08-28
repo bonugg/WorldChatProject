@@ -41,8 +41,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class UserService {
-    @Value("${file.path}")
-    String attachPath;
     private final FileUtils fileUtils;
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -108,18 +106,12 @@ public class UserService {
         User user = userRepository.findByUserName(userName).get();
         log.info("프로필 변경 진입");
         try {
-            File directory = new File(attachPath);
-
-            if (!directory.exists()) {
-                directory.mkdir();
-            }
 
             User userProfileSave = new User();
-            userProfileSave = fileUtils.parseFileInfo(imageFile, attachPath, "userProfile/");
+            userProfileSave = fileUtils.parseFileInfo(imageFile, "userProfile/");
 
             user.setUserProfileName(userProfileSave.getUserProfileName());
             user.setUserProfileOrigin(userProfileSave.getUserProfileOrigin());
-            user.setUserProfilePath(userProfileSave.getUserProfilePath());
 
             userRepository.save(user);
 

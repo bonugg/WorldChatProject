@@ -53,17 +53,16 @@ public class CateRoomController {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         CateRoom cateRoom = cateRoomService.getChatRoom(Long.parseLong(cateId));
 
-        List<CateChat> cateChatList = cateChatService.getMessagesByCateRoom(Long.parseLong(cateId));
-
+        boolean isFull = cateRoom.getMaxUserCnt() <= cateRoom.getCateUserCnt();
+        // 채팅방 유저+1
+        cateRoomService.plusUserCnt(Long.parseLong(cateId));
         cateUserListService.save(Long.parseLong(cateId), principal.getUsername());
 
         List<String> userList = cateUserListService.findAllUserNamesByCateId(Long.parseLong(cateId));
 
-        boolean isFull = cateRoom.getMaxUserCnt() <= cateRoom.getCateUserCnt();
 
         // 값들을 담을 Map 객체 생성
         Map<String, Object> responseResult = new HashMap<>();
-        responseResult.put("cateChatList", cateChatList);
         responseResult.put("userList", userList);
         responseResult.put("cateRoom", cateRoom);
         responseResult.put("isFull", isFull);

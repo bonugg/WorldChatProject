@@ -65,7 +65,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         //메시지 구독 요청 url경로 등록(메시지 받을 때)
         registry.enableSimpleBroker("/randomSub", "/cateSub","/frdSub"); //topic
         //클라이언트의 메시지 발행 요청 url경로（요청주소 prefix) 등록(메시지 보낼 때)
-        registry.setUserDestinationPrefix("/user");
         registry.setApplicationDestinationPrefixes("/randomPub", "/catePub","/frdPub"); //app
     }
 
@@ -99,7 +98,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                     if(userDTO.getUserProfileName() != null ){
                         accessor.getSessionAttributes().put("userProfile", userDTO.getUserProfileName());
                     }
-
                 }
             }
             return message;

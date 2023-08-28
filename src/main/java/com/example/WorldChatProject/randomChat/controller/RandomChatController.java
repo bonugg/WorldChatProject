@@ -5,19 +5,16 @@ import com.example.WorldChatProject.randomChat.entity.RandomRoom;
 import com.example.WorldChatProject.randomChat.service.RandomRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
+
+import java.util.Map;
 
 
 @Controller
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin(origins = "https://localhost:3001")
 public class RandomChatController {
     //채팅을 수신(sub), 송신(pub) 하기 위한 Controller
     private final SimpMessagingTemplate template;
@@ -25,7 +22,9 @@ public class RandomChatController {
 
     @MessageMapping("/randomChat/{randomRoomId}")
     @SendTo("/randomChat/{randomRoomId}")
-    public void sendMessage(@Payload RandomChatDTO chatDTO, @DestinationVariable("randomRoomId") String randomRoomId) {
+    public void sendMessage(@Payload RandomChatDTO chatDTO, @DestinationVariable("randomRoomId") String randomRoomId, @Header("simpSessionAttributes") Map<String, Object> sessionAttributes) {
+        String user = (String) sessionAttributes.get("user");
+        chatDTO.setSender(user);
         log.info("CHAT : {}", chatDTO);
         chatDTO.setContent(chatDTO.getContent());
         // /randomSub/randomRoomId 에 있는 구독 클라이언트에게 메시지 전송
@@ -34,13 +33,23 @@ public class RandomChatController {
 
     @MessageMapping("/randomChat/{randomRoomId}/enter")
     @SendTo("/randomChat/{randomRoomId}")
-    public void enter(@Payload RandomChatDTO chatDTO, @DestinationVariable("randomRoomId") String randomRoomId) {
+    public void enter(@Payload RandomChatDTO chatDTO, @DestinationVariable("randomRoomId") String randomRoomId, @Header("simpSessionAttributes") Map<String, Object> sessionAttributes) {
+        String user = (String) sessionAttributes.get("user");
+        chatDTO.setSender(user);
         RandomRoom room = randomRoomService.findRoomById(chatDTO.getRandomRoomId());
         String roomName = room.getRandomRoomName();
         chatDTO.setContent(roomName + " ROOM");
         log.info("{}: {}", chatDTO.getType(), chatDTO.getContent());
-        template.convertAndSend("/randomSub/randomChat/" + room.getRandomRoomId(), chatDTO);
+        template.convertAndSend("/randomSub/randomChat/" + chatDTO.getRandomRoomId(), chatDTO);
     }
-
+    @MessageMapping("/randomChat/{randomRoomId}/leave")
+    @SendTo("/randomChat/{randomRoomId}")
+    public void leave(@Payload RandomChatDTO chatDTO, @DestinationVariable("randomRoomId") String randomRoomId, @Header("simpSessionAttributes") Map<String, Object> sessionAttributes) {
+        String user = (String) sessionAttributes.get("user");
+        chatDTO.setSender(user);
+        chatDTO.setContent("LEAVED ROOM");
+        log.info("{}: {}", chatDTO.getType(), chatDTO.getContent());
+        template.convertAndSend("/randomSub/randomChat/" + chatDTO.getRandomRoomId(), chatDTO);
+    }
 
 }
