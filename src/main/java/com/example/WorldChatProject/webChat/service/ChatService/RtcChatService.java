@@ -7,11 +7,14 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import com.example.WorldChatProject.webChat.dto.ChatRoomDto;
 import com.example.WorldChatProject.webChat.dto.ChatRoomMap;
+import com.example.WorldChatProject.webChat.dto.RequestDto;
 import com.example.WorldChatProject.webChat.dto.UserSessionManager;
 import com.example.WorldChatProject.webChat.dto.WebSocketMessage;
 
@@ -44,8 +47,10 @@ public class RtcChatService {
 		String requestMessage = "";
 		if ("video".equals(type)) {
 			requestMessage = sender + "님이 영상통화 요청을 보냈습니다.";
+			log.info(requestMessage);
 		} else if ("voice".equals(type)) {
 			requestMessage = sender + "님이 음성통화 요청을 보냈습니다.";
+			log.info(requestMessage);
 		}
 
 		TextMessage message = new TextMessage(requestMessage);
@@ -57,22 +62,22 @@ public class RtcChatService {
 		return message.getPayload();
 	}
 	
-	public void sendDisconnectMessage(String receiver) {
+	public String declineRTC(String sender, String receiver){
+		String declineMessage = "{\"type\": \"decline\", \"message\": \"" + sender + "님이 통화 요청을 거절하였습니다.\"}";
 	    WebSocketSession session = manager.getUserSession(receiver);
-	    if (session == null) {
-	        log.info("Session for {} is empty", receiver);
-	        return;
-	    }
-
-	    String disconnectMessage = "상대방과의 연결이 끊어졌습니다.";
-	    TextMessage message = new TextMessage(disconnectMessage);
-	    log.info("끊김요청@@@@@@@@@@" + disconnectMessage);
+	    log.info("샌더유저 " + session);
+	    log.info("샌더유저 " + sender);
+	    log.info("리시버유저" + receiver);
+	    log.info(declineMessage);
+	    TextMessage message = new TextMessage(declineMessage);
 	    try {
 	        session.sendMessage(message);
 	    } catch (IOException e) {
-	        log.error("Error sending disconnect message to user: {}", receiver, e);
+	        log.error("Error sending decline message to user: {}", receiver, e);
 	    }
+	    return message.getPayload();
 	}
+
 
 
 	// 로그아웃시 웹소켓 해제 및 map에서 삭제
