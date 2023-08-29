@@ -20,13 +20,22 @@
       <td align="center">화상/음성채팅</td>
     </tr>
     <tr>
-      <td align="center"><img src="https://cdn.pixabay.com/photo/2017/11/19/13/28/snow-man-2962777_1280.png" width="92.7%;" alt=""/><br /><b>구본욱</b><br /></td>
-      <td align="center"><img src="https://cdn.pixabay.com/photo/2017/02/01/11/32/characters-2029814_1280.png" width="100%;" alt=""/><br /><b>이경일</b><br /></td>
-      <td align="center"><img src="https://cdn.pixabay.com/photo/2016/10/27/09/24/fox-1773722_1280.png" width="100%;" alt=""/><br /><b>윤혜빈</b><br /></td>
-      <td align="center"><img src="https://cdn.pixabay.com/photo/2020/12/10/05/11/spider-man-5819366_1280.png" width="100%;" alt=""/><br /><b>김대현</b><<br /></td>
-     <td align="center"><img src="https://img.etnews.com/photonews/2005/1298822_20200507160440_294_0001.jpg" width="100%;" alt=""/><br /><b>김이슬</b><br /></td>
-     <td align="center"><img src="https://cdn.pixabay.com/photo/2017/11/06/18/30/eggplant-2924511_1280.png" width="100%;" alt=""/><br /><b>김용순</b><br /></td>
-     <td align="center"><img src="https://cdn.pixabay.com/photo/2016/11/11/17/42/jade-1817312_1280.png" width="100%;" alt=""/><br /><b>황보석</b><br /></td>
+      <td align="center"><img src="https://cdn.pixabay.com/photo/2017/11/19/13/28/snow-man-2962777_1280.png" width="92.7%;" alt=""/></td>
+      <td align="center"><img src="https://cdn.pixabay.com/photo/2017/02/01/11/32/characters-2029814_1280.png" width="100%;" alt=""/></td>
+      <td align="center"><img src="https://cdn.pixabay.com/photo/2016/10/27/09/24/fox-1773722_1280.png" width="100%;" alt=""/></td>
+      <td align="center"><img src="https://cdn.pixabay.com/photo/2020/12/10/05/11/spider-man-5819366_1280.png" width="100%;" alt=""/></td>
+      <td align="center"><img src="https://img.etnews.com/photonews/2005/1298822_20200507160440_294_0001.jpg" width="100%;" alt=""/></td>
+      <td align="center"><img src="https://cdn.pixabay.com/photo/2017/11/06/18/30/eggplant-2924511_1280.png" width="100%;" alt=""/></td>
+      <td align="center"><img src="https://cdn.pixabay.com/photo/2016/11/11/17/42/jade-1817312_1280.png" width="100%;" alt=""/></td>
+    </tr>
+     <tr>
+      <td align="center">구본욱</td>
+      <td align="center">이경일</td>
+      <td align="center">윤혜빈</td>
+      <td align="center">김대현</td>
+      <td align="center">김이슬</td>
+      <td align="center">김용순</td>
+      <td align="center">황보석</td>
     </tr>
   </tbody>
 </table>
