@@ -11,31 +11,25 @@
 <table>
   <tbody>
     <tr>
-      <td>프론트</td>
-      <td>프론트</td>
-      <td>랜덤 채팅</td>
-      <td>친구 채팅</td>
-      <td>관심사 채팅</td>
-      <td>화상/음성채팅</td>
-      <td>화상/음성채팅</td>
+      <td align="center">프론트</td>
+      <td align="center">프론트</td>
+      <td align="center">랜덤 채팅</td>
+      <td align="center">친구 채팅</td>
+      <td align="center">관심사 채팅</td>
+      <td align="center">화상/음성채팅</td>
+      <td align="center">화상/음성채팅</td>
     </tr>
     <tr>
       <td align="center"><img src="https://cdn.pixabay.com/photo/2017/11/19/13/28/snow-man-2962777_1280.png" width="92.7%;" alt=""/><br /><b>구본욱</b><br /></td>
-      <td align="center"><img src="https://cdn.pixabay.com/photo/2017/02/01/11/32/characters-2029814_1280.png" width="100%;" alt=""/><br /><sub><b>이경일</b></sub><br /></td>
-      <td align="center"><img src="https://cdn.pixabay.com/photo/2016/10/27/09/24/fox-1773722_1280.png" width="100%;" alt=""/><br /><sub><b>윤혜빈</b></sub><br /></td>
-      <td align="center"><img src="https://cdn.pixabay.com/photo/2020/12/10/05/11/spider-man-5819366_1280.png" width="100%;" alt=""/><br /><sub><b>김대현</b></sub><br /></td>
-     <td align="center"><img src="https://img.etnews.com/photonews/2005/1298822_20200507160440_294_0001.jpg" width="100%;" alt=""/><br /><sub><b>김이슬</b></sub><br /></td>
-     <td align="center"><img src="https://cdn.pixabay.com/photo/2017/11/06/18/30/eggplant-2924511_1280.png" width="100%;" alt=""/><br /><sub><b>김용순</b></sub><br /></td>
-     <td align="center"><img src="https://cdn.pixabay.com/photo/2016/11/11/17/42/jade-1817312_1280.png" width="100%;" alt=""/><br /><sub><b>황보석</b></sub><br /></td>
+      <td align="center"><img src="https://cdn.pixabay.com/photo/2017/02/01/11/32/characters-2029814_1280.png" width="100%;" alt=""/><br /><b>이경일</b><br /></td>
+      <td align="center"><img src="https://cdn.pixabay.com/photo/2016/10/27/09/24/fox-1773722_1280.png" width="100%;" alt=""/><br /><b>윤혜빈</b><br /></td>
+      <td align="center"><img src="https://cdn.pixabay.com/photo/2020/12/10/05/11/spider-man-5819366_1280.png" width="100%;" alt=""/><br /><b>김대현</b><<br /></td>
+     <td align="center"><img src="https://img.etnews.com/photonews/2005/1298822_20200507160440_294_0001.jpg" width="100%;" alt=""/><br /><b>김이슬</b><br /></td>
+     <td align="center"><img src="https://cdn.pixabay.com/photo/2017/11/06/18/30/eggplant-2924511_1280.png" width="100%;" alt=""/><br /><b>김용순</b><br /></td>
+     <td align="center"><img src="https://cdn.pixabay.com/photo/2016/11/11/17/42/jade-1817312_1280.png" width="100%;" alt=""/><br /><b>황보석</b><br /></td>
     </tr>
   </tbody>
 </table>
- 
-| 프론트 | 프론트 | 랜덤 채팅 | 친구 채팅 | 관심사 채팅 | 화상/음성 채팅 | 화상/음성 채팅 |
-|-----|-----|-----|-----|-----|-----|-----|
-| ![구본욱](https://cdn.pixabay.com/photo/2017/11/19/13/28/snow-man-2962777_1280.png) | ![이경일](https://cdn.pixabay.com/photo/2017/02/01/11/32/characters-2029814_1280.png) | ![윤혜빈](https://cdn.pixabay.com/photo/2016/10/27/09/24/fox-1773722_1280.png) | ![김대현](https://cdn.pixabay.com/photo/2020/12/10/05/11/spider-man-5819366_1280.png) | ![김이슬](https://img.etnews.com/photonews/2005/1298822_20200507160440_294_0001.jpg) | ![김용순](https://cdn.pixabay.com/photo/2017/11/06/18/30/eggplant-2924511_1280.png) | ![황보석](https://cdn.pixabay.com/photo/2016/11/11/17/42/jade-1817312_1280.png) |
-| 구본욱 | 이경일 | 윤혜빈 | 김대현 | 김이슬 | 김용순 | 황보석 |
-
 <br>
 <h1>📚 STACKS</h1>
 <div>
