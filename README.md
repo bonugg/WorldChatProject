@@ -20,7 +20,7 @@
       <td>화상/음성채팅</td>
     </tr>
     <tr>
-      <td align="center"><img src="https://cdn.pixabay.com/photo/2017/11/19/13/28/snow-man-2962777_1280.png" width="92.7%;" alt=""/><br /><sub><b>구본욱</b></sub><br /></td>
+      <td align="center"><img src="https://cdn.pixabay.com/photo/2017/11/19/13/28/snow-man-2962777_1280.png" width="92.7%;" alt=""/><br /><b>구본욱</b><br /></td>
       <td align="center"><img src="https://cdn.pixabay.com/photo/2017/02/01/11/32/characters-2029814_1280.png" width="100%;" alt=""/><br /><sub><b>이경일</b></sub><br /></td>
       <td align="center"><img src="https://cdn.pixabay.com/photo/2016/10/27/09/24/fox-1773722_1280.png" width="100%;" alt=""/><br /><sub><b>윤혜빈</b></sub><br /></td>
       <td align="center"><img src="https://cdn.pixabay.com/photo/2020/12/10/05/11/spider-man-5819366_1280.png" width="100%;" alt=""/><br /><sub><b>김대현</b></sub><br /></td>
