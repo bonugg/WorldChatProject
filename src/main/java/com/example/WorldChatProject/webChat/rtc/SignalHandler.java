@@ -4,6 +4,7 @@ package com.example.WorldChatProject.webChat.rtc;//package com.example.WorldChat
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -214,6 +215,8 @@ public class SignalHandler extends TextWebSocketHandler {
                     if(room.getUserList().isEmpty()) {
                     	rtcChatService.exitRtcRoom(roomId);
                     	log.info("삭제된 채팅방 : " + roomId);
+                        Set<String> keys = ChatRoomMap.getInstance().getChatRooms().keySet();
+                        log.info("삭제 후 RTC채팅방 목록: " + keys.toString());
                     }
                     
                     
