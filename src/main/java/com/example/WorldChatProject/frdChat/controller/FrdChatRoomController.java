@@ -43,13 +43,11 @@ public class FrdChatRoomController {
             PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
             User user = principal.getUser().DTOToEntity();
             User user2 = userService.findById(userDTO.DTOToEntity().getUserId());
-//            Optional<Friends> checkFriends = Optional.ofNullable(friendsService.findByUserAndFriends(user, user2));
-//            Optional<Friends> checkFriends2 = Optional.ofNullable(friendsService.findByUserAndFriends(user2, user));
 //            FrdChatRoom checkFrdChatRoom = frdChatRoomService.findByFriends1OrFriends2(user, user2);
             FrdChatRoom checkFrdChatRoom2 = frdChatRoomService.findByFriends1AndFriends2(user2, user);
             FrdChatRoom checkFrdChatRoom3 = frdChatRoomService.findByFriends1AndFriends2(user, user2);
             Map<String, Object> returnMap = new HashMap<>();
-//            if(checkFriends.isPresent() && checkFriends2.isPresent()) {
+
                 if(checkFrdChatRoom2 == null && checkFrdChatRoom3 == null) {
                     FrdChatRoom frdChatRoom = new FrdChatRoom();
                     frdChatRoom.setFriends1(user);
@@ -60,9 +58,6 @@ public class FrdChatRoomController {
                 } else {
                     returnMap.put("msg", "room already exists");
                 }
-//            } else {
-//                returnMap.put("msg", "need to be frds");
-//            }
 
             FrdChatRoom checkFrdChatRoom = frdChatRoomService.findRoomByFriends1OrFriends2(user, user2);
             FrdChatRoom frdChatRoom = frdChatRoomService.findById(checkFrdChatRoom.getId());

@@ -3,11 +3,10 @@ package com.example.WorldChatProject.frdChat.entity;
 import com.example.WorldChatProject.cateChat.dto.CateChatDTO;
 import com.example.WorldChatProject.frdChat.dto.FrdChatMessageDTO;
 import com.example.WorldChatProject.frdChat.dto.Status;
+import com.example.WorldChatProject.frdChat.service.FrdChatRoomService;
+import com.example.WorldChatProject.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -16,12 +15,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EntityListeners(FrdChatMessageListener.class)
 public class FrdChatMessage {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private long roomId;
     private String sender;
+    private String receiver;
     private String message;
     private String createdAt;
     private boolean checkRead;
@@ -38,6 +40,7 @@ public class FrdChatMessage {
                 .sender(this.sender)
                 .message(this.message)
                 .sender(this.sender)
+                .receiver(this.receiver)
                 .createdAt(String.valueOf(this.createdAt))
                 .checkRead(this.checkRead)
                 .s3DataUrl(this.s3DataUrl)

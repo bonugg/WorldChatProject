@@ -24,5 +24,8 @@ public class ChatRoomMap {
     public static ChatRoomMap getInstance(){
         return chatRoomMap;
     }
+//    public void removeChatRoomMap(String roomName) {
+//        chatRooms.remove(roomName);
+//    }
 
 }

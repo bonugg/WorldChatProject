@@ -91,6 +91,11 @@ public class CateRoomService {
         cateRoomRepository.save(cateRoom);
     }
 
+    public void deleteRoom(Long cateId) {
+        CateRoom cateRoom = cateRoomRepository.findById(cateId).get();
+        cateRoomRepository.delete(cateRoom);
+    }
+
 //        //최대인원수에 따른 채팅방 입장 여부
 //    public boolean chkRoomUserCnt(Long cateId) {
 //        CateRoom cateRoom =

@@ -55,6 +55,9 @@ public class CateChatController {
         CateChatDTO savedMessage = cateChatService.saveMessage(cateChatDTO);
         savedMessage.setUserProfile(userProfile);
         savedMessage.setSender(user);
+        savedMessage.setS3DataUrl(cateChatDTO.getS3DataUrl());
+        savedMessage.setFileDir(cateChatDTO.getFileDir());
+        savedMessage.setFileName(cateChatDTO.getFileName());
 
         return savedMessage;
     }
@@ -67,8 +70,6 @@ public class CateChatController {
 
         String user = (String) sessionAttributes.get("user");
         log.info("addUser");
-        // 채팅방 유저+1
-        cateRoomService.plusUserCnt(cateChatDTO.getCateId());
         List<String> cateUserList = cateUserListService.findAllUserNamesByCateId(cateChatDTO.getCateId());
 
         cateChatDTO.setCateChatContent(user+" entered");
@@ -105,6 +106,9 @@ public class CateChatController {
         cateRoomService.minusUserCnt(cateChatDTO.getCateId());
         cateUserListService.delete(cateChatDTO.getCateId(), userName);
         List<String> cateUserList = cateUserListService.findAllUserNamesByCateId(cateChatDTO.getCateId());
+        if(cateUserList.size() == 0){
+            cateRoomService.deleteRoom(cateChatDTO.getCateId());
+        }
 
         cateChatDTO.setCateChatContent(user + " has left");
 

@@ -95,11 +95,19 @@ public class TranslationController {
             //이것 또한 틀
             HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
 
+//        map.add("source", request.getSourceLanguage());
+//        map.add("target", "ko");
+//        map.add("text", request.getText());
+
             //아까만든 제일 큰 틀에 정보들 담아서 요청!
             ResponseEntity<String> response = restTemplate.postForEntity(PAPAGO_API_URL, entity, String.class);
 
             return response;
+
         //2. 지정한 언어가 한국어 일때
+
+            //2. 지정한 언어가 한국어 일때
+
         } else if(request.getTargetLanguage().equals("ko")) {
             MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
             map.add("source", request.getSourceLanguage());
@@ -129,6 +137,8 @@ public class TranslationController {
 
             System.out.println("파싱파싱파싱싱카");
             System.out.println(translatedKoreanText);
+
+            //String translatedKoreanText = firstTranslation.getBody();
 
             MultiValueMap<String, String> map2 = new LinkedMultiValueMap<>();
             map2.add("source", "ko");
@@ -178,3 +188,4 @@ public class TranslationController {
         }
     }
 }
+
