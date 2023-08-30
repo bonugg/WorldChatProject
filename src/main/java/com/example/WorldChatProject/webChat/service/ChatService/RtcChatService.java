@@ -65,9 +65,9 @@ public class RtcChatService {
 	public String declineRTC(String sender, String receiver){
 		String declineMessage = "{\"type\": \"decline\", \"message\": \"" + sender + "님이 통화 요청을 거절하였습니다.\"}";
 	    WebSocketSession session = manager.getUserSession(receiver);
-	    log.info("샌더유저 " + session);
-	    log.info("샌더유저 " + sender);
-	    log.info("리시버유저" + receiver);
+	    log.info("거절받는유저 " + receiver);
+	    log.info("거절받는유저 세션 " + session);
+	    log.info("거절 메세지 보내는 유저" + sender);
 	    log.info(declineMessage);
 	    TextMessage message = new TextMessage(declineMessage);
 	    try {
