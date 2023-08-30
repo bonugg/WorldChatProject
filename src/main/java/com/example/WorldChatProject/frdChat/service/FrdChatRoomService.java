@@ -53,4 +53,6 @@ public class FrdChatRoomService {
     public void deleteRoom(FrdChatRoom checkRoom) {
         frdChatRoomRepository.delete(checkRoom);
     }
+
 }
+
