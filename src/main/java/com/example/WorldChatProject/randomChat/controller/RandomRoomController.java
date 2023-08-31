@@ -4,6 +4,7 @@ import com.example.WorldChatProject.randomChat.dto.RandomRoomDTO;
 import com.example.WorldChatProject.randomChat.entity.RandomRoom;
 import com.example.WorldChatProject.randomChat.service.RandomRoomService;
 import com.example.WorldChatProject.user.dto.UserDTO;
+import com.example.WorldChatProject.user.entity.User;
 import com.example.WorldChatProject.user.security.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,14 +32,24 @@ public class RandomRoomController{
         log.info("Start random Chat");
         try{
             log.info("User {} requested random chat.", principal.getUser().getUserNickName());
-            RandomRoom room = service.matchStart(principal.getUsername());
-            RandomRoomDTO randomRoomDTO = room.toDTO();
-            log.info("created random room info : {}", randomRoomDTO.getRandomRoomId());
+            RandomRoom checkRoom = service.findRoomByUserId(principal.getUser().getUserId());
             Map<String, Object> result = new HashMap<>();
-            result.put("randomRoomDTO", randomRoomDTO);
-            result.put("userNickName", principal.getUser().getUserNickName());
-            System.out.println(result);
-            return result;
+            if(checkRoom != null) {
+                result.put("randomRoomDTO", null);
+                result.put("msg", "random room already exists");
+                result.put("userNickName", "");
+                return result;
+
+            }else {
+                RandomRoom room = service.matchStart(principal.getUsername());
+                RandomRoomDTO randomRoomDTO = room.toDTO();
+                log.info("created random room info : {}", randomRoomDTO.getRandomRoomId());
+                result.put("randomRoomDTO", randomRoomDTO);
+                result.put("userNickName", principal.getUser().getUserNickName());
+                System.out.println(result);
+                return result;
+            }
+
         }catch (Exception e){
             log.info("not created random room: {}", e.getMessage());
             RandomRoomDTO errorDTO = RandomRoomDTO.builder()

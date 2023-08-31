@@ -1,4 +1,4 @@
-package com.example.WorldChatProject.webChat.config;//package com.example.WorldChatProject.webChat.config;
+//package com.example.WorldChatProject.webChat.config;//package com.example.WorldChatProject.webChat.config;
 //
 //import org.springframework.context.annotation.Configuration;
 //import org.springframework.web.servlet.config.annotation.CorsRegistry;

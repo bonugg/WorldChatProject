@@ -45,4 +45,12 @@ public class FrdChatRoomService {
     public List<FrdChatRoom> findChatRoomByUser(User user) {
         return frdChatRoomRepository.findChatRoomByUser(user.getUserId());
     }
+
+    public Long getOtherUser(long roomId, long userId) {
+        return frdChatRoomRepository.findFriendIdByRoomIdAndUser(roomId, userId);
+    }
+
+    public void deleteRoom(FrdChatRoom checkRoom) {
+        frdChatRoomRepository.delete(checkRoom);
+    }
 }

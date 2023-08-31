@@ -3,17 +3,14 @@ package com.example.WorldChatProject.randomChat.service.impl;
 
 import com.example.WorldChatProject.friends.entity.BlackList;
 import com.example.WorldChatProject.friends.repository.BlackListRepository;
-import com.example.WorldChatProject.friends.repository.FriendsRepository;
 import com.example.WorldChatProject.randomChat.entity.RandomRoom;
 import com.example.WorldChatProject.randomChat.repository.RandomRoomRepository;
-import com.example.WorldChatProject.randomChat.service.RandomFileService;
 import com.example.WorldChatProject.randomChat.service.RandomRoomService;
 import com.example.WorldChatProject.user.entity.User;
 import com.example.WorldChatProject.user.repository.UserRepository;
 import com.example.WorldChatProject.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -33,32 +30,56 @@ public class RandomRoomServiceImpl implements RandomRoomService {
     @Override
     public RandomRoom matchStart(String username) {
         User user = userRepository.findByUserName(username).get();
-        if(user == null || user.equals("")){
-            log.info("not found user");
-            return null;
-        }
 
-        //대기큐 순회 조회
-        while (!waitQueue.isEmpty()) {
-            System.out.println("waitQueue 비어져있음?: " + waitQueue.isEmpty());
-            User otherUser = waitQueue.poll();
+        User otherUser = null;
 
-            //블랙리스트 필터링
-            if(canMatch(user, otherUser) == true) {
-                log.info("blocked from blacklist");
-                log.info("{} can Match : {} ", user.getUserNickName(), otherUser.getUserNickName());
-                return matchAwithB(user, otherUser);
-            }else {
-                log.info("{} and {} cannot Match by Blacklist");
-                blackListQueue.add(otherUser);
+        synchronized(this) {
+            //대기큐 순회
+            while (!waitQueue.isEmpty()) {
+                otherUser = waitQueue.poll();
+                if(canMatch(user, otherUser)) {
+                    break;
+                } else {
+                    blackListQueue.add(otherUser);
+                    otherUser = null;
+                }
             }
+        }
 
+        if (otherUser != null) {
+            return matchAwithB(user, otherUser);
+        } else {
+            synchronized(this) {
+                for(User blockedUser : blackListQueue) {
+                    waitQueue.add(blockedUser);
+                }
+            }
+            return createRoom(user);
         }
-        // 대기큐에 사용자 없으면 방 만들기
-        for(User blockedUser : blackListQueue) {
-            waitQueue.add(blockedUser);
-        }
-        return createRoom(user);
+//
+//        //대기큐 순회
+//        synchronized (this) {
+//            while (!waitQueue.isEmpty()) {
+//                System.out.println("waitQueue 비어져있음?: " + waitQueue.isEmpty());
+//                User otherUser = waitQueue.poll();
+//
+//                //블랙리스트 필터링
+//                if(canMatch(user, otherUser) == true) {
+//                    log.info("blocked from blacklist");
+//                    log.info("{} can Match : {} ", user.getUserNickName(), otherUser.getUserNickName());
+//                    return matchAwithB(user, otherUser);
+//                }else {
+//                    log.info("{} and {} cannot Match by Blacklist");
+//                    blackListQueue.add(otherUser);
+//                }
+//
+//            }
+//            // 대기큐에 사용자 없으면 방 만들기
+//            for(User blockedUser : blackListQueue) {
+//                waitQueue.add(blockedUser);
+//            }
+//        }
+//        return createRoom(user);
 
     }
 

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface RandomRoomRepository extends JpaRepository<RandomRoom, Long> {
@@ -37,4 +38,6 @@ public interface RandomRoomRepository extends JpaRepository<RandomRoom, Long> {
 
     @Query("SELECT r FROM RandomRoom r WHERE r.randomRoomId = :roomId AND (r.user1 IS NOT NULL OR r.user2 IS NOT NULL)")
     Optional<RandomRoom> findRoomWithUser(@Param("roomId") long roomId);
+
+
 }

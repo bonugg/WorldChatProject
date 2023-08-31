@@ -19,6 +19,7 @@ public class RandomChatDTO {
     private String time;
     private long randomRoomId;
     private String sender;
+    private long userId;
 
     //파일이름추가
     private String fileName;

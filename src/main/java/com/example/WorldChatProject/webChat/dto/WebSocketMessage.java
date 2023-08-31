@@ -15,4 +15,5 @@ public class WebSocketMessage {
     private String data; // roomId
     private Object candidate; // 상태
     private Object sdp; // sdp 정보
+    private String chatType; // voice and video
 }

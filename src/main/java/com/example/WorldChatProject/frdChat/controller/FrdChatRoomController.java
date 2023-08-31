@@ -41,10 +41,8 @@ public class FrdChatRoomController {
         try {
             PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
             User user = principal.getUser().DTOToEntity();
-            System.out.println(user + "이건 로그인한 유저");
-            System.out.println(userDTO + "엑시오스에서 넘겨준 값");
             User user2 = userService.findById(userDTO.DTOToEntity().getUserId());
-            System.out.println(user2 + "채팅 신청 받은 유저저저저저저");
+
 //            FrdChatRoom checkFrdChatRoom = frdChatRoomService.findByFriends1OrFriends2(user, user2);
             FrdChatRoom checkFrdChatRoom2 = frdChatRoomService.findByFriends1AndFriends2(user2, user);
             FrdChatRoom checkFrdChatRoom3 = frdChatRoomService.findByFriends1AndFriends2(user, user2);
@@ -60,17 +58,14 @@ public class FrdChatRoomController {
                 returnMap.put("msg", "room already exists");
             }
             FrdChatRoom checkFrdChatRoom = frdChatRoomService.findRoomByFriends1OrFriends2(user, user2);
-            System.out.println(checkFrdChatRoom + "이걸 못부르는구나?");
-            System.out.println(checkFrdChatRoom.getId() + "아니야 이제 불러. 그리고 이거 가져가야한다?");
             FrdChatRoom frdChatRoom = frdChatRoomService.findById(checkFrdChatRoom.getId());
-            System.out.println(frdChatRoom + "본욱이형 미워... 그래도 가져간다!");
 
             returnMap.put("userNickName", principal.getUser().getUserNickName());
             returnMap.put("userProfile", principal.getUser().getUserProfileName());
             returnMap.put("userProfileOther", user2.getUserProfileName());
             returnMap.put("chatroom", frdChatRoom.entityToDTO());
             response.setItem(returnMap);
-            log.info("returnMap success");
+
             response.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok().body(response);
         } catch (Exception e) {

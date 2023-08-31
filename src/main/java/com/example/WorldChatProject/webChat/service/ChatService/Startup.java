@@ -22,7 +22,7 @@ public class Startup implements ApplicationRunner {
         // 실시간 알림을 구현해야 하기 때문에 로그인 시 즉시 웹소켓에 연결하기 위한 방 생성
         
         ChatRoomDto room = ChatRoomDto.builder()
-                .roomId("1")
+                .roomId("loginUserRoom")
                 .roomName("publicWebSocket")
 //                .roomPwd(roomPwd) // 채팅방 패스워드
                 .secretChk(false) // 채팅방 잠금 여부

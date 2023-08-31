@@ -24,7 +24,9 @@ public class RandomChatController {
     @SendTo("/randomChat/{randomRoomId}")
     public void sendMessage(@Payload RandomChatDTO chatDTO, @DestinationVariable("randomRoomId") String randomRoomId, @Header("simpSessionAttributes") Map<String, Object> sessionAttributes) {
         String user = (String) sessionAttributes.get("user");
+        long userId = (long) sessionAttributes.get("userId");
         chatDTO.setSender(user);
+        chatDTO.setUserId(userId);
         log.info("CHAT : {}", chatDTO);
         chatDTO.setContent(chatDTO.getContent());
         // /randomSub/randomRoomId 에 있는 구독 클라이언트에게 메시지 전송

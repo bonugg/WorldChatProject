@@ -24,6 +24,7 @@ public class FrdChatMessageDTO {
     private String message;
     private String createdAt;
     private String userProfile;
+    private boolean checkRead;
 
     /* 파일 업로드 관련 변수 */
     private String s3DataUrl; // 파일 업로드 url
@@ -37,6 +38,7 @@ public class FrdChatMessageDTO {
                 .sender(this.sender)
                 .message(this.message)
                 .createdAt(this.createdAt)
+                .checkRead(this.checkRead)
                 .s3DataUrl(this.s3DataUrl)
                 .fileName(this.fileName)
                 .fileDir(this.fileDir)

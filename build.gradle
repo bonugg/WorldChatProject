@@ -24,21 +24,14 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     // WebSocket
-    implementation 'io.netty:netty-buffer:4.1.72.Final' // 적절한 버전을 사용하십시오.
 
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     // sockjs
     implementation 'org.webjars:sockjs-client:1.5.1'
     // stomp
     implementation 'org.webjars:stomp-websocket:2.3.4'
-
-    // aws s3
-    // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-aws
-    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-
     // gson
     implementation 'com.google.code.gson:gson:2.9.0'
-
 
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
@@ -46,6 +39,8 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+
+
     //webRtc
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
     // WebSocket
@@ -69,10 +64,130 @@ dependencies {
     implementation 'org.webjars:sockjs-client:1.5.1'
     implementation 'org.webjars:stomp-websocket:2.3.4'
     implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
-    implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
 }
 
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+//plugins {
+//    id 'java'
+//    id 'org.springframework.boot' version '3.1.1'
+//    id 'io.spring.dependency-management' version '1.1.0'
+//    id 'com.github.node-gradle.node' version '4.0.0'
+//}
+//
+//group = 'com.example'
+//version = '0.0.1-SNAPSHOT'
+//
+//java {
+//    sourceCompatibility = '17'
+//}
+//
+//repositories {
+//    mavenCentral()
+//}
+//
+//dependencies {
+//    implementation group: 'com.auth0', name: 'java-jwt', version: '4.0.0'
+//    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+//    implementation 'org.springframework.boot:spring-boot-starter-security'
+//    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+//    implementation 'org.springframework.boot:spring-boot-starter-web'
+//    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+//    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+//    // WebSocket
+//    implementation 'io.netty:netty-buffer:4.1.72.Final' // 적절한 버전을 사용하십시오.
+//
+//    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+//    // sockjs
+//    implementation 'org.webjars:sockjs-client:1.5.1'
+//    // stomp
+//    implementation 'org.webjars:stomp-websocket:2.3.4'
+//
+//    // aws s3
+//    // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-aws
+//    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+//
+//    // gson
+//    implementation 'com.google.code.gson:gson:2.9.0'
+//
+//
+//    compileOnly 'org.projectlombok:lombok'
+//    runtimeOnly 'com.mysql:mysql-connector-j'
+//    annotationProcessor 'org.projectlombok:lombok'
+//    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+//    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+//    testImplementation 'org.springframework.security:spring-security-test'
+//    //webRtc
+//    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+//    // WebSocket
+//    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+//    // sockjs
+//    implementation 'org.webjars:sockjs-client:1.5.1'
+//    // stomp
+//    implementation 'org.webjars:stomp-websocket:2.3.4'
+//    // gson
+//    implementation 'com.google.code.gson:gson:2.9.0'
+//    // mapstruct
+//    // https://mvnrepository.com/artifact/org.mapstruct/mapstruct
+//    implementation group: 'org.mapstruct', name: 'mapstruct', version: '1.4.2.Final'
+//    // https://mvnrepository.com/artifact/org.mapstruct/mapstruct-processor
+//    annotationProcessor group: 'org.mapstruct', name: 'mapstruct-processor', version: '1.4.2.Final'
+//    // mapstruct - lombok
+//    implementation 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+//    //notNull!
+//    implementation 'org.jetbrains:annotations:23.0.0'
+//    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+//    implementation 'org.webjars:sockjs-client:1.5.1'
+//    implementation 'org.webjars:stomp-websocket:2.3.4'
+//    implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
+//    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+//
+//}
+//
+//tasks.named('test') {
+//    useJUnitPlatform()
+//}
+//task appNpmInstall(type: NpmTask) {
+//    dependsOn "npmSetup"
+//    description = "Installs dependencies from package.json"
+//    workingDir = file("${projectDir}/src/frontEnd/WorldChatProjectReact/srcapp")
+//    args = ["install"]
+//}
+////reactjs 경로 변수로 지정
+//def reactAppDir = "$projectDir/src/frontEnd/WorldChatProjectReact/srcapp"
+//processResources {
+//    dependsOn "copyReactFile"
+//}
+//task copyReactFile(type: Copy) {
+//    dependsOn "buildReact"
+//    from "$reactAppDir/build"
+//    into "$projectDir/src/main/resources/static/"
+//}
+//task buildReact(type: Exec) {
+//    dependsOn "installReact"
+//    workingDir "$reactAppDir"
+//    inputs.dir "$reactAppDir"
+//    group = BasePlugin.BUILD_GROUP
+//    if(System.getProperty('os.name').toLowerCase().contains('windows')) {
+//        commandLine "npm.cmd", "run-script", "build"
+//    } else {
+//        commandLine "npm", "run-script", "build"
+//    }
+//}
+//
+//task installReact(type: Exec) {
+//    workingDir "$reactAppDir"
+//    inputs.dir "$reactAppDir"
+//    group = BasePlugin.BUILD_GROUP
+//    if(System.getProperty('os.name').toLowerCase().contains('windows')) {
+//        commandLine "npm.cmd", "audit", "fix"
+//        commandLine "npm.cmd", "install"
+//    } else {
+//        commandLine "npm", "audit", "fix"
+//        commandLine "npm", "install"
+//    }
+//}
+
