@@ -27,4 +27,6 @@ public class FrdChatRoomHistoryDTO {
                 .sessionId(this.sessionId)
                 .build();
     }
+
 }
+

@@ -13,4 +13,6 @@ public interface FrdChatRoomHistoryRepository extends JpaRepository<FrdChatRoomH
     FrdChatRoomHistory findByRoomId(long roomId);
 
     Optional<FrdChatRoomHistory> findByRoomIdAndUserNickName(long roomId, String userNickName);
+
 }
+

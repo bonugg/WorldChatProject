@@ -41,6 +41,9 @@ public class WebSocketEventHandler {
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         log.info("====================WebSocket Disconnect Event occcured==================");
         SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.wrap(event.getMessage());
+        log.warn("disconnect close status: {} ", event.getCloseStatus());
+        System.out.println(headerAccessor);
+
         Map<String, Object> messageHeaders = headerAccessor.getMessageHeaders();
         Map<String, String> sessionAttributes = (Map<String, String>) messageHeaders.get("simpSessionAttributes");
 
@@ -51,7 +54,8 @@ public class WebSocketEventHandler {
 
         //웹소켓 해제 이벤트 발생하면 WebSocketManger에게 정보를 전달.
         webSocketManager.disconnectManage(sessionAttributes, sessionId);
-    }
+
+        }
 
 }
 

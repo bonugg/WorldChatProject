@@ -25,4 +25,7 @@ public class RandomChatDTO {
     private String fileName;
     private String fileOrigin;
 
+    private boolean isLiked;
+    private int likeCount;
+
 }

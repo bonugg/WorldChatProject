@@ -69,6 +69,7 @@ public class SecurityConfig {
                                 .requestMatchers("/api/v1/cateChat/**").hasRole("USER")
                                 .requestMatchers("/random/room").hasRole("USER")
                                 .requestMatchers("/randomTranslate/**").hasRole("USER")
+                                .requestMatchers("/language/**").hasRole("USER")
 //                                .requestMatchers("/CateChat/**").hasRole("USER")
                                 .anyRequest().permitAll()
                 );

@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class WebSocketManagerImpl implements WebSocketManager{
+public class   WebSocketManagerImpl implements WebSocketManager{
     private final RandomRoomService randomRoomService;
     private final UserRepository userRepository;
     private final RandomFileService randomFileService;

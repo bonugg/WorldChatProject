@@ -28,7 +28,6 @@ public class ChatRoomDto {
     }
     private ChatType chatType; //  채팅 타입 여부
 
-    // ChatRoomDto 클래스는 하나로 가되 서비스를 나누었음
     private Map<String, ?> userList;
 
 }

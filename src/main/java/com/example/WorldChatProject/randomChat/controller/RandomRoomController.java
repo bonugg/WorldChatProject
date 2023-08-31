@@ -1,5 +1,7 @@
 package com.example.WorldChatProject.randomChat.controller;
 
+import com.example.WorldChatProject.listener.WebSocketManager;
+import com.example.WorldChatProject.listener.WebSocketManagerImpl;
 import com.example.WorldChatProject.randomChat.dto.RandomRoomDTO;
 import com.example.WorldChatProject.randomChat.entity.RandomRoom;
 import com.example.WorldChatProject.randomChat.service.RandomRoomService;
@@ -23,6 +25,7 @@ import java.util.Map;
 public class RandomRoomController{
     //채팅방을 생성, 입장, 퇴장, 삭제를 관리하는 Controller
     private final RandomRoomService service;
+    private final WebSocketManager webSocketManager;
 
     // 랜덤채팅 대기 및 입장 처리
     @PostMapping("/enter")
@@ -32,15 +35,17 @@ public class RandomRoomController{
         log.info("Start random Chat");
         try{
             log.info("User {} requested random chat.", principal.getUser().getUserNickName());
-            RandomRoom checkRoom = service.findRoomByUserId(principal.getUser().getUserId());
+            webSocketManager.disconnectUser(principal.getUser().getUserName());
             Map<String, Object> result = new HashMap<>();
-            if(checkRoom != null) {
-                result.put("randomRoomDTO", null);
-                result.put("msg", "random room already exists");
-                result.put("userNickName", "");
-                return result;
-
-            }else {
+//            RandomRoom checkRoom = service.findRoomByUserId(principal.getUser().getUserId());
+//            Map<String, Object> result = new HashMap<>();
+//            if(checkRoom != null) {
+//                result.put("randomRoomDTO", null);
+//                result.put("msg", "random room already exists");
+//                result.put("userNickName", "");
+//                return result;
+//
+//            }else {
                 RandomRoom room = service.matchStart(principal.getUsername());
                 RandomRoomDTO randomRoomDTO = room.toDTO();
                 log.info("created random room info : {}", randomRoomDTO.getRandomRoomId());
@@ -48,7 +53,7 @@ public class RandomRoomController{
                 result.put("userNickName", principal.getUser().getUserNickName());
                 System.out.println(result);
                 return result;
-            }
+            //}
 
         }catch (Exception e){
             log.info("not created random room: {}", e.getMessage());

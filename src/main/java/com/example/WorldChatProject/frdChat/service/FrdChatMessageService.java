@@ -1,27 +1,17 @@
 package com.example.WorldChatProject.frdChat.service;
 
-import com.example.WorldChatProject.frdChat.dto.FrdChatMessageDTO;
 import com.example.WorldChatProject.frdChat.dto.ResponseDTO;
 import com.example.WorldChatProject.frdChat.entity.FrdChatMessage;
-import com.example.WorldChatProject.frdChat.entity.FrdChatRoomHistory;
-import com.example.WorldChatProject.frdChat.entity.FrdChatUpdateMessage;
 import com.example.WorldChatProject.frdChat.repository.FrdChatMessageRepository;
 import com.example.WorldChatProject.user.entity.User;
+import com.example.WorldChatProject.user.repository.UserRepository;
 import com.example.WorldChatProject.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -30,28 +20,34 @@ public class FrdChatMessageService {
     private final FrdChatMessageRepository frdChatMessageRepository;
     private final FrdChatRoomService frdChatRoomService;
     private final UserService userService;
-    private final FrdChatRoomHistoryService frdChatRoomHistoryService;
-    private final ApplicationEventPublisher applicationEventPublisher;
+    private final UserRepository userRepository;
+
 
     public void save(FrdChatMessage frdChatMessage) {
+
         frdChatMessageRepository.save(frdChatMessage);
+
     }
 
     public List<FrdChatMessage> getChatMessages(Long roomId) {
+
         return frdChatMessageRepository.findByRoomId(roomId);
+
     }
 
     //상대가 들어왔을때 내 메시지 상태 안읽음 -> 읽음 만들기
     public List<FrdChatMessage> updateCheckRead(long roomId, String userNickName, boolean statement) {
-        List<FrdChatMessage> unReadList = findMessages(roomId, userNickName, statement);
 
-        for(FrdChatMessage message : unReadList) {
-            message.setCheckRead(true);
-        }
+       List<FrdChatMessage> unReadList = findMessages(roomId, userNickName, statement);
 
-        frdChatMessageRepository.saveAll(unReadList);
+       for(FrdChatMessage message : unReadList) {
+           message.setCheckRead(true);
+       }
 
-        return unReadList;
+       frdChatMessageRepository.saveAll(unReadList);
+
+       return unReadList;
+
     }
 
     //내 안읽힌 메시지 찾기
@@ -68,7 +64,14 @@ public class FrdChatMessageService {
             String userNickName = user.getUserNickName();
             //false인것만 true로 바꾸기 위해서 임의로 줬다
             boolean statement = false;
+
+//            long unreadListNum = frdChatMessageRepository.countByRoomIdAndSenderAndCheckRead(roomId, userNickName, statement);
+//            System.out.println("안읽은 메시지 개수 jpa" + unreadListNum);
+
             List<FrdChatMessage> updatedList = updateCheckRead(roomId, userNickName, statement);
+//            long unreadNum = updatedList.size();
+//            System.out.println("안읽은 메시지 개수 size()" + unreadNum);
+
             responseDTO.setItems(updatedList);
             responseDTO.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok().body(responseDTO);
@@ -79,4 +82,20 @@ public class FrdChatMessageService {
         }
     }
 
+    public ResponseEntity<?> getUnreadCount(String senderNickName, String receiver) {
+        ResponseDTO<Long> responseDTO = new ResponseDTO<>();
+        try {
+            boolean statement = false;
+            Long unreadMsgCnt = frdChatMessageRepository.countBySenderAndReceiverAndCheckRead(senderNickName, receiver, statement);
+            System.out.println("안읽은 메시지 개수 : " + unreadMsgCnt);
+            responseDTO.setItem(unreadMsgCnt);
+            responseDTO.setStatusCode(HttpStatus.OK.value());
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (Exception e) {
+            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            responseDTO.setErrorMessage(e.getMessage());
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
 }
+

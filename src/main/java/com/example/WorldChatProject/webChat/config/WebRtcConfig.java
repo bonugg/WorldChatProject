@@ -1,11 +1,14 @@
 package com.example.WorldChatProject.webChat.config;
 
+import com.example.WorldChatProject.user.entity.User;
+import com.example.WorldChatProject.user.repository.UserRepository;
 import com.example.WorldChatProject.webChat.rtc.LoginWebsocketHandler;
 import com.example.WorldChatProject.webChat.rtc.SignalHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;

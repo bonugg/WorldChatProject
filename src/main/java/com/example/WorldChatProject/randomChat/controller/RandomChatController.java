@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Map;
 
@@ -44,6 +45,7 @@ public class RandomChatController {
         log.info("{}: {}", chatDTO.getType(), chatDTO.getContent());
         template.convertAndSend("/randomSub/randomChat/" + chatDTO.getRandomRoomId(), chatDTO);
     }
+
     @MessageMapping("/randomChat/{randomRoomId}/leave")
     @SendTo("/randomChat/{randomRoomId}")
     public void leave(@Payload RandomChatDTO chatDTO, @DestinationVariable("randomRoomId") String randomRoomId, @Header("simpSessionAttributes") Map<String, Object> sessionAttributes) {
@@ -52,6 +54,18 @@ public class RandomChatController {
         chatDTO.setContent("LEAVED ROOM");
         log.info("{}: {}", chatDTO.getType(), chatDTO.getContent());
         template.convertAndSend("/randomSub/randomChat/" + chatDTO.getRandomRoomId(), chatDTO);
+    }
+
+    public RandomChatDTO changeLike(@RequestBody RandomChatDTO randomChatDTO) {
+        RandomChatDTO newRandomChatDTO = new RandomChatDTO();
+        long randomChatId = randomChatDTO.getRandomChatId();
+        String sender = randomChatDTO.getSender();
+        int boforeCnt = randomChatDTO.getLikeCount();
+        randomChatDTO.setLikeCount(boforeCnt + 1);
+
+        log.info("{} like status changed by {}, count: {} ", randomChatId, sender, randomChatDTO.getLikeCount());
+
+        return randomChatDTO;
     }
 
 }
