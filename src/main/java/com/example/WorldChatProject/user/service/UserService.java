@@ -3,6 +3,7 @@ package com.example.WorldChatProject.user.service;
 import com.example.WorldChatProject.user.common.FileUtils;
 import com.example.WorldChatProject.user.dto.ResponseDTO;
 import com.example.WorldChatProject.user.dto.UserDTO;
+import com.example.WorldChatProject.user.dto.UserOauthDTO;
 import com.example.WorldChatProject.user.entity.User;
 import com.example.WorldChatProject.user.repository.UserRepository;
 import com.example.WorldChatProject.user.security.auth.PrincipalDetails;
@@ -64,6 +65,30 @@ public class UserService {
         }
     }
 
+    public ResponseEntity<String> UserOauth(UserOauthDTO userOauthDTO) {
+        if (userRepository.findByUserName(userOauthDTO.getEmail()).isPresent()) {
+            return ResponseEntity.status(HttpStatus.OK).body("alreadyJoin");
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body("oauthJoin");
+        }
+    }
+
+    public ResponseEntity<String> UserOauthJoin(UserOauthDTO userOauthDTO) {
+        User user = new User();
+        user.setUserName(userOauthDTO.getEmail());
+        user.setUserProfilePath(userOauthDTO.getPicture());
+        user.setUserNickName(userOauthDTO.getName());
+        user.setUserPwd(bCryptPasswordEncoder.encode(userOauthDTO.getSub()));
+        user.setUserNationality(userOauthDTO.getNationally());
+        user.setUserEmail("");
+        user.setUserPhone("");
+        //user 권한 부여
+        user.setUserRoles("ROLE_USER");
+        userRepository.save(user);
+
+        return ResponseEntity.status(HttpStatus.OK).body("success");
+    }
+
     public void UserJoin(User user) {
         user.setUserPwd(bCryptPasswordEncoder.encode(user.getUserPwd()));
         //user 권한 부여
@@ -116,7 +141,7 @@ public class UserService {
             userRepository.save(user);
 
             return ResponseEntity.status(HttpStatus.OK).body("image upload");
-        } catch(Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("image upload fail");
         }
     }
@@ -133,40 +158,10 @@ public class UserService {
 
     public User findById(long userId) {
         Optional<User> checkUser = userRepository.findById(userId);
-        if(checkUser.isEmpty()) {
+        if (checkUser.isEmpty()) {
             return null;
         } else {
             return checkUser.get();
-        }
-    }
-
-
-
-    public ResponseEntity<?> UserFriendsList(String userName) {
-        ResponseDTO<UserDTO> responseDTO = new ResponseDTO<>();
-        try {
-
-            List<User> userList = userRepository.findAll();
-
-            List<UserDTO> userDTOList = new ArrayList<>();
-
-            for(User user : userList) {
-                userDTOList.add(user.EntityToDTO());
-            }
-
-            responseDTO.setItems(userDTOList);
-            responseDTO.setStatusCode(HttpStatus.OK.value());
-
-            log.info(responseDTO.getItems().get(0).getUserNickName());
-            log.info(responseDTO.getItems().get(1).getUserNickName());
-
-            return ResponseEntity.ok().body(responseDTO);
-
-        } catch(Exception e) {
-            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
-            responseDTO.setErrorMessage(e.getMessage());
-
-            return ResponseEntity.badRequest().body(responseDTO);
         }
     }
 
