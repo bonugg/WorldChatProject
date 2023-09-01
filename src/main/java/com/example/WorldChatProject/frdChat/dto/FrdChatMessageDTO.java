@@ -21,6 +21,7 @@ public class FrdChatMessageDTO {
     private Long id;
     private long roomId;
     private String sender;
+    private String receiver;
     private String message;
     private String createdAt;
     private String userProfile;
@@ -36,6 +37,7 @@ public class FrdChatMessageDTO {
                 .id(this.id)
                 .roomId(this.roomId)
                 .sender(this.sender)
+                .receiver(this.receiver)
                 .message(this.message)
                 .createdAt(this.createdAt)
                 .checkRead(this.checkRead)

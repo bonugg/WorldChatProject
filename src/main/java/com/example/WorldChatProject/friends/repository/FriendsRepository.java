@@ -32,6 +32,8 @@ public interface FriendsRepository extends JpaRepository<Friends, Long> {
     @Query(value = "select F.friends.userNationality from Friends F where F.user = :user and F.statement = :friendsStatement")
     List<String> findByNationally(User user, FriendsStatement friendsStatement);
 
+    User findByUser(User user);
+
 //    List<Friends> findByRequester(User requester);
 //
 //    Friends findRequestByRequesterAndReceiver(User receiver, User requester);

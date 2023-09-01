@@ -4,6 +4,7 @@ import com.example.WorldChatProject.frdChat.dto.ResponseDTO;
 import com.example.WorldChatProject.frdChat.entity.FrdChatRoom;
 import com.example.WorldChatProject.frdChat.service.FrdChatMessageService;
 import com.example.WorldChatProject.frdChat.service.FrdChatRoomService;
+import com.example.WorldChatProject.friends.entity.Friends;
 import com.example.WorldChatProject.friends.service.FriendsService;
 import com.example.WorldChatProject.user.dto.UserDTO;
 import com.example.WorldChatProject.user.entity.User;
@@ -20,7 +21,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Optional;
 
 
 @RestController
@@ -42,21 +43,22 @@ public class FrdChatRoomController {
             PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
             User user = principal.getUser().DTOToEntity();
             User user2 = userService.findById(userDTO.DTOToEntity().getUserId());
-
 //            FrdChatRoom checkFrdChatRoom = frdChatRoomService.findByFriends1OrFriends2(user, user2);
             FrdChatRoom checkFrdChatRoom2 = frdChatRoomService.findByFriends1AndFriends2(user2, user);
             FrdChatRoom checkFrdChatRoom3 = frdChatRoomService.findByFriends1AndFriends2(user, user2);
             Map<String, Object> returnMap = new HashMap<>();
-            if(checkFrdChatRoom2 == null && checkFrdChatRoom3 == null) {
-                FrdChatRoom frdChatRoom = new FrdChatRoom();
-                frdChatRoom.setFriends1(user);
-                frdChatRoom.setFriends2(user2);
-                frdChatRoom.setCreatedAt(LocalDateTime.now());
-                frdChatRoomService.save(frdChatRoom);
-                returnMap.put("msg", "room created");
-            } else {
-                returnMap.put("msg", "room already exists");
-            }
+
+                if(checkFrdChatRoom2 == null && checkFrdChatRoom3 == null) {
+                    FrdChatRoom frdChatRoom = new FrdChatRoom();
+                    frdChatRoom.setFriends1(user);
+                    frdChatRoom.setFriends2(user2);
+                    frdChatRoom.setCreatedAt(LocalDateTime.now());
+                    frdChatRoomService.save(frdChatRoom);
+                    returnMap.put("msg", "room created");
+                } else {
+                    returnMap.put("msg", "room already exists");
+                }
+
             FrdChatRoom checkFrdChatRoom = frdChatRoomService.findRoomByFriends1OrFriends2(user, user2);
             FrdChatRoom frdChatRoom = frdChatRoomService.findById(checkFrdChatRoom.getId());
 
@@ -74,6 +76,8 @@ public class FrdChatRoomController {
             return ResponseEntity.badRequest().body(response);
         }
     }
+
+
 
 //    @GetMapping("/chatroom-list")
 //    public ResponseEntity<?> getChatroomList(Authentication authentication) {

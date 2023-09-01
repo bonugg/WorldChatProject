@@ -1,11 +1,9 @@
 package com.example.WorldChatProject.frdChat.service;
 
 import com.example.WorldChatProject.frdChat.dto.FrdChatRoomHistoryDTO;
-import com.example.WorldChatProject.frdChat.entity.FrdChatRoom;
 import com.example.WorldChatProject.frdChat.entity.FrdChatRoomHistory;
-import com.example.WorldChatProject.frdChat.entity.FrdChatUpdateMessage;
+import com.example.WorldChatProject.frdChat.dto.FrdChatUpdateMessage;
 import com.example.WorldChatProject.frdChat.repository.FrdChatRoomHistoryRepository;
-import com.example.WorldChatProject.user.dto.UserDTO;
 import com.example.WorldChatProject.user.entity.User;
 import com.example.WorldChatProject.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -41,9 +39,10 @@ public class FrdChatRoomHistoryService {
         }
     }
 
+    //채팅방에 접속 했을때 해당하는 채팅방의 상대가 누군지 알아내기
     public FrdChatRoomHistory checkOtherUser(long roomId, String userNickName) {
         Optional<FrdChatRoomHistory> checkOtherUser = frdChatRoomHistoryRepository.findByRoomIdAndUserNickName(roomId, userNickName);
-        System.out.println("실행됌");
+        System.out.println("FrdChatRoomHistoryService.checkOtherUser 실행됌");
         if(checkOtherUser.isEmpty()) {
             return null;
         } else {
@@ -51,6 +50,7 @@ public class FrdChatRoomHistoryService {
         }
     }
 
+    //내가 접속했을때 상대에게 접속했다고 알려주는 메소드 -> 이벤트 리스너와 연결돼서 실시간으로 알려준다.
     public void detectOtherUser(Long roomId, Long userId) {
         //1. 접속한 채팅방의 상대가 누군지 확인
         Long otherUserId = frdChatRoomService.getOtherUser(roomId, userId);
@@ -66,4 +66,6 @@ public class FrdChatRoomHistoryService {
             applicationEventPublisher.publishEvent(new FrdChatUpdateMessage("online", roomId));
         }
     }
+
 }
+

@@ -71,38 +71,38 @@ public class RtcChatController {
     }
 
     // 유저 퇴장 시에는 EventListener 을 통해서 유저 퇴장을 확인
-    @EventListener
-    public void webSocketDisconnectListener(SessionDisconnectEvent event) {
-        log.info("DisConnEvent {}", event);
-
-        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-
-        // stomp 세션에 있던 uuid 와 roomId 를 확인해서 채팅방 유저 리스트와 room 에서 해당 유저를 삭제
-        String userUUID = (String) headerAccessor.getSessionAttributes().get("userUUID");
-        String roomId = (String) headerAccessor.getSessionAttributes().get("roomId");
-
-        log.info("headAccessor {}", headerAccessor);
-
-        // 채팅방 유저 -1
-        chatServiceMain.minusUserCnt(roomId);
-
-        // 채팅방 유저 리스트에서 UUID 유저 닉네임 조회 및 리스트에서 유저 삭제
-        String username = msgChatService.findUserNameByRoomIdAndUserUUID(ChatRoomMap.getInstance().getChatRooms(), roomId, userUUID);
-        msgChatService.delUser(ChatRoomMap.getInstance().getChatRooms(), roomId, userUUID);
-
-        if (username != null) {
-            log.info("User Disconnected : " + username);
-
-            // builder 어노테이션 활용
-            ChatDTO chat = ChatDTO.builder()
-                    .type(ChatDTO.MessageType.LEAVE)
-                    .sender(username)
-                    .message(username + " 님 퇴장!!")
-                    .build();
-
-            template.convertAndSend("/sub/chat/room/" + roomId, chat);
-        }
-    }
+//    @EventListener
+//    public void webSocketDisconnectListener(SessionDisconnectEvent event) {
+//        log.info("DisConnEvent {}", event);
+//
+//        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+//
+//        // stomp 세션에 있던 uuid 와 roomId 를 확인해서 채팅방 유저 리스트와 room 에서 해당 유저를 삭제
+//        String userUUID = (String) headerAccessor.getSessionAttributes().get("userUUID");
+//        String roomId = (String) headerAccessor.getSessionAttributes().get("roomId");
+//
+//        log.info("headAccessor {}", headerAccessor);
+//
+//        // 채팅방 유저 -1
+//        chatServiceMain.minusUserCnt(roomId);
+//
+//        // 채팅방 유저 리스트에서 UUID 유저 닉네임 조회 및 리스트에서 유저 삭제
+//        String username = msgChatService.findUserNameByRoomIdAndUserUUID(ChatRoomMap.getInstance().getChatRooms(), roomId, userUUID);
+//        msgChatService.delUser(ChatRoomMap.getInstance().getChatRooms(), roomId, userUUID);
+//
+//        if (username != null) {
+//            log.info("User Disconnected : " + username);
+//
+//            // builder 어노테이션 활용
+//            ChatDTO chat = ChatDTO.builder()
+//                    .type(ChatDTO.MessageType.LEAVE)
+//                    .sender(username)
+//                    .message(username + " 님 퇴장!!")
+//                    .build();
+//
+//            template.convertAndSend("/sub/chat/room/" + roomId, chat);
+//        }
+//    }
 
     // 채팅에 참여한 유저 리스트 반환
     @GetMapping("/chat/userlist")
