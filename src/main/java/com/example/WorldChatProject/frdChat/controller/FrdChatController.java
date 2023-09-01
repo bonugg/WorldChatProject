@@ -11,6 +11,7 @@ import com.example.WorldChatProject.frdChat.dto.FrdChatUpdateMessage;
 import com.example.WorldChatProject.frdChat.service.FrdChatMessageService;
 import com.example.WorldChatProject.frdChat.service.FrdChatRoomHistoryService;
 import com.example.WorldChatProject.frdChat.service.FrdChatRoomService;
+import com.example.WorldChatProject.randomChat.dto.RandomChatDTO;
 import com.example.WorldChatProject.user.entity.User;
 import com.example.WorldChatProject.user.security.auth.PrincipalDetails;
 import com.example.WorldChatProject.user.service.UserService;
@@ -26,6 +27,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
@@ -91,6 +93,20 @@ public class FrdChatController {
         frdChatMessageDTO.setUserProfile(userProfile);
         //메시지도 보낸다.
         template.convertAndSend("/frdSub/" + frdChatMessage.getRoomId(), frdChatMessageDTO);
+    }
+
+    @MessageMapping("/friendchat/like")
+    public void changeLike(FrdChatMessageDTO chatDTO, @Header("simpSessionAttributes") Map<String, Object> sessionAttributes) {
+        String user = (String) sessionAttributes.get("user");
+        chatDTO.setSender(user);
+        long chatId = chatDTO.getId();
+        String sender = chatDTO.getSender();
+
+        frdChatMessageService.changeLikeStatus(chatDTO);
+
+        log.info("{} like status changed by {}", chatId, sender);
+        //return chatDTO;
+        template.convertAndSend("/frdSub/" + chatDTO.getRoomId(), chatDTO);
     }
 
     @GetMapping("/chatroom/{roomId}")
@@ -190,4 +206,6 @@ public class FrdChatController {
 
         log.info("======웹소켓 연결 종료======");
     }
+
+
 }

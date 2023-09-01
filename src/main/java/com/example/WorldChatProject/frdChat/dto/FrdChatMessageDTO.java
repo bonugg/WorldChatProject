@@ -32,6 +32,9 @@ public class FrdChatMessageDTO {
     private String fileName; // 파일이름
     private String fileDir; // s3 파일 경로
 
+    //좋아요
+    private boolean isLiked;
+
     public FrdChatMessage DTOToEntity() {
         return FrdChatMessage.builder()
                 .id(this.id)

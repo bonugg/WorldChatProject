@@ -117,7 +117,7 @@ public class   WebSocketManagerImpl implements WebSocketManager{
         //userSessionMap에 있는 사람만 disconnect 시킴
         if(!userSessionMap.containsValue(userName)) {
             log.warn("not found user in UserSessionMap");
-
+            return;
         }
 
         //웹소켓 연결 종료 처리를 위한 헤더 객체 생성

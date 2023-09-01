@@ -30,8 +30,8 @@ public class RandomRoom {
     @Column(name="random_room_name")
     private String randomRoomName;
 
-    @OneToMany(mappedBy = "randomRoom", cascade = CascadeType.ALL)
-    private List<RandomChat> randomChatContent = new ArrayList<>();
+//    @OneToMany(mappedBy = "randomRoom", cascade = CascadeType.ALL)
+//    private List<RandomChat> randomChatContent = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user1_id")
