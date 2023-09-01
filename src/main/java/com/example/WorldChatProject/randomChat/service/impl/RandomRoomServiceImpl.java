@@ -56,30 +56,6 @@ public class RandomRoomServiceImpl implements RandomRoomService {
             }
             return createRoom(user);
         }
-//
-//        //대기큐 순회
-//        synchronized (this) {
-//            while (!waitQueue.isEmpty()) {
-//                System.out.println("waitQueue 비어져있음?: " + waitQueue.isEmpty());
-//                User otherUser = waitQueue.poll();
-//
-//                //블랙리스트 필터링
-//                if(canMatch(user, otherUser) == true) {
-//                    log.info("blocked from blacklist");
-//                    log.info("{} can Match : {} ", user.getUserNickName(), otherUser.getUserNickName());
-//                    return matchAwithB(user, otherUser);
-//                }else {
-//                    log.info("{} and {} cannot Match by Blacklist");
-//                    blackListQueue.add(otherUser);
-//                }
-//
-//            }
-//            // 대기큐에 사용자 없으면 방 만들기
-//            for(User blockedUser : blackListQueue) {
-//                waitQueue.add(blockedUser);
-//            }
-//        }
-//        return createRoom(user);
 
     }
 
@@ -128,8 +104,8 @@ public class RandomRoomServiceImpl implements RandomRoomService {
     }
 
     @Override
-    public RandomRoom findRoomByUserId(long userId) {
-        return randomRoomRepository.findByUser1IdOrUser2Id(userId);
+    public List<RandomRoom> findAllRoomByUserId(long userId) {
+        return randomRoomRepository.findAllByUser1IdOrUser2Id(userId);
     }
 
     @Override

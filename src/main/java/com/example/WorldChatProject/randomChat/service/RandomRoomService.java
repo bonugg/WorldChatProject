@@ -4,6 +4,7 @@ package com.example.WorldChatProject.randomChat.service;
 import com.example.WorldChatProject.randomChat.entity.RandomRoom;
 import com.example.WorldChatProject.user.entity.User;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -19,7 +20,7 @@ public interface RandomRoomService {
 
     RandomRoom findRoomById(long roomId);
 
-    RandomRoom findRoomByUserId(long userId);
+    List<RandomRoom> findAllRoomByUserId(long userId);
 
     RandomRoom removeUserFromRoom(long userId, long roomId);
 

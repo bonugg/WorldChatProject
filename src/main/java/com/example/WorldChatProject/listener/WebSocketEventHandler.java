@@ -1,5 +1,8 @@
 package com.example.WorldChatProject.listener;
 
+import com.example.WorldChatProject.user.entity.User;
+import com.example.WorldChatProject.user.repository.UserRepository;
+import com.example.WorldChatProject.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -9,6 +12,7 @@ import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 @Slf4j
@@ -16,6 +20,8 @@ import java.util.Map;
 public class WebSocketEventHandler {
 
     private final WebSocketManager webSocketManager;
+    private final UserService userService;
+    private final UserRepository userRepository;
 
     // 웹소켓 연결 이벤트 발생 시
     @EventListener
@@ -52,8 +58,10 @@ public class WebSocketEventHandler {
         log.info("disconnect sessionAttributes : {}", sessionAttributes);
         log.info("disconnect sessionId: {}", sessionId);
 
-        //웹소켓 해제 이벤트 발생하면 WebSocketManger에게 정보를 전달.
+        //웹소켓 해제 이벤트 발생하면 WebSocketManger에게 정보를 전달하여
+        //웹소켓 해제 프로세스 처리
         webSocketManager.disconnectManage(sessionAttributes, sessionId);
+        
 
         }
 

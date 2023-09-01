@@ -24,7 +24,7 @@ public interface RandomRoomRepository extends JpaRepository<RandomRoom, Long> {
     void deleteByRoomId(long roomId);
 
     @Query(value = "SELECT * FROM random_room r WHERE r.user1_id=:userId OR r.user2_id=:userId", nativeQuery = true)
-    RandomRoom findByUser1IdOrUser2Id(long userId);
+    List<RandomRoom> findAllByUser1IdOrUser2Id(@Param("userId") long userId);
 
     @Transactional
     @Modifying

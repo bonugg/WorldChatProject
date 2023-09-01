@@ -1,17 +1,13 @@
 package com.example.WorldChatProject.randomChat.controller;
 
 import com.example.WorldChatProject.listener.WebSocketManager;
-import com.example.WorldChatProject.listener.WebSocketManagerImpl;
 import com.example.WorldChatProject.randomChat.dto.RandomRoomDTO;
 import com.example.WorldChatProject.randomChat.entity.RandomRoom;
 import com.example.WorldChatProject.randomChat.service.RandomRoomService;
-import com.example.WorldChatProject.user.dto.UserDTO;
 import com.example.WorldChatProject.user.entity.User;
 import com.example.WorldChatProject.user.security.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,17 +31,18 @@ public class RandomRoomController{
         log.info("Start random Chat");
         try{
             log.info("User {} requested random chat.", principal.getUser().getUserNickName());
-            webSocketManager.disconnectUser(principal.getUser().getUserName());
+
+            User user = principal.getUser().DTOToEntity();
+            String sessionId = webSocketManager.getSessionIdByUsername(user.getUserName());
+            if(sessionId != null) {
+                //채팅방 생성 이전에 웹소켓 해제
+                webSocketManager.disconnectWebSocket(user.getUserName(), sessionId);
+            }
+            //웹소켓 세션이 없이 채팅방 유지되었을 경우 채팅방 삭제
+            webSocketManager.removeUserAndManageRooms(user);
+
             Map<String, Object> result = new HashMap<>();
-//            RandomRoom checkRoom = service.findRoomByUserId(principal.getUser().getUserId());
-//            Map<String, Object> result = new HashMap<>();
-//            if(checkRoom != null) {
-//                result.put("randomRoomDTO", null);
-//                result.put("msg", "random room already exists");
-//                result.put("userNickName", "");
-//                return result;
-//
-//            }else {
+
                 RandomRoom room = service.matchStart(principal.getUsername());
                 RandomRoomDTO randomRoomDTO = room.toDTO();
                 log.info("created random room info : {}", randomRoomDTO.getRandomRoomId());
@@ -53,7 +50,6 @@ public class RandomRoomController{
                 result.put("userNickName", principal.getUser().getUserNickName());
                 System.out.println(result);
                 return result;
-            //}
 
         }catch (Exception e){
             log.info("not created random room: {}", e.getMessage());
