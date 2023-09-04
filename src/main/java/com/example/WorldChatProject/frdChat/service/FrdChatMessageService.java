@@ -1,5 +1,6 @@
 package com.example.WorldChatProject.frdChat.service;
 
+import com.example.WorldChatProject.frdChat.dto.FrdChatMessageDTO;
 import com.example.WorldChatProject.frdChat.dto.ResponseDTO;
 import com.example.WorldChatProject.frdChat.entity.FrdChatMessage;
 import com.example.WorldChatProject.frdChat.repository.FrdChatMessageRepository;
@@ -96,6 +97,12 @@ public class FrdChatMessageService {
             responseDTO.setErrorMessage(e.getMessage());
             return ResponseEntity.badRequest().body(responseDTO);
         }
+    }
+
+    public void changeLikeStatus(FrdChatMessageDTO chatDTO) {
+        long chatId = chatDTO.getId();
+        boolean status = chatDTO.isLiked();
+        frdChatMessageRepository.updateLike(chatId, status);
     }
 }
 

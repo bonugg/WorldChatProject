@@ -1,7 +1,6 @@
 package com.example.WorldChatProject.randomChat.entity;
 
 import com.example.WorldChatProject.randomChat.dto.RandomRoomDTO;
-import com.example.WorldChatProject.randomChat.service.RandomRoomService;
 import com.example.WorldChatProject.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,10 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.antlr.v4.runtime.misc.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+
 
 @Data
 @AllArgsConstructor
@@ -29,9 +26,6 @@ public class RandomRoom {
     @NotNull
     @Column(name="random_room_name")
     private String randomRoomName;
-
-    @OneToMany(mappedBy = "randomRoom", cascade = CascadeType.ALL)
-    private List<RandomChat> randomChatContent = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user1_id")

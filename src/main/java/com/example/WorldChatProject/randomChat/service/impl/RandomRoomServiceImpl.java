@@ -1,16 +1,16 @@
 package com.example.WorldChatProject.randomChat.service.impl;
 
 
+import com.example.WorldChatProject.friends.entity.BlackList;
+import com.example.WorldChatProject.friends.repository.BlackListRepository;
 import com.example.WorldChatProject.randomChat.entity.RandomRoom;
 import com.example.WorldChatProject.randomChat.repository.RandomRoomRepository;
-import com.example.WorldChatProject.randomChat.service.RandomFileService;
 import com.example.WorldChatProject.randomChat.service.RandomRoomService;
 import com.example.WorldChatProject.user.entity.User;
 import com.example.WorldChatProject.user.repository.UserRepository;
 import com.example.WorldChatProject.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -21,23 +21,42 @@ import java.util.*;
 public class RandomRoomServiceImpl implements RandomRoomService {
 
     private final UserRepository userRepository;
+    private final BlackListRepository blackListRepository;
     private final RandomRoomRepository randomRoomRepository;
     private final UserService userService;
     private final Queue<User> waitQueue = new LinkedList<>();
+    private final Queue<User> blackListQueue = new LinkedList<>();
 
     @Override
-    public RandomRoom match(String username) {
+    public RandomRoom matchStart(String username) {
         User user = userRepository.findByUserName(username).get();
-        if(user == null || user.equals("")){
-            log.info("not found user");
-            return null;
+
+        User otherUser = null;
+
+        synchronized(this) {
+            //대기큐 순회
+            while (!waitQueue.isEmpty()) {
+                otherUser = waitQueue.poll();
+                if(canMatch(user, otherUser)) {
+                    break;
+                } else {
+                    blackListQueue.add(otherUser);
+                    otherUser = null;
+                }
+            }
         }
-        // 대기큐에 사용자 있는지 검사
-        if(waitQueue.isEmpty() && !waitQueue.contains(user)){
+
+        if (otherUser != null) {
+            return matchAwithB(user, otherUser);
+        } else {
+            synchronized(this) {
+                for(User blockedUser : blackListQueue) {
+                    waitQueue.add(blockedUser);
+                }
+            }
             return createRoom(user);
-        }else {
-            return addUserToRoom(user);
         }
+
     }
 
     //채팅방 생성 , 대기
@@ -54,12 +73,11 @@ public class RandomRoomServiceImpl implements RandomRoomService {
 
     //채팅방 입장, 대기자 삭제
     @Override
-    public RandomRoom addUserToRoom(User user) {
-
+    public RandomRoom matchAwithB(User user, User otherUser) {
+        //otherUser: 방을 만들어놓고 대기큐에서 기다리고 있는 유저
         String userNickName = user.getUserNickName();
-        User otherUser = waitQueue.poll();
         String otherNickName = otherUser.getUserNickName();
-        log.info("waitQueue is not Empty. {} is matched with {}", userNickName, otherNickName);
+        log.info("{} is matched with {}", userNickName, otherNickName);
         RandomRoom room = randomRoomRepository.findByUserId(otherUser.getUserId());
         room = room.rename(room, user, otherUser);
         log.info("{} is enter in {}", userNickName, room.getRandomRoomId());
@@ -86,8 +104,8 @@ public class RandomRoomServiceImpl implements RandomRoomService {
     }
 
     @Override
-    public RandomRoom findRoomByUserId(long userId) {
-        return randomRoomRepository.findByUser1IdOrUser2Id(userId);
+    public List<RandomRoom> findAllRoomByUserId(long userId) {
+        return randomRoomRepository.findAllByUser1IdOrUser2Id(userId);
     }
 
     @Override
@@ -109,6 +127,20 @@ public class RandomRoomServiceImpl implements RandomRoomService {
         return foundRoom.map(r -> r.getUser1() != null ? r.getUser1() : r.getUser2());
     }
 
+    //블랙리스트 필터링
+    @Override
+    public boolean canMatch(User user1, User user2) {
+        Optional<BlackList> blackList1 = blackListRepository.findByHaterAndHated(user1, user2);
+        Optional<BlackList> blackList2 = blackListRepository.findByHaterAndHated(user2, user1);
+
+        if(blackList1.isEmpty() == true && blackList2.isEmpty() == true) {
+            //블랙리스트 조회 시 없음
+            return true;
+        }else {
+            return false;
+        }
+    }
 
 
 }
+

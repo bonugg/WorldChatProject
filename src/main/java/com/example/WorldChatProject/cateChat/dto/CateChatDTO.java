@@ -32,6 +32,10 @@ public class CateChatDTO {
     private String fileName; // 파일이름
     private String fileDir; // s3 파일 경로
 
+    //좋아요
+    private boolean isLiked;
+    private int likeCount;
+
 
 
     //DTO를 엔티티로 변환하는 메소드

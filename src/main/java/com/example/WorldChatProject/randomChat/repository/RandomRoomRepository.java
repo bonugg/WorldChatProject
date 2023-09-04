@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface RandomRoomRepository extends JpaRepository<RandomRoom, Long> {
@@ -23,7 +24,7 @@ public interface RandomRoomRepository extends JpaRepository<RandomRoom, Long> {
     void deleteByRoomId(long roomId);
 
     @Query(value = "SELECT * FROM random_room r WHERE r.user1_id=:userId OR r.user2_id=:userId", nativeQuery = true)
-    RandomRoom findByUser1IdOrUser2Id(long userId);
+    List<RandomRoom> findAllByUser1IdOrUser2Id(@Param("userId") long userId);
 
     @Transactional
     @Modifying
@@ -37,4 +38,6 @@ public interface RandomRoomRepository extends JpaRepository<RandomRoom, Long> {
 
     @Query("SELECT r FROM RandomRoom r WHERE r.randomRoomId = :roomId AND (r.user1 IS NOT NULL OR r.user2 IS NOT NULL)")
     Optional<RandomRoom> findRoomWithUser(@Param("roomId") long roomId);
+
+
 }
