@@ -39,6 +39,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
@@ -87,9 +89,12 @@ public class FrdChatController {
             frdChatMessage.setCheckRead(true);
         }
         //세팅된걸로 저장도하고
-        frdChatMessageService.save(frdChatMessage);
-
+        if(frdChatMessage.getMessage().equals("typing...") || frdChatMessage.getMessage().equals("removeTyping")){
+        }else {
+            frdChatMessageService.save(frdChatMessage);
+        }
         FrdChatMessageDTO frdChatMessageDTO = frdChatMessage.toFrdChatMessageDTO();
+
         frdChatMessageDTO.setUserProfile(userProfile);
         //메시지도 보낸다.
         template.convertAndSend("/frdSub/" + frdChatMessage.getRoomId(), frdChatMessageDTO);
@@ -99,12 +104,7 @@ public class FrdChatController {
     public void changeLike(FrdChatMessageDTO chatDTO, @Header("simpSessionAttributes") Map<String, Object> sessionAttributes) {
         String user = (String) sessionAttributes.get("user");
         chatDTO.setSender(user);
-        long chatId = chatDTO.getId();
-        String sender = chatDTO.getSender();
-
         frdChatMessageService.changeLikeStatus(chatDTO);
-
-        log.info("{} like status changed by {}", chatId, sender);
         //return chatDTO;
         template.convertAndSend("/frdSub/" + chatDTO.getRoomId(), chatDTO);
     }

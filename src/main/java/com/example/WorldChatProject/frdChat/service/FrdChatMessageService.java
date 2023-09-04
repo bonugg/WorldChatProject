@@ -8,6 +8,7 @@ import com.example.WorldChatProject.user.entity.User;
 import com.example.WorldChatProject.user.repository.UserRepository;
 import com.example.WorldChatProject.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class FrdChatMessageService {
 
@@ -39,15 +41,15 @@ public class FrdChatMessageService {
     //상대가 들어왔을때 내 메시지 상태 안읽음 -> 읽음 만들기
     public List<FrdChatMessage> updateCheckRead(long roomId, String userNickName, boolean statement) {
 
-       List<FrdChatMessage> unReadList = findMessages(roomId, userNickName, statement);
+        List<FrdChatMessage> unReadList = findMessages(roomId, userNickName, statement);
 
-       for(FrdChatMessage message : unReadList) {
-           message.setCheckRead(true);
-       }
+        for (FrdChatMessage message : unReadList) {
+            message.setCheckRead(true);
+        }
 
-       frdChatMessageRepository.saveAll(unReadList);
+        frdChatMessageRepository.saveAll(unReadList);
 
-       return unReadList;
+        return unReadList;
 
     }
 
@@ -76,7 +78,7 @@ public class FrdChatMessageService {
             responseDTO.setItems(updatedList);
             responseDTO.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok().body(responseDTO);
-        } catch (Exception e){
+        } catch (Exception e) {
             responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
             responseDTO.setErrorMessage(e.getMessage());
             return ResponseEntity.badRequest().body(responseDTO);
@@ -101,8 +103,16 @@ public class FrdChatMessageService {
 
     public void changeLikeStatus(FrdChatMessageDTO chatDTO) {
         long chatId = chatDTO.getId();
-        boolean status = chatDTO.isLiked();
-        frdChatMessageRepository.updateLike(chatId, status);
+        boolean status;
+        if (chatDTO.getLike().equals("on")) {
+            status = true;
+        } else {
+            status = false;
+        }
+        log.info(String.valueOf(status));
+        FrdChatMessage frdChatMessage = frdChatMessageRepository.findById(chatId).get();
+        frdChatMessage.setLiked(status);
+        frdChatMessageRepository.save(frdChatMessage);
     }
 }
 

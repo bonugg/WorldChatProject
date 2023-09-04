@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Map;
+import java.util.UUID;
 
 
 @Controller
@@ -27,6 +28,8 @@ public class RandomChatController {
     public void sendMessage(@Payload RandomChatDTO chatDTO, @DestinationVariable("randomRoomId") String randomRoomId, @Header("simpSessionAttributes") Map<String, Object> sessionAttributes) {
         String user = (String) sessionAttributes.get("user");
         long userId = (long) sessionAttributes.get("userId");
+        UUID uuidOne = UUID.randomUUID();
+        chatDTO.setRandomChatId(uuidOne);
         chatDTO.setSender(user);
         chatDTO.setUserId(userId);
         log.info("CHAT : {}", chatDTO);
@@ -66,7 +69,7 @@ public class RandomChatController {
         String user = (String) sessionAttributes.get("user");
         chatDTO.setSender(user);
 
-        long chatId = chatDTO.getRandomChatId();
+        UUID chatId = chatDTO.getRandomChatId();
         String sender = chatDTO.getSender();
         log.info("{} like status changed by {}", chatId, sender);
         //return chatDTO;

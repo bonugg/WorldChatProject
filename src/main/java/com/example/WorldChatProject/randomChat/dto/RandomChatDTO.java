@@ -1,10 +1,9 @@
 package com.example.WorldChatProject.randomChat.dto;
 
-import com.example.WorldChatProject.cateChat.entity.CateChat;
 import com.example.WorldChatProject.randomChat.MessageType;
-import com.example.WorldChatProject.randomChat.entity.RandomRoom;
-import com.example.WorldChatProject.user.entity.User;
 import lombok.*;
+
+import java.util.UUID;
 
 @Data
 @Builder
@@ -13,7 +12,7 @@ import lombok.*;
 public class RandomChatDTO {
 
     private MessageType type;
-    private long randomChatId;
+    private UUID randomChatId;
     private String content;
     private String time;
     private long randomRoomId;

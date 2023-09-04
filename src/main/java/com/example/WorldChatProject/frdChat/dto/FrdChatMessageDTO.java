@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -34,6 +35,8 @@ public class FrdChatMessageDTO {
 
     //좋아요
     private boolean isLiked;
+    private String like;
+    private String type;
 
     public FrdChatMessage DTOToEntity() {
         return FrdChatMessage.builder()
