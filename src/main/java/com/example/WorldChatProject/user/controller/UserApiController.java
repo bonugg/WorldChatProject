@@ -1,5 +1,6 @@
 package com.example.WorldChatProject.user.controller;
 
+import com.example.WorldChatProject.user.dto.UserDTO;
 import com.example.WorldChatProject.user.dto.UserOauthDTO;
 import com.example.WorldChatProject.user.entity.User;
 import com.example.WorldChatProject.user.repository.UserRepository;
@@ -10,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -110,6 +112,14 @@ public class UserApiController {
     public ResponseEntity<List<User>> userList(){
         return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
     }
+
+    @DeleteMapping("/user")
+    public ResponseEntity<String> withdraw(Authentication authentication) {
+        //principal 안에는 유저의 정보가 담겨있음
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        return userService.withdraw(principal);
+    }
+
 }
 
 
