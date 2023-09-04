@@ -31,10 +31,10 @@ public class RtcController {
         return Boolean.toString(rtcChatService.findUserCount(webSocketMessage));
     }
     
-    @PostMapping("/webrtc/logout")
-    public void webRTCLogout(@RequestBody String userName)throws IOException {
-        rtcChatService.RTCLogout(userName);
-    }
+//    @PostMapping("/webrtc/logout")
+//    public void webRTCLogout(@RequestBody String userName)throws IOException {
+//        rtcChatService.RTCLogout(userName);
+//    }
     
     @PostMapping("/webrtc/request")
     public void requestRTC(@RequestBody  RequestDto request){
@@ -52,10 +52,10 @@ public class RtcController {
         log.info("거절로 인해 삭제된 채팅방 : " + roomId);
     }
     
-    @PostMapping("/webrtc/exitrooms")
-    public void exitRooms(@RequestBody String roomName){
-        rtcChatService.exitRtcRoom(roomName);
-    }
+//    @PostMapping("/webrtc/exitrooms")
+//    public void exitRooms(@RequestBody String roomName){
+//        rtcChatService.exitRtcRoom(roomName);
+//    }
 
 
 }

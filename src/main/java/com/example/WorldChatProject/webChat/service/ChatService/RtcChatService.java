@@ -51,8 +51,10 @@ public class RtcChatService {
 		} else if ("voice".equals(type)) {
 			requestMessage = sender + "님이 음성통화 요청을 보냈습니다.";
 			log.info(requestMessage);
+		} else{
+			requestMessage = type;
 		}
-
+		log.info("messageText = "+requestMessage);
 		TextMessage message = new TextMessage(requestMessage);
 		try {
 			session.sendMessage(message);
