@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.hibernate.Hibernate;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +26,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -171,5 +173,19 @@ public class UserService {
             user = (User) ((HibernateProxy) user).getHibernateLazyInitializer().getImplementation();
         }
         return user;
+    }
+
+    @Transactional
+    public ResponseEntity<String> withdraw(PrincipalDetails principal) {
+        String username = principal.getUsername();
+
+        Optional<User> user = userRepository.findByUserName(username);
+
+        if (!user.isPresent()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to unsubscribe");
+        } else {
+            userRepository.delete(user.get());
+            return ResponseEntity.status(HttpStatus.OK).body("Successfully unsubscribed");
+        }
     }
 }
