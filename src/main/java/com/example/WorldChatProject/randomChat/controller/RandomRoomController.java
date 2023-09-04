@@ -36,7 +36,7 @@ public class RandomRoomController{
             String sessionId = webSocketManager.getSessionIdByUsername(user.getUserName());
             if(sessionId != null) {
                 //채팅방 생성 이전에 웹소켓 해제
-                webSocketManager.disconnectWebSocket(user.getUserName(), sessionId);
+                webSocketManager.disconnectWebSocket(user.getUserName());
             }
             //웹소켓 세션이 없이 채팅방 유지되었을 경우 채팅방 삭제
             webSocketManager.removeUserAndManageRooms(user);
@@ -62,6 +62,35 @@ public class RandomRoomController{
             return result;
         }
     }
+
+    @DeleteMapping("/leave")
+    public Map<String, Object> leave(Authentication authentication) {
+        //사용자의 정보를 authentication에서 받아온다.
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        log.info("End random Chat");
+        Map<String, Object> result = new HashMap<>();
+        try {
+            User user = principal.getUser().DTOToEntity();
+            String sessionId = webSocketManager.getSessionIdByUsername(user.getUserName());
+            if (sessionId != null) {
+                //채팅방 생성 이전에 웹소켓 해제
+                webSocketManager.disconnectWebSocket(user.getUserName());
+            }
+            //웹소켓 세션이 없이 채팅방 유지되었을 경우 채팅방 삭제
+            webSocketManager.removeUserAndManageRooms(user);
+            result.put("status", "success");
+            return result;
+
+        } catch (Exception e) {
+            log.info("not deleted random room: {}", e.getMessage());
+            result.put("status", "error");
+            return result;
+
+        }
+    }
+
+
+
 
 
 }
