@@ -108,7 +108,4 @@ public class RandomRoomServiceImpl implements RandomRoomService {
         Optional<RandomRoom> foundRoom = randomRoomRepository.findRoomWithUser(room.getRandomRoomId());
         return foundRoom.map(r -> r.getUser1() != null ? r.getUser1() : r.getUser2());
     }
-
-
-
 }

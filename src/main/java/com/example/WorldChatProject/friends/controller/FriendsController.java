@@ -37,7 +37,7 @@ public class FriendsController {
     @PostMapping("/request")
     public ResponseEntity<?> requestFriends(@RequestBody UserDTO userDTO,
                                             Authentication authentication) {
-        ResponseDTO<Map<String, String>> response = new ResponseDTO<>();
+        ResponseDTO<Map<String, Object>> response = new ResponseDTO<>();
         System.out.println("testtest");
         System.out.println(userDTO);
         System.out.println(authentication);
@@ -55,7 +55,7 @@ public class FriendsController {
             User receiver = userService.findById(user.getUserId());
             Friends checkFriends = friendsService.findByUserAndFriends(requester, receiver);
             Friends checkFriends2 = friendsService.findByUserAndFriends(receiver, requester);
-            Map<String, String> returnMap = new HashMap<>();
+            Map<String, Object> returnMap = new HashMap<>();
             if(checkFriends == null && checkFriends2 == null) {
                 //일단 정방향 저장. approved 되면 역방향 저장해줄꺼야!
                 Friends friends1 = new Friends();
@@ -63,8 +63,8 @@ public class FriendsController {
                 friends1.setFriends(receiver);
                 friends1.setStatement(WAITING);
                 friendsService.save(friends1);
-
                 returnMap.put("msg", "request ok");
+                returnMap.put("friends", friends1);
             } else {
                 returnMap.put("msg", "already frds");
             }
@@ -128,9 +128,8 @@ public class FriendsController {
 
         try {
             Map<String, String> returnMap = new HashMap<>();
-
-            System.out.println(friends.getId());
-            System.out.println(friends);
+            System.out.println("프랜즈가 잘 담기나?" + friends);
+            System.out.println("프렌즈의 아이디가 담겨야지" + friends.getId());
 //            PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
 //            User user = principal.getUser().DTOToEntity();
 
