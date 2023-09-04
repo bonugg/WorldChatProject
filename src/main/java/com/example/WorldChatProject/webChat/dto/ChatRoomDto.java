@@ -2,6 +2,7 @@ package com.example.WorldChatProject.webChat.dto;
 
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.web.socket.WebSocketSession;
 
 import java.util.Map;
 
