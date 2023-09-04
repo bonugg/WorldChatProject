@@ -33,5 +33,5 @@ public interface WebSocketManager {
     void deleteFilesAndRooms(long roomId);
     
     //웹소켓 강제 종료 메소드
-    void disconnectWebSocket(String userName, String sessionId);
+    void disconnectWebSocket(String userName);
 }

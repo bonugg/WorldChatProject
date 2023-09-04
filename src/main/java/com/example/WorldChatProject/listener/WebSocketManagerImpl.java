@@ -51,20 +51,21 @@ public class WebSocketManagerImpl implements WebSocketManager {
     //WebSocketHandler로부터 전달 받은 웹소켓 연결 정보를 userSessionMap에서 삭제
     @Override
     public void disconnectManage(Map<String, String> sessionAttributes, String sessionId) {
-        String userName = (sessionAttributes == null) ? getKey(userSessionMap, sessionId)
-                : sessionAttributes.get("userName");
+        String userName = getUsernameBySessionId(sessionAttributes, sessionId);
 
         Optional<User> userOptional = userRepository.findByUserName(userName);
         if (!userOptional.isPresent()) {
             log.error("User not found");
             return;
 
-    }
-        userSessionMap.remove(userName);
-        log.info("User Session Map: {}", userSessionMap);
-        if(userSessionMap.containsValue(sessionId)) {
+        }
+
+        if (userSessionMap.containsValue(sessionId)) {
             removeUserAndManageRooms(userOptional.get());
         }
+
+        userSessionMap.remove(userName);
+        log.info("removed session result: {}", userSessionMap);
 
     }
 
@@ -75,7 +76,7 @@ public class WebSocketManagerImpl implements WebSocketManager {
         List<RandomRoom> rooms = randomRoomService.findAllRoomByUserId(user.getUserId());
 
         if (rooms == null) {
-            log.error("Random room not found");
+            log.warn("Random room not found");
             return;
         }
 
@@ -90,18 +91,17 @@ public class WebSocketManagerImpl implements WebSocketManager {
     public void handleRoom(RandomRoom room, long userId) {
 
         long roomId = room.getRandomRoomId();
-        
+
         //해당 유저를 채팅방에서 삭제
         randomRoomService.removeUserFromRoom(userId, roomId);
-        
+
         Optional<User> other = randomRoomService.findUserFromRoom(room);
 
         if (other.isPresent()) {
             //채팅방에 상대방 존재하면 다른 사람 웹소켓 연결 해제
             User user = other.get();
             String otherName = user.getUserName();
-            String otherSessionId = getSessionIdByUsername(otherName);
-            disconnectWebSocket(otherName, otherSessionId);
+            disconnectWebSocket(otherName);
         } else {
             //채팅방에 상대방 존재하지 않으면 채팅파일과 채팅방 삭제
             deleteFilesAndRooms(roomId);
@@ -118,7 +118,7 @@ public class WebSocketManagerImpl implements WebSocketManager {
 
     //웹소켓 강제 종료 메소드
     @Override
-    public void disconnectWebSocket(String userName, String sessionId) {
+    public void disconnectWebSocket(String userName) {
         log.info("====================Forced WebSocket Terminated==================");
         Optional<User> userOptional = userRepository.findByUserName(userName);
 
@@ -126,6 +126,8 @@ public class WebSocketManagerImpl implements WebSocketManager {
             return;
         }
         User user = userOptional.get();
+
+        String sessionId = getSessionIdByUsername(user.getUserName());
 
         // 웹소켓 연결 종료 처리
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.create(StompCommand.DISCONNECT);
@@ -151,7 +153,7 @@ public class WebSocketManagerImpl implements WebSocketManager {
     //웹소켓 해재 이벤트로부터 받은 정보로 userName 반환 메소드
     public String getUsernameBySessionId(Map<String, String> sessionAttributes, String sessionId) {
         String userName = (sessionAttributes == null) ?
-                getKey(userSessionMap, sessionId) : sessionAttributes.get("userName");
+                getUserNameFromSessionMap(userSessionMap, sessionId) : sessionAttributes.get("userName");
         return userName;
     }
 
@@ -159,7 +161,7 @@ public class WebSocketManagerImpl implements WebSocketManager {
     @Override
     public String getSessionIdByUsername(String userName) {
         String sessionId = userSessionMap.get(userName);
-        if(sessionId == null) {
+        if (sessionId == null) {
             log.info("not found {}'s sessionId in UserSessionMap", userName);
             return null;
         }
@@ -168,7 +170,7 @@ public class WebSocketManagerImpl implements WebSocketManager {
 
 
     //userSessionMap에서 userName을 조회하는 메소드
-    private String getKey(Map<String, String> userSessionMap, String sessionId) {
+    private String getUserNameFromSessionMap(Map<String, String> userSessionMap, String sessionId) {
         for (String userName : userSessionMap.keySet()) {
             if (sessionId.equals(userSessionMap.get(userName))) {
                 return userName;
