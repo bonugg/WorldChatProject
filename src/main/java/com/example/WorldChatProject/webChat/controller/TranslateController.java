@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.thymeleaf.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,9 +33,12 @@ public class TranslateController {
     }
     @PostMapping("/rtc/upload")
     public void upload(@RequestParam("audio") MultipartFile file, @RequestParam("sender") String sender, @RequestParam("receiver") String receiver, @RequestParam("lang") String lang){
-        String text = "번역"+lang+speechToText.sttTest(file, lang);
+        String stt = speechToText.sttTest(file, lang);
+        String text = "번역"+lang+stt;
         log.info("sender: " + sender + " / receiver: " + receiver + " / text: " + text + " / lang: " + lang);
-        System.out.println(rtcChatService.sendRequest(sender,receiver,text));
+        if(!StringUtils.isEmpty(stt)) {
+            System.out.println(rtcChatService.sendRequest(sender, receiver, text));
+        }
     }
     @PostMapping("/rtc/translate")
     public ResponseEntity<byte[]> upload(@RequestBody Map<String, String> payload) {
