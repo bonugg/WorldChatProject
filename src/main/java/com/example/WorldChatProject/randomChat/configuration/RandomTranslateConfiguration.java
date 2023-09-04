@@ -7,9 +7,16 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @Getter
 public class RandomTranslateConfiguration {
-    private final String PAPAGO_API_URL = "https://naveropenapi.apigw.ntruss.com/nmt/v1/translation";
+    @Value("${papago.api.url}")
+    private String PAPAGO_API_URL;
 
-    private final String CLIENT_ID = "v24rnexxhf";
+    @Value("${papago.detect.api.url}")
+    private String DETECT_API_URL;
 
-    private final String CLIENT_SECRET = "ENyX6aXwQlSoI4JHdIFbiir5aE3CeUfoIbczzHvf";
+    @Value("${papago.client.id}")
+    private String CLIENT_ID;
+
+    @Value("${papago.client.secret}")
+    private String CLIENT_SECRET;
+
 }
