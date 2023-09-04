@@ -1,5 +1,6 @@
 package com.example.WorldChatProject.user.controller;
 
+import com.example.WorldChatProject.user.dto.UserOauthDTO;
 import com.example.WorldChatProject.user.entity.User;
 import com.example.WorldChatProject.user.repository.UserRepository;
 import com.example.WorldChatProject.user.security.auth.PrincipalDetails;
@@ -39,6 +40,16 @@ public class UserApiController {
         return principal;
     }
 
+    @PostMapping("/oauth")
+    public ResponseEntity<String> oauthLogin(@RequestBody UserOauthDTO userOauthDTO) {
+        return userService.UserOauth(userOauthDTO);
+    }
+
+    @PostMapping("/oauthJoin")
+    public ResponseEntity<String> oauthJoin(@RequestBody UserOauthDTO userOauthDTO) {
+        return userService.UserOauthJoin(userOauthDTO);
+    }
+
     @PostMapping("/user/logout")
     private ResponseEntity logout(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
         userService.UserLogout(session, request, response);
@@ -70,12 +81,6 @@ public class UserApiController {
         log.info(String.valueOf(imageFile));
 
         return userService.UserUploadImage(imageFile, principal.getUsername());
-    }
-
-    @PostMapping("/user/friendsList")
-    private ResponseEntity<?> friendsList(Authentication authentication) {
-        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-        return userService.UserFriendsList(principal.getUsername());
     }
 
     @PostMapping("/idCheck")
