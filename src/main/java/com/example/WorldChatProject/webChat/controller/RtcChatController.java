@@ -37,38 +37,38 @@ public class RtcChatController {
     private final ChatServiceMain chatServiceMain;
     
     //로그인 후 즉시 웹소켓 연결 후 유저 목록 저장 -> db 저장으로 변경 예정?
-    @PostMapping("/chat/addUser")
-    public void addUser(String userId){
-        log.info("실행되면 안 되는 구간");
-        msgChatService.addUser(ChatRoomMap.getInstance().getChatRooms(), "1", userId);
-    }
-
-    //기존에 있던 일반 채팅 코드
-    @MessageMapping("/chat/enterUser")
-    public void enterUser(@Payload ChatDTO chat, SimpMessageHeaderAccessor headerAccessor) {
-
-        // 채팅방 유저+1
-        chatServiceMain.plusUserCnt(chat.getRoomId());
-
-        // 채팅방에 유저 추가 및 UserUUID 반환
-        String userUUID = msgChatService.addUser(ChatRoomMap.getInstance().getChatRooms(), chat.getRoomId(), chat.getSender());
-
-        // 반환 결과를 socket session 에 userUUID 로 저장
-        headerAccessor.getSessionAttributes().put("userUUID", userUUID);
-        headerAccessor.getSessionAttributes().put("roomId", chat.getRoomId());
-
-        chat.setMessage(chat.getSender() + " 님 입장!!");
-        template.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chat);
-    }
+//    @PostMapping("/chat/addUser")
+//    public void addUser(String userId){
+//        log.info("실행되면 안 되는 구간");
+//        msgChatService.addUser(ChatRoomMap.getInstance().getChatRooms(), "1", userId);
+//    }
+//
+//    //기존에 있던 일반 채팅 코드
+//    @MessageMapping("/chat/enterUser")
+//    public void enterUser(@Payload ChatDTO chat, SimpMessageHeaderAccessor headerAccessor) {
+//
+//        // 채팅방 유저+1
+//        chatServiceMain.plusUserCnt(chat.getRoomId());
+//
+//        // 채팅방에 유저 추가 및 UserUUID 반환
+//        String userUUID = msgChatService.addUser(ChatRoomMap.getInstance().getChatRooms(), chat.getRoomId(), chat.getSender());
+//
+//        // 반환 결과를 socket session 에 userUUID 로 저장
+//        headerAccessor.getSessionAttributes().put("userUUID", userUUID);
+//        headerAccessor.getSessionAttributes().put("roomId", chat.getRoomId());
+//
+//        chat.setMessage(chat.getSender() + " 님 입장!!");
+//        template.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chat);
+//    }
 
     // 해당 유저
-    @MessageMapping("/chat/sendMessage")
-    public void sendMessage(@Payload ChatDTO chat) {
-        log.info("CHAT {}", chat);
-        chat.setMessage(chat.getMessage());
-        template.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chat);
-
-    }
+//    @MessageMapping("/chat/sendMessage")
+//    public void sendMessage(@Payload ChatDTO chat) {
+//        log.info("CHAT {}", chat);
+//        chat.setMessage(chat.getMessage());
+//        template.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chat);
+//
+//    }
 
     // 유저 퇴장 시에는 EventListener 을 통해서 유저 퇴장을 확인
 //    @EventListener
@@ -105,23 +105,23 @@ public class RtcChatController {
 //    }
 
     // 채팅에 참여한 유저 리스트 반환
-    @GetMapping("/chat/userlist")
-    @ResponseBody
-    public ArrayList<String> userList(String roomId) {
-
-        return msgChatService.getUserList(ChatRoomMap.getInstance().getChatRooms(), roomId);
-    }
+//    @GetMapping("/chat/userlist")
+//    @ResponseBody
+//    public ArrayList<String> userList(String roomId) {
+//
+//        return msgChatService.getUserList(ChatRoomMap.getInstance().getChatRooms(), roomId);
+//    }
 
     // 채팅에 참여한 유저 닉네임 중복 확인
-    @GetMapping("/chat/duplicateName")
-    @ResponseBody
-    public String isDuplicateName(@RequestParam("roomId") String roomId, @RequestParam("username") String username) {
-
-        // 유저 이름 확인
-        String userName = msgChatService.isDuplicateName(ChatRoomMap.getInstance().getChatRooms(), roomId, username);
-        log.info("동작확인 {}", userName);
-
-        return userName;
-    }
+//    @GetMapping("/chat/duplicateName")
+//    @ResponseBody
+//    public String isDuplicateName(@RequestParam("roomId") String roomId, @RequestParam("username") String username) {
+//
+//        // 유저 이름 확인
+//        String userName = msgChatService.isDuplicateName(ChatRoomMap.getInstance().getChatRooms(), roomId, username);
+//        log.info("동작확인 {}", userName);
+//
+//        return userName;
+//    }
 }
 
