@@ -34,6 +34,8 @@ public interface FriendsRepository extends JpaRepository<Friends, Long> {
 
     User findByUser(User user);
 
+    List<Friends> findByUser_UserId(Long userId);
+
 //    List<Friends> findByRequester(User requester);
 //
 //    Friends findRequestByRequesterAndReceiver(User receiver, User requester);
