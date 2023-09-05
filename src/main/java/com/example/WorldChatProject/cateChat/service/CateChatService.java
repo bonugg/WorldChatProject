@@ -23,7 +23,7 @@ public class CateChatService {
 
     //메시지를 디비에 저장
     public CateChatDTO saveMessage(CateChatDTO cateChatDTO) {
-        
+
         if(cateChatDTO.getCateChatContent().equals("typing...") || cateChatDTO.getCateChatContent().equals("removeTyping")){
             return cateChatDTO;
         }else {
