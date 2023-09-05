@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,6 +18,8 @@ public class FriendsDTO {
     private User user;
     private User friends;
     private FriendsStatement statement;
+
+    private List<String> userNickName;
 
     public Friends DTOToEntity() {
         return Friends.builder()

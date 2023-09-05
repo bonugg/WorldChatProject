@@ -30,7 +30,7 @@ public class WebSocketEventHandler {
         SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.wrap(event.getMessage());
         Map<String, Object> messageHeaders = headerAccessor.getMessageHeaders();
         Map<String, String> sessionAttributes = (Map<String, String>) messageHeaders.get("simpSessionAttributes");
-        
+
         String sessionId = headerAccessor.getSessionId();
 
         log.info("connect sessionAttributes : {}", sessionAttributes);
@@ -61,10 +61,8 @@ public class WebSocketEventHandler {
         //웹소켓 해제 이벤트 발생하면 WebSocketManger에게 정보를 전달하여
         //웹소켓 해제 프로세스 처리
         webSocketManager.disconnectManage(sessionAttributes, sessionId);
-        
 
-        }
+
+    }
 
 }
-
-

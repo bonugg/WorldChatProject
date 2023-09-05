@@ -1,14 +1,8 @@
 package com.example.WorldChatProject.frdChat.entity;
 
-import com.example.WorldChatProject.cateChat.dto.CateChatDTO;
 import com.example.WorldChatProject.frdChat.dto.FrdChatMessageDTO;
-import com.example.WorldChatProject.frdChat.dto.Status;
-import com.example.WorldChatProject.frdChat.service.FrdChatRoomService;
-import com.example.WorldChatProject.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Data

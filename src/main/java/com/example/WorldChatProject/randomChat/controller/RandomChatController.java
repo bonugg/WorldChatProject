@@ -64,8 +64,8 @@ public class RandomChatController {
     @MessageMapping("/randomChat/{randomRoomId}/like")
     @SendTo("/randomChat/{randomRoomId}")
     public void changeLike(@Payload RandomChatDTO chatDTO,
-                                    @DestinationVariable("randomRoomId") String randomRoomId,
-                                    @Header("simpSessionAttributes") Map<String, Object> sessionAttributes) {
+                           @DestinationVariable("randomRoomId") String randomRoomId,
+                           @Header("simpSessionAttributes") Map<String, Object> sessionAttributes) {
         String user = (String) sessionAttributes.get("user");
         chatDTO.setSender(user);
 
