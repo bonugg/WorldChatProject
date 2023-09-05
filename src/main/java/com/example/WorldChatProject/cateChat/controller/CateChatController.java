@@ -52,6 +52,7 @@ public class CateChatController {
         cateChatDTO.setCateChatRegdate(formattedTime);
 
         //메시지 db에 저장 후 저장된 곳에서 sender값을 가져와 username에 설정하기
+
         CateChatDTO savedMessage = cateChatService.saveMessage(cateChatDTO);
         savedMessage.setUserProfile(userProfile);
         savedMessage.setSender(user);
@@ -120,7 +121,6 @@ public class CateChatController {
         String formattedTime = now.format(formatter);
 
         cateChatDTO.setCateChatRegdate(formattedTime);
-
         CateChatDTO savedMessage = cateChatService.saveMessage(cateChatDTO);
         savedMessage.setSender(user);
 

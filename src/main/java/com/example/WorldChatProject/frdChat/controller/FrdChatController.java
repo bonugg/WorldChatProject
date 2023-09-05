@@ -104,9 +104,9 @@ public class FrdChatController {
     public void changeLike(FrdChatMessageDTO chatDTO, @Header("simpSessionAttributes") Map<String, Object> sessionAttributes) {
         String user = (String) sessionAttributes.get("user");
         chatDTO.setSender(user);
-        frdChatMessageService.changeLikeStatus(chatDTO);
+        FrdChatMessageDTO frdChatMessageDTO = frdChatMessageService.changeLikeStatus(chatDTO);
         //return chatDTO;
-        template.convertAndSend("/frdSub/" + chatDTO.getRoomId(), chatDTO);
+        template.convertAndSend("/frdSub/" + chatDTO.getRoomId(), frdChatMessageDTO);
     }
 
     @GetMapping("/chatroom/{roomId}")

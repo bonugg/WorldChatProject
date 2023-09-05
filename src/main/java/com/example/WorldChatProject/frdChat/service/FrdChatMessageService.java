@@ -101,18 +101,21 @@ public class FrdChatMessageService {
         }
     }
 
-    public void changeLikeStatus(FrdChatMessageDTO chatDTO) {
+    public FrdChatMessageDTO changeLikeStatus(FrdChatMessageDTO chatDTO) {
         long chatId = chatDTO.getId();
         boolean status;
         if (chatDTO.getLike().equals("on")) {
             status = true;
+            chatDTO.setLiked(true);
         } else {
             status = false;
+            chatDTO.setLiked(false);
         }
         log.info(String.valueOf(status));
         FrdChatMessage frdChatMessage = frdChatMessageRepository.findById(chatId).get();
         frdChatMessage.setLiked(status);
         frdChatMessageRepository.save(frdChatMessage);
+        return chatDTO;
     }
 }
 
