@@ -130,4 +130,26 @@ public class CateChatController {
 
         return result;
     }
+
+    //좋아요
+    @MessageMapping("/categoryChat/{cateId}/like")
+    @SendTo("/cateSub/{cateId}")
+    public CateChatDTO changeLike(@Payload CateChatDTO chatDTO, @Header("simpSessionAttributes") Map<String, Object> sessionAttributes) {
+        String user = (String) sessionAttributes.get("user");
+        chatDTO.setSender(user);
+
+        //좋아요 갯수 반영
+        if(chatDTO.isLiked() == true) {
+            chatDTO.setLikeCount(chatDTO.getLikeCount() + 1);
+        }else {
+            chatDTO.setLikeCount(chatDTO.getLikeCount() - 1);
+        }
+
+        long chatId = chatDTO.getCateChatId();
+        String sender = chatDTO.getSender();
+        long likeCount = chatDTO.getLikeCount();
+        log.info("{} like status changed by {}, count: {}", chatId, sender, likeCount);
+        return chatDTO;
+
+    }
 }

@@ -2,6 +2,7 @@ package com.example.WorldChatProject.webChat.dto;
 
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.web.socket.WebSocketSession;
 
 import java.util.Map;
 
@@ -28,7 +29,6 @@ public class ChatRoomDto {
     }
     private ChatType chatType; //  채팅 타입 여부
 
-    // ChatRoomDto 클래스는 하나로 가되 서비스를 나누었음
     private Map<String, ?> userList;
 
 }

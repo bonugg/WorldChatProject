@@ -34,5 +34,5 @@ public class FrdChatRoomHistory {
                 .sessionId(this.sessionId)
                 .build();
     }
-
 }
+

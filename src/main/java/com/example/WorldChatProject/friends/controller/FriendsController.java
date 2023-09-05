@@ -188,17 +188,32 @@ public class FriendsController {
 
     @GetMapping("/friends-list")
     public ResponseEntity<?> getFriendsList(Authentication authentication) {
-        ResponseDTO<FriendsDTO> response = new ResponseDTO<>();
+        ResponseDTO<Map<String, Object>> response = new ResponseDTO<>();
+        Map<String, Object> returnMap = new HashMap<>();
         try {
             PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
             User user = principal.getUser().DTOToEntity();
             List<Friends> friendsList = friendsService.findByUserAndStatement(user, APPROVED);
-
             List<FriendsDTO> friendsDTOList = new ArrayList<>();
+            List<User> friendList = new ArrayList<>();
             for(Friends f : friendsList) {
                 friendsDTOList.add(f.EntityToDTO());
+                User friend = f.getFriends();
+                friendList.add(friend);
             }
-            response.setItems(friendsDTOList);
+
+//            List<FrdChatRoom> frdChatRoomList  = new ArrayList<>();
+            List<Long> roomIdList = new ArrayList<>();
+            for(User friend : friendList) {
+                FrdChatRoom frdChatRoom = frdChatRoomService.findRoomByFriends1OrFriends2(user, friend);
+                if(frdChatRoom != null) {
+                    roomIdList.add(frdChatRoom.getId());
+                }
+                System.out.println("되려나 이게?" + roomIdList);
+            }
+            returnMap.put("roomId", roomIdList);
+            returnMap.put("friendsList", friendsList);
+            response.setItem(returnMap);
             response.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok().body(response);
         } catch (Exception e) {
@@ -263,6 +278,7 @@ public class FriendsController {
         System.out.println("유저아이디 넘어오는지 확인 : " + user.getUserId());
         try {
             PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+
             User frds1 = principal.getUser().DTOToEntity();
             User frds2 = userService.findById(user.getUserId());
             Friends friends = friendsService.findByUserAndFriends(frds1, frds2);

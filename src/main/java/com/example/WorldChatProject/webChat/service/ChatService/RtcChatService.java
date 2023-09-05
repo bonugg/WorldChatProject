@@ -7,11 +7,14 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import com.example.WorldChatProject.webChat.dto.ChatRoomDto;
 import com.example.WorldChatProject.webChat.dto.ChatRoomMap;
+import com.example.WorldChatProject.webChat.dto.RequestDto;
 import com.example.WorldChatProject.webChat.dto.UserSessionManager;
 import com.example.WorldChatProject.webChat.dto.WebSocketMessage;
 
@@ -25,7 +28,10 @@ public class RtcChatService {
 	UserSessionManager manager = UserSessionManager.getInstance();
 
     public void exitRtcRoom(String roomName) {
+        Map<String, ChatRoomDto> chatRooms = ChatRoomMap.getInstance().getChatRooms();
 
+        // 해당 목록에서 roomName을 키로 사용하여 채팅방 제거
+        chatRooms.remove(roomName);
     }
 
 	public String sendRequest(String sender, String receiver, String type) {
@@ -41,10 +47,14 @@ public class RtcChatService {
 		String requestMessage = "";
 		if ("video".equals(type)) {
 			requestMessage = sender + "님이 영상통화 요청을 보냈습니다.";
+			log.info(requestMessage);
 		} else if ("voice".equals(type)) {
 			requestMessage = sender + "님이 음성통화 요청을 보냈습니다.";
+			log.info(requestMessage);
+		} else{
+			requestMessage = type;
 		}
-
+		log.info("messageText = "+requestMessage);
 		TextMessage message = new TextMessage(requestMessage);
 		try {
 			session.sendMessage(message);
@@ -53,6 +63,24 @@ public class RtcChatService {
 		}
 		return message.getPayload();
 	}
+	
+	public String declineRTC(String sender, String receiver){
+		String declineMessage = sender + "님이 통화 요청을 거절하였습니다.";
+	    WebSocketSession session = manager.getUserSession(receiver);
+	    log.info("거절받는유저 " + receiver);
+	    log.info("거절받는유저 세션 " + session);
+	    log.info("거절 메세지 보내는 유저" + sender);
+	    log.info(declineMessage);
+	    TextMessage message = new TextMessage(declineMessage);
+	    try {
+	        session.sendMessage(message);
+	    } catch (IOException e) {
+	        log.error("Error sending decline message to user: {}", receiver, e);
+	    }
+	    return message.getPayload();
+	}
+
+
 
 	// 로그아웃시 웹소켓 해제 및 map에서 삭제
 	public void RTCLogout(String userName) throws IOException {

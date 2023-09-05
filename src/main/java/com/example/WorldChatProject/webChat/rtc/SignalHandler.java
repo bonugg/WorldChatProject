@@ -4,6 +4,7 @@ package com.example.WorldChatProject.webChat.rtc;//package com.example.WorldChat
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +52,8 @@ public class SignalHandler extends TextWebSocketHandler {
     private static final String MSG_TYPE_JOIN = "join";
     // leave room data message
     private static final String MSG_TYPE_LEAVE = "leave";
+    // peerDisconnected data message
+    private static final String MSG_TYPE_DECLINE = "decline";
 
     // 연결 끊어졌을 때 이벤트처리
     @Override
@@ -90,7 +93,6 @@ public class SignalHandler extends TextWebSocketHandler {
             String userUUID = message.getFrom(); // 유저 uuid
             String roomId = message.getData(); // roomId
             String chatType = message.getChatType();
-            log.info("받은 메세지의 타입: " + message.getChatType());
 //            logger.info("Message {}", message.toString());
 
             ChatRoomDto room;
@@ -176,7 +178,10 @@ public class SignalHandler extends TextWebSocketHandler {
 
                     // roomID 기준 채팅방 찾아오기
                     room = rooms.get(message.getData());
+                    log.info("message.getData 로그 출력 : " + room);
                     log.info("나가는 방: " + room.getRoomId());
+                
+                    
                     // room clients list 에서 해당 유저 삭제
                     // 1. room 에서 client List 를 받아와서 keySet 을 이용해서 key 값만 가져온 후 stream 을 사용해서 반복문 실행
                     Optional<String> client = rtcChatService.getClients(room).keySet().stream()
@@ -184,15 +189,43 @@ public class SignalHandler extends TextWebSocketHandler {
                             .filter(clientListKeys -> StringUtils.equals(clientListKeys, userUUID))
                             // 3. 하여튼 동일한 것만 가져온다
                             .findAny();
+                    
+                 // 나가는 사용자 외의 세션을 찾습니다.
+                    WebSocketSession otherSession = room.getUserList().entrySet().stream()
+                        .filter(entry -> !entry.getKey().equals(userUUID))
+                        .map(Map.Entry::getValue)
+                        .filter(WebSocketSession.class::isInstance)
+                        .map(WebSocketSession.class::cast)
+                        .findFirst()
+                        .orElse(null);
+
+                    // 상대방 세션에 메시지를 전송합니다.
+                    if (otherSession != null && otherSession.isOpen()) {
+                        TextMessage leaveMessage = new TextMessage("{\"type\": \"leave\", \"message\": \"상대방과 연결이 끊겼습니다\"}");
+                        otherSession.sendMessage(leaveMessage);
+                    }
 
                     // 만약 client 의 값이 존재한다면 - Optional 임으로 isPersent 사용 , null  아니라면 - removeClientByName 을 실행
-                    client.ifPresent(userID -> rtcChatService.removeClientByName(room, userID));
-
+                    client.ifPresent(userID -> rtcChatService.removeClientByName(room, userID));                
+                    	
                     // 채팅방에서 떠날 시 유저 카운트 -1
                     chatServiceMain.minusUserCnt(roomId);
 
+                    if(room.getUserList().isEmpty()) {
+                    	rtcChatService.exitRtcRoom(roomId);
+                    	log.info("삭제된 채팅방 : " + roomId);
+                        Set<String> keys = ChatRoomMap.getInstance().getChatRooms().keySet();
+                        log.info("삭제 후 RTC채팅방 목록: " + keys.toString());
+                    }
+                    
+                    
                     logger.debug("삭제 완료 [{}] ",client);
                     break;
+                    
+
+
+
+                   
 
                 // something should be wrong with the received message, since it's type is unrecognizable
                 default:
