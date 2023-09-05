@@ -1,20 +1,32 @@
 package com.example.WorldChatProject.randomChat.service;
 
-import com.example.WorldChatProject.randomChat.dto.RandomRoomDTO;
+
 import com.example.WorldChatProject.randomChat.entity.RandomRoom;
 import com.example.WorldChatProject.user.entity.User;
 
+import java.util.List;
+import java.util.Optional;
+
+
 public interface RandomRoomService {
-    RandomRoom match(String username);
 
-    boolean delete(long roomId);
+    RandomRoom matchStart(String username);
 
-    RandomRoom create(User user);
+    boolean deleteRoom(long roomId);
 
-    RandomRoom enter(User user);
+    RandomRoom createRoom(User user);
 
-    RandomRoom find(long roomId);
+    RandomRoom matchAwithB(User user1, User user2);
 
+    RandomRoom findRoomById(long roomId);
+
+    List<RandomRoom> findAllRoomByUserId(long userId);
+
+    RandomRoom removeUserFromRoom(long userId, long roomId);
+
+    Optional<User> findUserFromRoom(RandomRoom room);
+
+    boolean canMatch(User user1, User user2);
 
 
 }

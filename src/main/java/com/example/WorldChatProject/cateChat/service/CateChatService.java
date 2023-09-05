@@ -23,27 +23,26 @@ public class CateChatService {
 
     //메시지를 디비에 저장
     public CateChatDTO saveMessage(CateChatDTO cateChatDTO) {
-        CateChat cateChat = new CateChat();
 
-        cateChat.setCateChatId(cateChatDTO.getCateChatId());
-        cateChat.setCateChatContent(cateChatDTO.getCateChatContent());
-        cateChat.setCateChatRegdate(cateChatDTO.getCateChatRegdate());
-        cateChat.setType(cateChatDTO.getType());
-        cateChat.setSender(cateChatDTO.getSender());
-        cateChat.setCateRoom(cateRoomService.getChatRoom((cateChatDTO.getCateId())));
+        if(cateChatDTO.getCateChatContent().equals("typing...") || cateChatDTO.getCateChatContent().equals("removeTyping")){
+            return cateChatDTO;
+        }else {
+            CateChat cateChat = new CateChat();
 
-        CateChat savedCateChat = cateChatRepository.save(cateChat);
-
-        return savedCateChat.toCateChatDTO();
+            cateChat.setCateChatId(cateChatDTO.getCateChatId());
+            cateChat.setCateChatContent(cateChatDTO.getCateChatContent());
+            cateChat.setCateChatRegdate(cateChatDTO.getCateChatRegdate());
+            cateChat.setType(cateChatDTO.getType());
+            cateChat.setSender(cateChatDTO.getSender());
+            cateChat.setCateRoom(cateRoomService.getChatRoom((cateChatDTO.getCateId())));
+            CateChat savedCateChat = cateChatRepository.save(cateChat);
+            return savedCateChat.toCateChatDTO();
+        }
     }
 
 
     public void deleteCateChatByCateId(String cateId) {
         List<CateChat> cateChatList = cateChatRepository.findByCateRoomCateId(Long.valueOf(cateId));
         cateChatRepository.deleteAll(cateChatList);
-    }
-
-    public List<CateChat> searchByContent(Long cateId, String keyword) {
-        return cateChatRepository.searchByContent(cateId, keyword);
     }
 }

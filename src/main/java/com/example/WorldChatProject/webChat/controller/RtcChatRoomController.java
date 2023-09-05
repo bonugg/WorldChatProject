@@ -1,29 +1,37 @@
-//package com.example.WorldChatProject.webChat.controller;
-//
-//import com.example.WorldChatProject.user.security.auth.PrincipalDetails;
-//import com.example.WorldChatProject.webChat.dto.ChatRoomDto;
-//import com.example.WorldChatProject.webChat.dto.ChatRoomMap;
-//import com.example.WorldChatProject.webChat.service.ChatService.ChatServiceMain;
-////import com.example.WorldChatProject.webChat.service.social.PrincipalDetails;
-//import lombok.RequiredArgsConstructor;
-//import lombok.extern.slf4j.Slf4j;
-//import org.springframework.security.core.annotation.AuthenticationPrincipal;
-//import org.springframework.stereotype.Controller;
-//import org.springframework.ui.Model;
-//import org.springframework.web.bind.annotation.*;
-//import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-//
-//import java.util.UUID;
-//
-//@Controller
-//@RequiredArgsConstructor
-//@Slf4j
-//public class RtcChatRoomController {
-//
-//    private final ChatServiceMain chatServiceMain;
-//
-//    //기존에 있던 코드 -> 사용은 안 하지만 혹시 몰라 남겨둠!
-//    // 채팅방 생성 후 다시 / 로 return
+
+package com.example.WorldChatProject.webChat.controller;
+
+import java.util.UUID;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.example.WorldChatProject.user.security.auth.PrincipalDetails;
+import com.example.WorldChatProject.webChat.dto.ChatRoomDto;
+import com.example.WorldChatProject.webChat.dto.ChatRoomMap;
+import com.example.WorldChatProject.webChat.service.ChatService.ChatServiceMain;
+
+//import com.example.WorldChatProject.webChat.service.social.PrincipalDetails;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@RequiredArgsConstructor
+@Slf4j
+public class RtcChatRoomController {
+
+    private final ChatServiceMain chatServiceMain;
+
+    //기존에 있던 코드 -> 사용은 안 하지만 혹시 몰라 남겨둠!
+    // 채팅방 생성 후 다시 / 로 return
 //    @PostMapping("/chat/createroom")
 //    public String createRoom(@RequestParam("roomName") String name,
 //                             @RequestParam("roomPwd") String roomPwd,
@@ -45,10 +53,10 @@
 //        rttr.addFlashAttribute("roomName", room);
 //        return "redirect:/";
 //    }
-//
-////     채팅방 입장 화면
-////     파라미터로 넘어오는 roomId 를 확인후 해당 roomId 를 기준으로 채팅방을 찾아서 클라이언트를 chatroom 으로 보낸다.
-////     지금은 임시로 roomId가 고정으로 되어, 서버 실행 한 번에 2명 밖에 입장이 안됨! -> 퇴장 및 방 삭제 기능 추가 예정
+
+//     채팅방 입장 화면
+//     파라미터로 넘어오는 roomId 를 확인후 해당 roomId 를 기준으로 채팅방을 찾아서 클라이언트를 chatroom 으로 보낸다.
+//     지금은 임시로 roomId가 고정으로 되어, 서버 실행 한 번에 2명 밖에 입장이 안됨! -> 퇴장 및 방 삭제 기능 추가 예정
 //    @GetMapping("/chat/room")
 //    @ResponseBody
 //    public String roomDetail(Model model, @RequestParam String roomId, @AuthenticationPrincipal PrincipalDetails principalDetails, RedirectAttributes rttr){
@@ -84,8 +92,8 @@
 //            return "create";
 //        }
 //    }
-//
-//    // 채팅방 비밀번호 확인
+
+    // 채팅방 비밀번호 확인
 //    @PostMapping("/chat/confirmPwd/{roomId}")
 //    @ResponseBody
 //    public boolean confirmPwd(@PathVariable String roomId, @RequestParam String roomPwd){
@@ -94,22 +102,23 @@
 //        // 찾아서 입력받은 roomPwd 와 room pwd 와 비교해서 맞으면 true, 아니면  false
 //        return chatServiceMain.confirmPwd(roomId, roomPwd);
 //    }
-//
-//    // 채팅방 삭제 -> 이거 아직 연결 안함!
-//    @GetMapping("/chat/delRoom/{roomId}")
-//    public String delChatRoom(@PathVariable String roomId){
-//
+
+    // 채팅방 삭제
+//    @PostMapping("/chat/delRoom")
+//    public String delChatRoom(@RequestBody String roomId){
+//        log.info("삭제테스트: " + roomId);
 //        // roomId 기준으로 chatRoomMap 에서 삭제, 해당 채팅룸 안에 있는 사진 삭제
 //        chatServiceMain.delChatRoom(roomId);
-//
-//        return "redirect:/";
+//        log.info("삭제test");
+//        return "";
 //    }
-//
-//    // 유저 카운트
+
+    // 유저 카운트
 //    @GetMapping("/chat/chkUserCnt/{roomId}")
 //    @ResponseBody
 //    public boolean chUserCnt(@PathVariable String roomId){
 //
 //        return chatServiceMain.chkRoomUserCnt(roomId);
 //    }
-//}
+}
+

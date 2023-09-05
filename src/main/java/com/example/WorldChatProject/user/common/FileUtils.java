@@ -8,7 +8,8 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.example.WorldChatProject.configuration.NaverConfiguration;
+
+import com.example.WorldChatProject.configuration.NcloudConfiguration;
 import com.example.WorldChatProject.user.entity.User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,7 +27,7 @@ public class FileUtils {
 
 	private final AmazonS3 s3;
 
-	public FileUtils(NaverConfiguration naverConfiguration) {
+	public FileUtils(NcloudConfiguration naverConfiguration) {
 		s3 = AmazonS3ClientBuilder.standard()
 				.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(
 						naverConfiguration.getEndPoint(), naverConfiguration.getRegionName()
@@ -39,8 +40,7 @@ public class FileUtils {
 				.build();
 	}
 	//MultipartFile 객체를 받아서 DTO형태로 변경 후 리턴
-	public User parseFileInfo(MultipartFile file,
-									 String attachPath, String directoryPath) throws IOException {
+	public User parseFileInfo(MultipartFile file, String directoryPath) throws IOException {
 		String bucketName = "bitcamp-bukkit-132";
 
 		//리턴할 BoardDTO 객체 생성
@@ -60,13 +60,10 @@ public class FileUtils {
 		//실제 db에 저장될 파일명
 		String userProfileName = nowDateStr + "_" + uuid.toString()
 					+ "_" + profileFileOrigin;
-		
-		String userProfilePath = attachPath;
 
 		//리턴될 DTO 셋팅
 		user.setUserProfileName(userProfileName);
 		user.setUserProfileOrigin(profileFileOrigin);
-		user.setUserProfilePath(userProfilePath);
 
 		//try구문 안에서만 사용할 객체나 변수를 선언할 수 있음
 		//주로 사용후에 close 해줘야되는 객체들을 선언

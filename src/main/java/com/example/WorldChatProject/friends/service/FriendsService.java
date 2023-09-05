@@ -59,8 +59,20 @@ public class FriendsService {
         return friendsRepository.findByUserAndStatement(user, friendsStatement);
     }
 
+    public List<Friends> findByUserAndStatementAndNationally(User user, FriendsStatement friendsStatement, String nationally) {
+        return friendsRepository.findByUserAndStatementAndNationally(user, friendsStatement, nationally);
+    }
+
+    public List<String> findByNationally(User user, FriendsStatement friendsStatement) {
+        return friendsRepository.findByNationally(user, friendsStatement);
+    }
+
     public void delete(Friends friends1) {
         friendsRepository.delete(friends1);
+    }
+
+    public User getFriend(User user) {
+        return friendsRepository.findByUser(user);
     }
 
 

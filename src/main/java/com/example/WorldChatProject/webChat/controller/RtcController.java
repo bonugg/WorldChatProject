@@ -1,26 +1,62 @@
-//package com.example.WorldChatProject.webChat.controller;
-//
-//import com.example.WorldChatProject.webChat.dto.WebSocketMessage;
-//import com.example.WorldChatProject.webChat.service.ChatService.RtcChatService;
-//import lombok.RequiredArgsConstructor;
-//import lombok.extern.slf4j.Slf4j;
-//import org.springframework.web.bind.annotation.ModelAttribute;
-//import org.springframework.web.bind.annotation.PostMapping;
-//import org.springframework.web.bind.annotation.RestController;
-//
-//@RestController
-//@RequiredArgsConstructor
-//@Slf4j
-//public class RtcController {
-//
-//    private final RtcChatService rtcChatService;
-//
-//    @PostMapping("/webrtc/usercount")
-//    public String webRTC(@ModelAttribute WebSocketMessage webSocketMessage) {
-//        log.info("MESSAGE : {}", webSocketMessage.toString());
-//        return Boolean.toString(rtcChatService.findUserCount(webSocketMessage));
+
+package com.example.WorldChatProject.webChat.controller;
+
+import java.io.IOException;
+import java.util.Map;
+
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.WorldChatProject.webChat.dto.ChatRoomDto;
+import com.example.WorldChatProject.webChat.dto.ChatRoomMap;
+import com.example.WorldChatProject.webChat.dto.RequestDto;
+import com.example.WorldChatProject.webChat.dto.WebSocketMessage;
+import com.example.WorldChatProject.webChat.service.ChatService.RtcChatService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@RestController
+@RequiredArgsConstructor
+@Slf4j
+public class RtcController {
+
+    private final RtcChatService rtcChatService;
+    
+    @PostMapping("/webrtc/usercount")
+    public String webRTC(@ModelAttribute WebSocketMessage webSocketMessage) {
+        log.info("MESSAGE : {}", webSocketMessage.toString());
+        return Boolean.toString(rtcChatService.findUserCount(webSocketMessage));
+    }
+    
+//    @PostMapping("/webrtc/logout")
+//    public void webRTCLogout(@RequestBody String userName)throws IOException {
+//        rtcChatService.RTCLogout(userName);
 //    }
-//
-//
-//}
-//
+    
+    @PostMapping("/webrtc/request")
+    public void requestRTC(@RequestBody  RequestDto request){
+        System.out.println("보낸이:" + request.getSender() + "받는이:" + request.getReceiver());
+        System.out.println("요청 메시지!"+rtcChatService.sendRequest(request.getSender(), request.getReceiver(),request.getType()));
+    }
+    
+    @PostMapping("/webrtc/decline")
+    public void declineRTC(@RequestBody  RequestDto request) {
+    	log.info("보낸이:" + request.getReceiver() + "받는이 : " + request.getSender());
+    	rtcChatService.declineRTC(request.getSender(),request.getReceiver());
+    	log.info("decline 여기 들어오냐??????");
+        String roomId = request.getRoomId();
+        rtcChatService.exitRtcRoom(roomId);
+        log.info("거절로 인해 삭제된 채팅방 : " + roomId);
+    }
+    
+//    @PostMapping("/webrtc/exitrooms")
+//    public void exitRooms(@RequestBody String roomName){
+//        rtcChatService.exitRtcRoom(roomName);
+//    }
+
+
+}
+

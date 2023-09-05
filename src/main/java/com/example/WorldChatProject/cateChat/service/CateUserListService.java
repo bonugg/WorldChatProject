@@ -27,6 +27,10 @@ public class CateUserListService {
     }
 
     @Transactional
+    public Long UserCnt(Long cateId) {
+        return cateUserListRepostiory.countByCateId(cateId);
+    }
+    @Transactional
     public void delete(Long cateId, String userName) {
         CateUserList cateUserList = cateUserListRepostiory.findByCateIdAndUserName(cateId, userName);
         if (cateUserList != null) {
@@ -38,7 +42,7 @@ public class CateUserListService {
     public List<String> findAllUserNamesByCateId(Long cateId) {
         List<String> userNameList = new ArrayList<>();
         for (CateUserList user : cateUserListRepostiory.findByCateId(cateId)){
-            userNameList.add(user.getUserName());
+            userNameList.add(String.valueOf(user.getUserName()));
         }
         return userNameList;
     }
