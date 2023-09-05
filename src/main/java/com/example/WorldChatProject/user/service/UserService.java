@@ -188,4 +188,7 @@ public class UserService {
             return ResponseEntity.status(HttpStatus.OK).body("Successfully unsubscribed");
         }
     }
+    public Optional<User> findUserName(String name){
+        return userRepository.findByUserName(name);
+    }
 }

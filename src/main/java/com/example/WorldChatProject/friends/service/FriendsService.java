@@ -76,6 +76,10 @@ public class FriendsService {
     }
 
 
+    public List<Friends> getFriendsByUserId(Long userId) {
+        return friendsRepository.findByUser_UserId(userId);
+    }
+
 //    public void addFriends(Friends friends1) {
 //        friendsRepository.save(friends1);
 //    }
