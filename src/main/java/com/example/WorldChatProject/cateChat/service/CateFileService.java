@@ -44,13 +44,14 @@ public class CateFileService implements FileService {
         try{
             String filename = file.getOriginalFilename(); // 파일원본 이름
             String key = "cate" + "/" + roomId + "/" + transaction + "_" + filename; // S3 파일 경로
+            log.info(key + "---");
             // 매개변수로 넘어온 multipartFile 을 File 객체로 변환 시켜서 저장하기 위한 메서드
             File convertedFile = convertMultipartFileToFile(file, transaction + filename);
 
             // 파일의 메타데이터와 ACL을 설정
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType(file.getContentType());
-
+            log.info("-1-");
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, key, convertedFile)
                     .withCannedAcl(CannedAccessControlList.PublicRead) // 공개 읽기 권한 설정
                     .withMetadata(metadata);
@@ -60,11 +61,11 @@ public class CateFileService implements FileService {
                     .withS3Client(s3)
                     .build();
             // bucket 에 key 와 convertedFile 을 이용해서 파일 업로드
-
+            log.info("-2-");
             Upload upload = transferManager.upload(putObjectRequest);
 
             upload.waitForUploadResult();
-
+            log.info("-3-");
             // 변환된 File 객체 삭제
             removeFile(convertedFile);
 
@@ -77,6 +78,7 @@ public class CateFileService implements FileService {
                     .s3DataUrl(endPoint + "/" + bucket + "/" + key)
                     .build();
             // uploadDTO 객체 리턴
+            log.info("123123 "+uploadReq.toString());
             return uploadReq;
 
         } catch (Exception e) {

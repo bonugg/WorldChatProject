@@ -42,7 +42,7 @@ public class CateUserListService {
     public List<String> findAllUserNamesByCateId(Long cateId) {
         List<String> userNameList = new ArrayList<>();
         for (CateUserList user : cateUserListRepostiory.findByCateId(cateId)){
-            userNameList.add(user.getUserName());
+            userNameList.add(String.valueOf(user.getUserName()));
         }
         return userNameList;
     }

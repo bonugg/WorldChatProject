@@ -22,6 +22,7 @@ public class CateFile {
 
     @Column
     private String s3DataUrl;
+
     @Column
     private String fileDir;
 
@@ -29,4 +30,6 @@ public class CateFile {
     private CateRoom cateRoom;
 
 
+
 }
+

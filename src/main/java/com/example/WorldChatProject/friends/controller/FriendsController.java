@@ -222,6 +222,7 @@ public class FriendsController {
         }
     }
 
+
     @GetMapping("/friends-list/{nationally}")
     public ResponseEntity<?> getFriendsList(@PathVariable String nationally, Authentication authentication) {
         ResponseDTO<FriendsDTO> response = new ResponseDTO<>();

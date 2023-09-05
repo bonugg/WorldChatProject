@@ -20,6 +20,7 @@ public class CateFileDTO {
     private String s3DataUrl;
     private String fileDir;
 
+
     public CateFile DTOTOEntity() {
         CateFile cateFile = CateFile.builder()
                 .originalFileName(this.originalFileName)
@@ -28,5 +29,6 @@ public class CateFileDTO {
                 .build();
         return cateFile;
     }
+
 
 }

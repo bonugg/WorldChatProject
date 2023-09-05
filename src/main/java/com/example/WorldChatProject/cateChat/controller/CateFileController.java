@@ -19,22 +19,26 @@ public class CateFileController {
     private final CateFileService cateFileService;
 
     @PostMapping("/cateChat/upload")
-    public CateFileDTO uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("roomId") String cateId){
+    public CateFileDTO uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("roomId") String cateId) {
         log.info(file.getOriginalFilename());
         log.info(file.getContentType());
         log.info(file.getName());
         log.info(cateId);
+
         CateFileDTO fileReq = cateFileService.uploadFile(file, UUID.randomUUID().toString(), cateId);
 
         return fileReq;
     }
 
-    @GetMapping("/catechat/download/{fileName}")
-    public ResponseEntity<byte[]> download(@PathVariable String fileName, @RequestParam("fileDir")String fileDir){
+
+    @GetMapping("/cateChat/download/{fileName}")
+    public ResponseEntity<byte[]> download(@PathVariable String fileName, @RequestParam("fileDir") String fileDir) {
         try {
             return cateFileService.getObject(fileDir, fileName);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
 }

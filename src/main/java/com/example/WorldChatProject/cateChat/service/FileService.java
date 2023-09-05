@@ -31,3 +31,4 @@ public interface FileService {
 
     ResponseEntity<byte[]> getObject(String fileDir, String fileName) throws IOException;
 }
+
