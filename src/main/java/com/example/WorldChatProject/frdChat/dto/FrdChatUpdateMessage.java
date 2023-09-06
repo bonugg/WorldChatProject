@@ -26,5 +26,9 @@ public class FrdChatUpdateMessage {
     }
 
 
+    public FrdChatUpdateMessage(String offline, Long roomId) {
+        this.msg = offline;
+        this.roomId = roomId;
+    }
 }
 

@@ -38,7 +38,7 @@ public class FrdChatRoomController {
     @PostMapping("/create")
     public ResponseEntity<?> createRoom(@RequestBody UserDTO userDTO, Authentication authentication) {
         ResponseDTO<Map<String, Object>> response = new ResponseDTO();
-
+        System.out.println("채팅방 생성입장채팅방 생성입장채팅방 생성입장채팅방 생성입장채팅방 생성입장채팅방 생성입장");
         try {
             PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
             User user = principal.getUser().DTOToEntity();

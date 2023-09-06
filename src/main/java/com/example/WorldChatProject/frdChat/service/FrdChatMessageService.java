@@ -115,5 +115,9 @@ public class FrdChatMessageService {
         //이걸 이제 이벤트리스너에 보낸담에 리스너에서 프런트로 보내면 될듯?
         applicationEventPublisher.publishEvent(new FrdChatUpdateMessage("updated", roomId, updatedMsgList));
     }
+
+    public void delete(List<FrdChatMessage> frdChatMessageList) {
+        frdChatMessageRepository.deleteAll(frdChatMessageList);
+    }
 }
 

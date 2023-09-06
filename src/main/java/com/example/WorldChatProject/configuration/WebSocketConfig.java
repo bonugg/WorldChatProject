@@ -5,7 +5,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 
 import com.example.WorldChatProject.frdChat.service.FrdChatMessageService;
 import com.example.WorldChatProject.frdChat.service.FrdChatRoomHistoryService;
-import com.example.WorldChatProject.frdChat.service.FrdChatRoomService;
 
 import com.example.WorldChatProject.user.dto.UserDTO;
 import com.example.WorldChatProject.user.repository.UserRepository;
@@ -13,13 +12,9 @@ import com.example.WorldChatProject.user.security.jwt.JwtProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.context.ApplicationEventPublisher;
-
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.server.ServerHttpRequest;
-import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.config.ChannelRegistration;
@@ -29,14 +24,14 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 
 
-import org.springframework.web.socket.WebSocketHandler;
+import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
-import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
-import org.springframework.web.socket.server.HandshakeInterceptor;
 
+import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 @Configuration
@@ -68,7 +63,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.setApplicationDestinationPrefixes("/randomPub", "/catePub","/frdPub"); //app
     }
 
-
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(new StompHeaderChannelInterceptor());
@@ -80,9 +74,14 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         @Override
         public Message<?> preSend(Message<?> message, MessageChannel channel) {
 
+            System.out.println("인터셉터 메시지" + message);
+
             StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
 
             StompCommand command = accessor.getCommand();
+
+//            WebSocketSession session = (WebSocketSession) accessor.getSessionAttributes();
+//            System.out.println("너가 세션이야?" + session);
 
             if (command != null && command.equals(StompCommand.CONNECT)) {
                 String token = accessor.getFirstNativeHeader("Authorization");

@@ -114,7 +114,6 @@ public class LoginWebsocketHandler extends TextWebSocketHandler {
                 targetsession.sendMessage(new TextMessage(objectMapper.writeValueAsString(alertMessage)));
             }
         }
-
     }
 
 //로그아웃 준비중..

@@ -1,6 +1,8 @@
 package com.example.WorldChatProject.friends.controller;
 
+import com.example.WorldChatProject.frdChat.entity.FrdChatMessage;
 import com.example.WorldChatProject.frdChat.entity.FrdChatRoom;
+import com.example.WorldChatProject.frdChat.service.FrdChatMessageService;
 import com.example.WorldChatProject.frdChat.service.FrdChatRoomService;
 import com.example.WorldChatProject.friends.dto.FriendsDTO;
 import com.example.WorldChatProject.frdChat.dto.ResponseDTO;
@@ -33,6 +35,7 @@ public class FriendsController {
     private final UserService userService;
     private final BlackListService blackListService;
     private final FrdChatRoomService frdChatRoomService;
+    private final FrdChatMessageService frdChatMessageService;
 
     @PostMapping("/request")
     public ResponseEntity<?> requestFriends(@RequestBody UserDTO userDTO,
@@ -275,14 +278,15 @@ public class FriendsController {
         Map<String, String> returnMap = new HashMap<>();
         System.out.println("유저아이디 넘어오는지 확인 : " + user.getUserId());
         try {
+            //친구 리스트에서 삭제
             PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-
             User frds1 = principal.getUser().DTOToEntity();
             User frds2 = userService.findById(user.getUserId());
             Friends friends = friendsService.findByUserAndFriends(frds1, frds2);
             Friends friends2 = friendsService.findByUserAndFriends(frds2, frds1);
             friendsService.delete(friends);
             friendsService.delete(friends2);
+            //블랙리스트에 추가
             BlackList checkBlackList = blackListService.checkBlackList(frds1, frds2);
             if(checkBlackList == null) {
                 BlackList blackList = new BlackList();
@@ -292,8 +296,13 @@ public class FriendsController {
             } else {
                 returnMap.put("msg", "already bl");
             }
+            //채팅방, 채팅내역 삭제
             FrdChatRoom checkRoom = frdChatRoomService.findRoomByFriends1OrFriends2(frds1, frds2);
             if(checkRoom != null) {
+                //채팅내역 삭제
+                List<FrdChatMessage> frdChatMessageList = frdChatMessageService.getChatMessages(checkRoom.getId());
+                frdChatMessageService.delete(frdChatMessageList);
+                //채팅방 삭제
                 frdChatRoomService.deleteRoom(checkRoom);
             }
             returnMap.put("msg", "delete ok");
