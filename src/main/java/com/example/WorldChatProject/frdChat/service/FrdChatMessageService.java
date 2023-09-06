@@ -134,5 +134,9 @@ public class FrdChatMessageService {
         frdChatMessageRepository.save(frdChatMessage);
         return chatDTO;
     }
+
+    public void delete(List<FrdChatMessage> frdChatMessageList) {
+        frdChatMessageRepository.deleteAll(frdChatMessageList);
+    }
 }
 

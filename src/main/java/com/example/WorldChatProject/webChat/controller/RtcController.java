@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-public class RtcController {
+public class  RtcController {
 
     private final RtcChatService rtcChatService;
     private final UserService userService;
