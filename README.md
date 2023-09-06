@@ -70,9 +70,8 @@
 <div>
     <h3>API</h3>
     <img src="https://img.shields.io/badge/Papago%20-%20Green">
-    <img src="https://img.shields.io/badge/naver%20login-green">
+    <img src="https://img.shields.io/badge/CLOVA%20-%20lightgreen">
     <img src="https://img.shields.io/badge/google%20login-blue">
-    <img src="https://img.shields.io/badge/Import%20API%20-%20orange">
 </div>
 <br/>
 <div>
