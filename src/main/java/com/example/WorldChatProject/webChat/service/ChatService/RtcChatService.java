@@ -7,6 +7,8 @@ import com.example.WorldChatProject.friends.entity.Friends;
 import com.example.WorldChatProject.friends.repository.FriendsRepository;
 import com.example.WorldChatProject.friends.service.FriendsService;
 import com.example.WorldChatProject.user.service.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,6 +62,36 @@ public class RtcChatService {
 		}
 		return message.getPayload();
 	}
+
+	public String sendRequest2(String sender, String receiver, RequestDto requestDto) {
+		log.info("친추 요청 보내는 곳");
+		WebSocketSession session = manager.getUserSession(receiver);
+		log.info("1");
+		ObjectMapper objectMapper = new ObjectMapper();
+		log.info("2");
+		String requestMessage = "";
+		log.info("3");
+		try {
+			log.info("4");
+			// RequestDto 객체를 JSON 문자열로 변환
+			String requestDtoJson = objectMapper.writeValueAsString(requestDto);
+			log.info("5");
+
+			// 이제 requestDtoJson는 RequestDto 객체의 JSON 표현입니다.
+			requestMessage = "친구"+requestDtoJson;
+			log.info("6");
+			TextMessage message = new TextMessage(requestMessage);
+			log.info("7");
+			// 메시지 보내기
+			session.sendMessage(message);
+			log.info("8");
+		} catch (IOException e) {
+			log.error("Error sending message to user: {}", sender, e);
+		}
+
+		return requestMessage;
+	}
+
 	public String sendRequest(String sender, String receiver, String type) {
 		WebSocketSession session = manager.getUserSession(receiver);
 		System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + session);
@@ -78,7 +110,7 @@ public class RtcChatService {
 			requestMessage = sender + "님이 음성통화 요청을 보냈습니다.";
 			log.info(requestMessage);
 		} else{
-			requestMessage = type;
+			requestMessage = "친구" + type;
 		}
 		log.info("messageText = "+requestMessage);
 		TextMessage message = new TextMessage(requestMessage);

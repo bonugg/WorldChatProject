@@ -58,7 +58,7 @@ public class LoginWebsocketHandler extends TextWebSocketHandler {
         System.out.println("핸들러에서 해당 유저의 세션이 존재하는지? : " + session);
         if(session != null && session.isOpen()) {
             try {
-                session.sendMessage(new TextMessage(message));
+                session.sendMessage(new TextMessage("채팅"+message));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -110,8 +110,12 @@ public class LoginWebsocketHandler extends TextWebSocketHandler {
                 alertMessage.put("type", "friendRequest");
                 alertMessage.put("from", requesterUserId);
                 alertMessage.put("friendsId", friendsId);
-
-                targetsession.sendMessage(new TextMessage(objectMapper.writeValueAsString(alertMessage)));
+                if ("friendRequest".equals(messageData.get("type"))) {
+                    targetsession.sendMessage(new TextMessage("친구"+objectMapper.writeValueAsString(alertMessage)));
+                    log.info("친구보냄"+objectMapper.writeValueAsString(alertMessage));
+                }else {
+                    targetsession.sendMessage(new TextMessage("채팅" + objectMapper.writeValueAsString(alertMessage)));
+                }
             }
         }
 

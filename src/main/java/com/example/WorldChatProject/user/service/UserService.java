@@ -191,4 +191,7 @@ public class UserService {
     public Optional<User> findUserName(String name){
         return userRepository.findByUserName(name);
     }
+    public Optional<User> findUserNickName(String name){
+        return userRepository.findByUserNickName(name);
+    }
 }
