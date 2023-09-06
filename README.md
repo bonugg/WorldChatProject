@@ -66,8 +66,8 @@
     <img src="https://img.shields.io/badge/Mysql%20Workbench%20-%20gray">
     <img src="https://img.shields.io/badge/VS%20code-aqua">
     <img src="https://img.shields.io/badge/intelliJ-black">
-    <img src="https://user-images.githubusercontent.com/42884032/145687379-fcccd6bf-33e0-4f5e-8cd3-6ddd220675cc.png">
-    <img src="https://cdn.icon-icons.com/icons2/2699/PNG/512/jenkins_logo_icon_167854.png">
+    <img src="https://img.shields.io/badge/docker%20-%20skyblue">
+    <img src="https://img.shields.io/badge/jenkins%20-%20red">
 </div>
 <div>
     <h3>API</h3>
