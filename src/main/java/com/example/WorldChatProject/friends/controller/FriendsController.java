@@ -56,6 +56,8 @@ public class FriendsController {
             //받은 사람은 클릭된 유저. 정보는 버튼에 담겨있다?
             User user = userDTO.DTOToEntity();
             User receiver = userService.findById(user.getUserId());
+            log.info("요청받는 유저id"+receiver.getUserId());
+            log.info("요청받는 유저id"+requester.getUserId());
             Friends checkFriends = friendsService.findByUserAndFriends(requester, receiver);
             Friends checkFriends2 = friendsService.findByUserAndFriends(receiver, requester);
             Map<String, Object> returnMap = new HashMap<>();
@@ -256,6 +258,11 @@ public class FriendsController {
             PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
             User user = principal.getUser().DTOToEntity();
             List<String> nationallyList = friendsService.findByNationally(user, APPROVED);
+            if(nationallyList == null){
+                response.setItems(nationallyList);
+                response.setStatusCode(HttpStatus.OK.value());
+                return ResponseEntity.ok().body(response);
+            }
             log.info(nationallyList.get(0).toString());
 
             // 중복을 제거한 나라 목록 생성

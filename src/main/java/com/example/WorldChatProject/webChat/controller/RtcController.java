@@ -33,6 +33,18 @@ public class  RtcController {
     private final RtcChatService rtcChatService;
     private final UserService userService;
     private final FriendsService friendsService;
+    @PostMapping("/webrtc/request2")
+    public void addFriend(@RequestBody RequestDto request) {
+        log.info("말이 안되는데");
+        log.info("접속 비동기 요청1" + request.getType() +" / " + request.getFriendsId() + " / " + request.getRequesterId() + " / " + request.getReceiverId());
+//        String requester = userService.findById(Long.parseLong(request.getReceiver())).getUserName();
+        String sender = userService.findUserNickName(request.getRequesterId()).get().getUserName();
+        String receiver = userService.findById(request.getReceiverId()).getUserName();
+
+        System.out.println("보낸이:" + sender + "받는이:" + receiver);
+        System.out.println("요청 메시지!" + rtcChatService.sendRequest2(sender, receiver, request));
+
+    }
 
     @PostMapping("/webrtc/getFriendsList")
     public ResponseEntity<?> getFriendsList(@RequestBody String userName) throws NullPointerException{

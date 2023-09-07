@@ -64,6 +64,10 @@ public class FriendsService {
     }
 
     public List<String> findByNationally(User user, FriendsStatement friendsStatement) {
+        if(friendsRepository.findByNationally(user, friendsStatement).size() == 0){
+            System.out.println("없음");
+            return null;
+        }
         return friendsRepository.findByNationally(user, friendsStatement);
     }
 

@@ -114,10 +114,10 @@ public class UserApiController {
     }
 
     @DeleteMapping("/user")
-    public ResponseEntity<String> withdraw(Authentication authentication) {
+    public ResponseEntity<String> withdraw(HttpSession session, HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         //principal 안에는 유저의 정보가 담겨있음
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-        return userService.withdraw(principal);
+        return userService.withdraw(session, request, response, principal);
     }
 
 }

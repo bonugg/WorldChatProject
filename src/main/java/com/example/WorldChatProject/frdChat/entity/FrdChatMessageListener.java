@@ -32,7 +32,7 @@ public class FrdChatMessageListener {
 
             String jsonMsg = "";
             try {
-                jsonMsg = "채팅"+objectMapper.writeValueAsString(msgMap);
+                jsonMsg = objectMapper.writeValueAsString(msgMap);
             } catch (Exception e) {
                 e.printStackTrace();
             }
