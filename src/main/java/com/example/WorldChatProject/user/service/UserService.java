@@ -50,12 +50,13 @@ public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public void UserLogout(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
-        log.info("로그아웃 시작");
         session.invalidate();
+        log.info("로그아웃 시작");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         //principal 안에는 유저의 정보가 담겨있음
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+
 
         if (authentication != null) {
             //리프레쉬 토큰 초기화 후 로그아웃
@@ -176,7 +177,7 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseEntity<String> withdraw(PrincipalDetails principal) {
+    public ResponseEntity<String> withdraw(HttpSession session, HttpServletRequest request, HttpServletResponse response, PrincipalDetails principal) {
         String username = principal.getUsername();
 
         Optional<User> user = userRepository.findByUserName(username);
@@ -184,8 +185,19 @@ public class UserService {
         if (!user.isPresent()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to unsubscribe");
         } else {
+            session.invalidate();
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            RefreshToken refreshToken = refreshTokenRepository.findByKeyId(principal.getUsername()).get();
+            refreshTokenRepository.delete(refreshToken);
+            new SecurityContextLogoutHandler().logout(request, response, authentication);
             userRepository.delete(user.get());
             return ResponseEntity.status(HttpStatus.OK).body("Successfully unsubscribed");
         }
+    }
+    public Optional<User> findUserName(String name){
+        return userRepository.findByUserName(name);
+    }
+    public Optional<User> findUserNickName(String name){
+        return userRepository.findByUserNickName(name);
     }
 }

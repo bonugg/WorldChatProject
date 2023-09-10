@@ -41,7 +41,7 @@ import static org.springframework.http.RequestEntity.post;
 @RequiredArgsConstructor
 @RequestMapping("/language")
 @Slf4j
-public class TranslationController {
+public class    TranslationController {
 
     private final FrdChatRoomService frdChatRoomService;
     private final UserService userService;

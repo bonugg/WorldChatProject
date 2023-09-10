@@ -64,6 +64,10 @@ public class FriendsService {
     }
 
     public List<String> findByNationally(User user, FriendsStatement friendsStatement) {
+        if(friendsRepository.findByNationally(user, friendsStatement).size() == 0){
+            System.out.println("없음");
+            return null;
+        }
         return friendsRepository.findByNationally(user, friendsStatement);
     }
 
@@ -75,6 +79,10 @@ public class FriendsService {
         return friendsRepository.findByUser(user);
     }
 
+
+    public List<Friends> getFriendsByUserId(Long userId) {
+        return friendsRepository.findByUser_UserId(userId);
+    }
 
 //    public void addFriends(Friends friends1) {
 //        friendsRepository.save(friends1);

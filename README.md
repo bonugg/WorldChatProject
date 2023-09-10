@@ -12,7 +12,6 @@
   <tbody>
     <tr>
       <td align="center">프론트</td>
-      <td align="center">프론트</td>
       <td align="center">랜덤 채팅</td>
       <td align="center">친구 채팅</td>
       <td align="center">관심사 채팅</td>
@@ -21,7 +20,6 @@
     </tr>
     <tr>
       <td align="center"><img src="https://cdn.pixabay.com/photo/2017/11/19/13/28/snow-man-2962777_1280.png" width="92.7%;" alt=""/></td>
-      <td align="center"><img src="https://cdn.pixabay.com/photo/2017/02/01/11/32/characters-2029814_1280.png" width="100%;" alt=""/></td>
       <td align="center"><img src="https://cdn.pixabay.com/photo/2016/10/27/09/24/fox-1773722_1280.png" width="100%;" alt=""/></td>
       <td align="center"><img src="https://cdn.pixabay.com/photo/2020/12/10/05/11/spider-man-5819366_1280.png" width="100%;" alt=""/></td>
       <td align="center"><img src="https://img.etnews.com/photonews/2005/1298822_20200507160440_294_0001.jpg" width="100%;" alt=""/></td>
@@ -30,7 +28,6 @@
     </tr>
      <tr>
       <td align="center">구본욱</td>
-      <td align="center">이경일</td>
       <td align="center">윤혜빈</td>
       <td align="center">김대현</td>
       <td align="center">김이슬</td>
@@ -69,13 +66,14 @@
     <img src="https://img.shields.io/badge/Mysql%20Workbench%20-%20gray">
     <img src="https://img.shields.io/badge/VS%20code-aqua">
     <img src="https://img.shields.io/badge/intelliJ-black">
+    <img src="https://img.shields.io/badge/docker%20-%20skyblue">
+    <img src="https://img.shields.io/badge/jenkins%20-%20red">
 </div>
 <div>
     <h3>API</h3>
     <img src="https://img.shields.io/badge/Papago%20-%20Green">
-    <img src="https://img.shields.io/badge/naver%20login-green">
+    <img src="https://img.shields.io/badge/CLOVA%20-%20lightgreen">
     <img src="https://img.shields.io/badge/google%20login-blue">
-    <img src="https://img.shields.io/badge/Import%20API%20-%20orange">
 </div>
 <br/>
 <div>

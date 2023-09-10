@@ -47,7 +47,6 @@ public class FrdChatRoomController {
             FrdChatRoom checkFrdChatRoom2 = frdChatRoomService.findByFriends1AndFriends2(user2, user);
             FrdChatRoom checkFrdChatRoom3 = frdChatRoomService.findByFriends1AndFriends2(user, user2);
             Map<String, Object> returnMap = new HashMap<>();
-
                 if(checkFrdChatRoom2 == null && checkFrdChatRoom3 == null) {
                     FrdChatRoom frdChatRoom = new FrdChatRoom();
                     frdChatRoom.setFriends1(user);
@@ -67,7 +66,6 @@ public class FrdChatRoomController {
             returnMap.put("userProfileOther", user2.getUserProfileName());
             returnMap.put("chatroom", frdChatRoom.entityToDTO());
             response.setItem(returnMap);
-
             response.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok().body(response);
         } catch (Exception e) {
@@ -76,7 +74,6 @@ public class FrdChatRoomController {
             return ResponseEntity.badRequest().body(response);
         }
     }
-
 
 
 //    @GetMapping("/chatroom-list")

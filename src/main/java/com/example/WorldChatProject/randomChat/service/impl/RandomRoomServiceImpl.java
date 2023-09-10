@@ -140,7 +140,5 @@ public class RandomRoomServiceImpl implements RandomRoomService {
             return false;
         }
     }
-
-
 }
 

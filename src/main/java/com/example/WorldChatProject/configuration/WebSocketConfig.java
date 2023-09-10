@@ -18,6 +18,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.server.ServerHttpRequest;
+import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.config.ChannelRegistration;
@@ -27,10 +29,14 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 
 
+import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
+import org.springframework.web.socket.server.HandshakeInterceptor;
 
+import java.util.Map;
 
 
 @Configuration
@@ -40,7 +46,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final UserRepository userRepository;
-
+    private final FrdChatMessageService frdChatMessageService;
     private final FrdChatRoomHistoryService frdChatRoomHistoryService;
 
     @Override
@@ -53,7 +59,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .withSockJS();
     }
 
-
     //클라이언트와 서버 사이의 메시지 전송을 처리
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry){
@@ -62,6 +67,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         //클라이언트의 메시지 발행 요청 url경로（요청주소 prefix) 등록(메시지 보낼 때)
         registry.setApplicationDestinationPrefixes("/randomPub", "/catePub","/frdPub"); //app
     }
+
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
@@ -73,7 +79,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
         @Override
         public Message<?> preSend(Message<?> message, MessageChannel channel) {
-            System.out.println("접속하면 들어오는 메시지 : " + message);
 
             StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
 
@@ -109,11 +114,15 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                     String userNickName = (String) accessor.getSessionAttributes().get("user");
                     Long roomId = Long.parseLong(accessor.getFirstNativeHeader("roomId"));
                     String sessionId = accessor.getSessionId();
-                    frdChatRoomHistoryService.enteredRoom(userNickName, roomId, sessionId);
+                    frdChatRoomHistoryService.enteredRoom(userNickName, roomId, sessionId, accessor);
 
-                    //2. 온.오프라인 상태 감지하기
+                    //2. 내가 들어갔으니 내가 받은 상대방의 메시지를 읽는다.
                     Long userId = (Long) accessor.getSessionAttributes().get("userId");
-                    frdChatRoomHistoryService.detectOtherUser(roomId, userId);
+                    frdChatMessageService.changeUnread(userId, roomId);
+
+//                    //2. 온.오프라인 상태 감지하기
+//                    Long userId = (Long) accessor.getSessionAttributes().get("userId");
+//                    frdChatRoomHistoryService.detectOtherUser(roomId, userId);
                 }
                 //이건 여러사람이 쓰는 config라서 예외처리를 잘 안해주면 에러가 난다. 첨엔 destination(endpoint)로 구분하려했는데
                 //CONNECT상태에서 어느 엔드포인트인지 구분못함. 헤더로 보낼수밖에.
@@ -127,8 +136,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 //                    String sessionId = accessor.getSessionId();
 //                    frdChatRoomHistoryService.enteredRoom(userNickName, roomId, sessionId);
 //
-//                    //2. 온.오프라인 상태 감지하기
+//                    //2. 내가 들어갔으니 내가 받은 상대방의 메시지를 읽는다.
 //                    Long userId = (Long) accessor.getSessionAttributes().get("userId");
+//                    frdChatMessageService.changeUnread(userId, roomId);
+//
+//                    //3. 온.오프라인 상태 감지하기
 //                    frdChatRoomHistoryService.detectOtherUser(roomId, userId);
 //                }
             } else if (command !=null && command.equals(StompCommand.DISCONNECT)) {

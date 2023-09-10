@@ -1,6 +1,8 @@
 package com.example.WorldChatProject.friends.controller;
 
+import com.example.WorldChatProject.frdChat.entity.FrdChatMessage;
 import com.example.WorldChatProject.frdChat.entity.FrdChatRoom;
+import com.example.WorldChatProject.frdChat.service.FrdChatMessageService;
 import com.example.WorldChatProject.frdChat.service.FrdChatRoomService;
 import com.example.WorldChatProject.friends.dto.FriendsDTO;
 import com.example.WorldChatProject.frdChat.dto.ResponseDTO;
@@ -33,11 +35,12 @@ public class FriendsController {
     private final UserService userService;
     private final BlackListService blackListService;
     private final FrdChatRoomService frdChatRoomService;
+    private final FrdChatMessageService frdChatMessageService;
 
     @PostMapping("/request")
     public ResponseEntity<?> requestFriends(@RequestBody UserDTO userDTO,
                                             Authentication authentication) {
-        ResponseDTO<Map<String, String>> response = new ResponseDTO<>();
+        ResponseDTO<Map<String, Object>> response = new ResponseDTO<>();
         System.out.println("testtest");
         System.out.println(userDTO);
         System.out.println(authentication);
@@ -53,9 +56,11 @@ public class FriendsController {
             //받은 사람은 클릭된 유저. 정보는 버튼에 담겨있다?
             User user = userDTO.DTOToEntity();
             User receiver = userService.findById(user.getUserId());
+            log.info("요청받는 유저id"+receiver.getUserId());
+            log.info("요청받는 유저id"+requester.getUserId());
             Friends checkFriends = friendsService.findByUserAndFriends(requester, receiver);
             Friends checkFriends2 = friendsService.findByUserAndFriends(receiver, requester);
-            Map<String, String> returnMap = new HashMap<>();
+            Map<String, Object> returnMap = new HashMap<>();
             if(checkFriends == null && checkFriends2 == null) {
                 //일단 정방향 저장. approved 되면 역방향 저장해줄꺼야!
                 Friends friends1 = new Friends();
@@ -63,8 +68,8 @@ public class FriendsController {
                 friends1.setFriends(receiver);
                 friends1.setStatement(WAITING);
                 friendsService.save(friends1);
-
-                returnMap.put("msg", "request ok");
+                returnMap.put("msg", "requestok");
+                returnMap.put("friends", friends1);
             } else {
                 returnMap.put("msg", "already frds");
             }
@@ -128,9 +133,8 @@ public class FriendsController {
 
         try {
             Map<String, String> returnMap = new HashMap<>();
-
-            System.out.println(friends.getId());
-            System.out.println(friends);
+            System.out.println("프랜즈가 잘 담기나?" + friends);
+            System.out.println("프렌즈의 아이디가 담겨야지" + friends.getId());
 //            PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
 //            User user = principal.getUser().DTOToEntity();
 
@@ -254,6 +258,11 @@ public class FriendsController {
             PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
             User user = principal.getUser().DTOToEntity();
             List<String> nationallyList = friendsService.findByNationally(user, APPROVED);
+            if(nationallyList == null){
+                response.setItems(nationallyList);
+                response.setStatusCode(HttpStatus.OK.value());
+                return ResponseEntity.ok().body(response);
+            }
             log.info(nationallyList.get(0).toString());
 
             // 중복을 제거한 나라 목록 생성
@@ -296,6 +305,8 @@ public class FriendsController {
             }
             FrdChatRoom checkRoom = frdChatRoomService.findRoomByFriends1OrFriends2(frds1, frds2);
             if(checkRoom != null) {
+                List<FrdChatMessage> frdChatMessageList = frdChatMessageService.getChatMessages(checkRoom.getId());
+                frdChatMessageService.delete(frdChatMessageList);
                 frdChatRoomService.deleteRoom(checkRoom);
             }
             returnMap.put("msg", "delete ok");

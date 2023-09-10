@@ -4,6 +4,7 @@ import com.example.WorldChatProject.frdChat.service.FrdChatMessageService;
 import com.example.WorldChatProject.user.entity.User;
 import com.example.WorldChatProject.user.repository.UserRepository;
 import com.example.WorldChatProject.webChat.dto.UserSessionManager;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -50,14 +51,14 @@ public class LoginWebsocketHandler extends TextWebSocketHandler {
         return userName;
     }
 
-    public void sendMessageToUser(String username, String message) {
+    public void postUnread(String username, String message) {
         System.out.println("이건 핸들러 메시지 : " + message);
         System.out.println("이건 핸들러 유저닉네임 : " + username);
         WebSocketSession session = manager.getUserSession(username);
         System.out.println("핸들러에서 해당 유저의 세션이 존재하는지? : " + session);
         if(session != null && session.isOpen()) {
             try {
-                session.sendMessage(new TextMessage(message));
+                session.sendMessage(new TextMessage("채팅"+message));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -82,6 +83,44 @@ public class LoginWebsocketHandler extends TextWebSocketHandler {
         }
         // 소켓 메시지 처리
     }
+
+    @Override
+    public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
+        // 메시지 파싱 (JSON 형식 가정)
+        System.out.println("세션에 어떤게 담기지?" + session);
+        System.out.println("메시지에 어떤게 담기지?" + message);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> messageData = objectMapper.readValue(message.getPayload(), Map.class);
+        System.out.println("맵형태의 메시지" + messageData);
+
+        if ("friendRequest".equals(messageData.get("type"))) {
+            Integer receiverIntId = (Integer) messageData.get("receiverId");
+            User receiver = userRepository.findById((long) receiverIntId).get();
+            String receiverName = receiver.getUserName();
+            System.out.println(receiverName);
+
+            WebSocketSession targetsession = manager.getUserSession(receiverName);
+
+            if (targetsession != null && targetsession.isOpen()) {
+                // 대상 사용자에게 알림 전송
+                String requesterUserId = (String) messageData.get("requesterId");
+                Integer friendsId = (Integer) messageData.get("friendsId");
+                Map<String, Object> alertMessage = new HashMap<>();
+                alertMessage.put("type", "friendRequest");
+                alertMessage.put("from", requesterUserId);
+                alertMessage.put("friendsId", friendsId);
+                if ("friendRequest".equals(messageData.get("type"))) {
+                    targetsession.sendMessage(new TextMessage("친구"+objectMapper.writeValueAsString(alertMessage)));
+                    log.info("친구보냄"+objectMapper.writeValueAsString(alertMessage));
+                }else {
+                    targetsession.sendMessage(new TextMessage("채팅" + objectMapper.writeValueAsString(alertMessage)));
+                }
+            }
+        }
+
+    }
+
 //로그아웃 준비중..
 //    public void webRTCLogout(String userName)throws IOException {
 //        if (userName == null) {

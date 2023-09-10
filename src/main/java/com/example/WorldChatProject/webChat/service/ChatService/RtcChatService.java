@@ -1,11 +1,15 @@
 package com.example.WorldChatProject.webChat.service.ChatService;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
+import com.example.WorldChatProject.friends.entity.Friends;
+import com.example.WorldChatProject.friends.repository.FriendsRepository;
+import com.example.WorldChatProject.friends.service.FriendsService;
+import com.example.WorldChatProject.user.service.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,13 +30,67 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class RtcChatService {
 	UserSessionManager manager = UserSessionManager.getInstance();
+	private final FriendsService friendsService;
+	private final UserService userService;
 
+	public boolean checkOnline(String name){
+		return manager.getUserSession(name) != null;
+	}
     public void exitRtcRoom(String roomName) {
         Map<String, ChatRoomDto> chatRooms = ChatRoomMap.getInstance().getChatRooms();
 
         // 해당 목록에서 roomName을 키로 사용하여 채팅방 제거
         chatRooms.remove(roomName);
     }
+	public String sendOnline(String sender) {
+		TextMessage message = new TextMessage("접속"+sender);
+		String r;
+		WebSocketSession session;
+		for(Friends friends : friendsService.getFriendsByUserId(userService.findUserName(sender).get().getUserId())) {
+			r = friends.getFriends().getUserName();
+			log.info("수신유저: " + r + " / 정보: " + manager.getUserSession(r));
+			if(!r.isEmpty()) {
+				 session = manager.getUserSession(r);
+			} else session = null;
+			try {
+				if(session != null) {
+					session.sendMessage(message);
+				}
+			} catch (IOException e) {
+				log.error("Error sending message to user: {}", sender, e);
+			}
+		}
+		return message.getPayload();
+	}
+
+	public String sendRequest2(String sender, String receiver, RequestDto requestDto) {
+		log.info("친추 요청 보내는 곳");
+		WebSocketSession session = manager.getUserSession(receiver);
+		log.info("1");
+		ObjectMapper objectMapper = new ObjectMapper();
+		log.info("2");
+		String requestMessage = "";
+		log.info("3");
+		try {
+			log.info("4");
+			// RequestDto 객체를 JSON 문자열로 변환
+			String requestDtoJson = objectMapper.writeValueAsString(requestDto);
+			log.info("5");
+
+			// 이제 requestDtoJson는 RequestDto 객체의 JSON 표현입니다.
+			requestMessage = "친구"+requestDtoJson;
+			log.info("6");
+			TextMessage message = new TextMessage(requestMessage);
+			log.info("7");
+			// 메시지 보내기
+			session.sendMessage(message);
+			log.info("8");
+		} catch (IOException e) {
+			log.error("Error sending message to user: {}", sender, e);
+		}
+
+		return requestMessage;
+	}
 
 	public String sendRequest(String sender, String receiver, String type) {
 		WebSocketSession session = manager.getUserSession(receiver);
