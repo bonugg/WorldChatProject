@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -21,22 +22,31 @@ public class FrdChatMessageDTO {
     private Long id;
     private long roomId;
     private String sender;
+    private String receiver;
     private String message;
     private String createdAt;
     private String userProfile;
+    private boolean checkRead;
 
     /* 파일 업로드 관련 변수 */
     private String s3DataUrl; // 파일 업로드 url
     private String fileName; // 파일이름
     private String fileDir; // s3 파일 경로
 
+    //좋아요
+    private boolean isLiked;
+    private String like;
+    private String type;
+
     public FrdChatMessage DTOToEntity() {
         return FrdChatMessage.builder()
                 .id(this.id)
                 .roomId(this.roomId)
                 .sender(this.sender)
+                .receiver(this.receiver)
                 .message(this.message)
                 .createdAt(this.createdAt)
+                .checkRead(this.checkRead)
                 .s3DataUrl(this.s3DataUrl)
                 .fileName(this.fileName)
                 .fileDir(this.fileDir)

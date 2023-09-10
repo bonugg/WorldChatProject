@@ -1,0 +1,38 @@
+{
+  "files": {
+    "main.css": "/static/css/main.1f08c99e.css",
+    "main.js": "/static/js/main.406c4de9.js",
+    "static/media/8k_earth_clouds.jpg": "/static/media/8k_earth_clouds.08fcd80007fae8fc7170.jpg",
+    "static/media/8k_earth_daymap.jpg": "/static/media/8k_earth_daymap.54672c1f3ba121d80470.jpg",
+    "static/media/sun.jpg": "/static/media/sun.b34e6ead10e18ad3ad77.jpg",
+    "static/media/8k_earth_nightmap.jpg": "/static/media/8k_earth_nightmap.c0e138e9bf380cafd2c2.jpg",
+    "static/media/black2.jpg": "/static/media/black2.e2803dcc879093f8cb27.jpg",
+    "static/media/mars.jpg": "/static/media/mars.377ebdbb6eb4dafc2542.jpg",
+    "static/media/8k_earth_specular_map.jpg": "/static/media/8k_earth_specular_map.7b4efa59933b470e3776.jpg",
+    "static/media/asteroid.jpg": "/static/media/asteroid.090000d64cac064bc75f.jpg",
+    "static/media/8k_earth_normal_map.jpg": "/static/media/8k_earth_normal_map.930cf2e99bc548140c29.jpg",
+    "static/media/cloud.jpg": "/static/media/cloud.72f3d2ba427870b4aa24.jpg",
+    "static/media/Pluto_Made.webp": "/static/media/Pluto_Made.94a3bff8090be76def39.webp",
+    "static/media/spinner.gif": "/static/media/spinner.dc18968acd54174e726f.gif",
+    "static/media/AU.png": "/static/media/AU.ca9b612488a1f0780880.png",
+    "static/media/profile.png": "/static/media/profile.b9724afd2a77138b2d76.png",
+    "static/media/KR.png": "/static/media/KR.98db5d823ce341d4118d.png",
+    "static/media/US.png": "/static/media/US.4d9d990626a3df96a265.png",
+    "static/media/CN.png": "/static/media/CN.1885572c81d7dcfe25f7.png",
+    "static/media/PH.png": "/static/media/PH.27aaa903e57463caedc3.png",
+    "static/media/logo_text3.png": "/static/media/logo_text3.4b30737d5084ce71ae59.png",
+    "static/media/logo.png": "/static/media/logo.a1af3c4c966de210fcec.png",
+    "static/media/JP.png": "/static/media/JP.a16c066dbe1e0ca0560c.png",
+    "static/media/CA.png": "/static/media/CA.07849426f9b46d419f07.png",
+    "static/media/IT.png": "/static/media/IT.9556fb4c4145bf99ee2b.png",
+    "static/media/RU.png": "/static/media/RU.7a25d11ab31afd918e76.png",
+    "static/media/logo_img.png": "/static/media/logo_img.a4b9be62380f67f27337.png",
+    "index.html": "/index.html",
+    "main.1f08c99e.css.map": "/static/css/main.1f08c99e.css.map",
+    "main.406c4de9.js.map": "/static/js/main.406c4de9.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.1f08c99e.css",
+    "static/js/main.406c4de9.js"
+  ]
+}

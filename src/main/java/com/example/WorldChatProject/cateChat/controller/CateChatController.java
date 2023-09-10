@@ -52,9 +52,13 @@ public class CateChatController {
         cateChatDTO.setCateChatRegdate(formattedTime);
 
         //메시지 db에 저장 후 저장된 곳에서 sender값을 가져와 username에 설정하기
+
         CateChatDTO savedMessage = cateChatService.saveMessage(cateChatDTO);
         savedMessage.setUserProfile(userProfile);
         savedMessage.setSender(user);
+        savedMessage.setS3DataUrl(cateChatDTO.getS3DataUrl());
+        savedMessage.setFileDir(cateChatDTO.getFileDir());
+        savedMessage.setFileName(cateChatDTO.getFileName());
 
         return savedMessage;
     }
@@ -67,8 +71,6 @@ public class CateChatController {
 
         String user = (String) sessionAttributes.get("user");
         log.info("addUser");
-        // 채팅방 유저+1
-        cateRoomService.plusUserCnt(cateChatDTO.getCateId());
         List<String> cateUserList = cateUserListService.findAllUserNamesByCateId(cateChatDTO.getCateId());
 
         cateChatDTO.setCateChatContent(user+" entered");
@@ -105,6 +107,9 @@ public class CateChatController {
         cateRoomService.minusUserCnt(cateChatDTO.getCateId());
         cateUserListService.delete(cateChatDTO.getCateId(), userName);
         List<String> cateUserList = cateUserListService.findAllUserNamesByCateId(cateChatDTO.getCateId());
+        if(cateUserList.size() == 0){
+            cateRoomService.deleteRoom(cateChatDTO.getCateId());
+        }
 
         cateChatDTO.setCateChatContent(user + " has left");
 
@@ -116,7 +121,6 @@ public class CateChatController {
         String formattedTime = now.format(formatter);
 
         cateChatDTO.setCateChatRegdate(formattedTime);
-
         CateChatDTO savedMessage = cateChatService.saveMessage(cateChatDTO);
         savedMessage.setSender(user);
 
@@ -125,5 +129,27 @@ public class CateChatController {
         result.put("cateUserList", cateUserList);
 
         return result;
+    }
+
+    //좋아요
+    @MessageMapping("/categoryChat/{cateId}/like")
+    @SendTo("/cateSub/{cateId}")
+    public CateChatDTO changeLike(@Payload CateChatDTO chatDTO, @Header("simpSessionAttributes") Map<String, Object> sessionAttributes) {
+        String user = (String) sessionAttributes.get("user");
+        chatDTO.setSender(user);
+
+        //좋아요 갯수 반영
+        if(chatDTO.isLiked() == true) {
+            chatDTO.setLikeCount(chatDTO.getLikeCount() + 1);
+        }else {
+            chatDTO.setLikeCount(chatDTO.getLikeCount() - 1);
+        }
+
+        long chatId = chatDTO.getCateChatId();
+        String sender = chatDTO.getSender();
+        long likeCount = chatDTO.getLikeCount();
+        log.info("{} like status changed by {}, count: {}", chatId, sender, likeCount);
+        return chatDTO;
+
     }
 }

@@ -17,5 +17,7 @@ public class NaverConfiguration {
     private String regionName;
     @Value("${ncp.endPoint}")
     private String endPoint;
+    @Value("${ncp.bucket}")
+    private String bucket;
 }
 

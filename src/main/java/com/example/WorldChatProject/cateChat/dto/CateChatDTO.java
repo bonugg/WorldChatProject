@@ -27,19 +27,28 @@ public class CateChatDTO {
     private String newAccessToken;
     private String refresh;
 
+    /* 파일 업로드 관련 변수 */
+    private String s3DataUrl; // 파일 업로드 url
+    private String fileName; // 파일이름
+    private String fileDir; // s3 파일 경로
+
+    //좋아요
+    private boolean isLiked;
+    private int likeCount;
+
 
 
     //DTO를 엔티티로 변환하는 메소드
     public CateChat toCateChat() {
         CateChat cateChat = CateChat.builder()
-                                    .cateChatId(this.cateChatId)
-                                    .cateChatContent(this.cateChatContent)
-                                     //null값이므로 엔티티로 전달하면 안된다
+                .cateChatId(this.cateChatId)
+                .cateChatContent(this.cateChatContent)
+                //null값이므로 엔티티로 전달하면 안된다
 //                                  .cateChatRegdate(this.cateChatRegdate)
-                                    .type(this.type)
-                                    .sender(this.sender)
-                                    .cateRoom(this.toCateChat().getCateRoom())
-                                    .build();
+                .type(this.type)
+                .sender(this.sender)
+                .cateRoom(this.toCateChat().getCateRoom())
+                .build();
 
         return cateChat;
     }

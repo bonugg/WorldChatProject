@@ -4,6 +4,7 @@ import com.example.WorldChatProject.frdChat.dto.ResponseDTO;
 import com.example.WorldChatProject.frdChat.entity.FrdChatRoom;
 import com.example.WorldChatProject.frdChat.service.FrdChatMessageService;
 import com.example.WorldChatProject.frdChat.service.FrdChatRoomService;
+import com.example.WorldChatProject.friends.entity.Friends;
 import com.example.WorldChatProject.friends.service.FriendsService;
 import com.example.WorldChatProject.user.dto.UserDTO;
 import com.example.WorldChatProject.user.entity.User;
@@ -20,7 +21,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Optional;
 
 
 @RestController
@@ -41,36 +42,30 @@ public class FrdChatRoomController {
         try {
             PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
             User user = principal.getUser().DTOToEntity();
-            System.out.println(user + "이건 로그인한 유저");
-            System.out.println(userDTO + "엑시오스에서 넘겨준 값");
             User user2 = userService.findById(userDTO.DTOToEntity().getUserId());
-            System.out.println(user2 + "채팅 신청 받은 유저저저저저저");
 //            FrdChatRoom checkFrdChatRoom = frdChatRoomService.findByFriends1OrFriends2(user, user2);
             FrdChatRoom checkFrdChatRoom2 = frdChatRoomService.findByFriends1AndFriends2(user2, user);
             FrdChatRoom checkFrdChatRoom3 = frdChatRoomService.findByFriends1AndFriends2(user, user2);
             Map<String, Object> returnMap = new HashMap<>();
-            if(checkFrdChatRoom2 == null && checkFrdChatRoom3 == null) {
-                FrdChatRoom frdChatRoom = new FrdChatRoom();
-                frdChatRoom.setFriends1(user);
-                frdChatRoom.setFriends2(user2);
-                frdChatRoom.setCreatedAt(LocalDateTime.now());
-                frdChatRoomService.save(frdChatRoom);
-                returnMap.put("msg", "room created");
-            } else {
-                returnMap.put("msg", "room already exists");
-            }
+                if(checkFrdChatRoom2 == null && checkFrdChatRoom3 == null) {
+                    FrdChatRoom frdChatRoom = new FrdChatRoom();
+                    frdChatRoom.setFriends1(user);
+                    frdChatRoom.setFriends2(user2);
+                    frdChatRoom.setCreatedAt(LocalDateTime.now());
+                    frdChatRoomService.save(frdChatRoom);
+                    returnMap.put("msg", "room created");
+                } else {
+                    returnMap.put("msg", "room already exists");
+                }
+
             FrdChatRoom checkFrdChatRoom = frdChatRoomService.findRoomByFriends1OrFriends2(user, user2);
-            System.out.println(checkFrdChatRoom + "이걸 못부르는구나?");
-            System.out.println(checkFrdChatRoom.getId() + "아니야 이제 불러. 그리고 이거 가져가야한다?");
             FrdChatRoom frdChatRoom = frdChatRoomService.findById(checkFrdChatRoom.getId());
-            System.out.println(frdChatRoom + "본욱이형 미워... 그래도 가져간다!");
 
             returnMap.put("userNickName", principal.getUser().getUserNickName());
             returnMap.put("userProfile", principal.getUser().getUserProfileName());
             returnMap.put("userProfileOther", user2.getUserProfileName());
             returnMap.put("chatroom", frdChatRoom.entityToDTO());
             response.setItem(returnMap);
-            log.info("returnMap success");
             response.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok().body(response);
         } catch (Exception e) {
@@ -79,6 +74,7 @@ public class FrdChatRoomController {
             return ResponseEntity.badRequest().body(response);
         }
     }
+
 
 //    @GetMapping("/chatroom-list")
 //    public ResponseEntity<?> getChatroomList(Authentication authentication) {
