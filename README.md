@@ -1,4 +1,5 @@
 # 🌏 WorldWide Chat<br/>
+[![Watch the video](https://img.youtube.com/vi/g8MaPX5aQZg/maxresdefault.jpg)](https://youtu.be/g8MaPX5aQZg)<br/>
 `[비트캠프 네이버클라우드 개발자과정 2조 파이널 프로젝트`<br/>
 <br/>
 언어의 장벽 없이, 전 세계 누구와도 채팅이 가능한 새로운 플랫폼의 탄생 !<br/>
