@@ -1,6 +1,8 @@
 # 🌏 WorldWide Chat<br/>
-<iframe width="784" height="441" src="https://www.youtube.com/embed/g8MaPX5aQZg" title="WWC(World Wide Chat) 시연 영상" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe><br/>
-`[비트캠프 네이버클라우드 개발자과정 2조 파이널 프로젝트`<br/>
+[![Watch the video](https://img.youtube.com/vi/g8MaPX5aQZg/maxresdefault.jpg)](https://youtu.be/g8MaPX5aQZg)
+<h6 align="right">유튜브 시연 영상 링크</h6>
+
+`비트캠프 네이버클라우드 개발자과정 2조 파이널 프로젝트`<br/>
 <br/>
 언어의 장벽 없이, 전 세계 누구와도 채팅이 가능한 새로운 플랫폼의 탄생 !<br/>
 <br/>
